@@ -1,0 +1,5 @@
+.DS_Store
+.env
+discord*.log
+.vscode
+__pycache__

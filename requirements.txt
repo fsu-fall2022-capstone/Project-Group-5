@@ -1,0 +1,6 @@
+discord.py>=2.0.1
+asyncpg==0.26.0
+black>=22.8.0
+isort>=5.10.1
+python-dotenv==0.21.0
+aiohttp>=3.8.1
