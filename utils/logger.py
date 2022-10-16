@@ -16,7 +16,7 @@ class Logger:
     handler.setFormatter(formatter)
 
     def __init__(self, name) -> None:
-        self.logger = logging.getLogger(f"tribe.{name}")
+        self.logger = logging.getLogger(f"nations.{name}")
         self.logger.setLevel(logging.INFO)
 
         self.logger.addHandler(self.handler)

@@ -59,7 +59,7 @@ async def main():
             exts.append(f"cogs.{filename[:-3]}")
 
     async with ClientSession() as web_client, asyncpg.create_pool(
-        database="flips", user=os.environ.get("USER"), command_timeout=30
+        database="nations", user=os.environ.get("USER"), command_timeout=30
     ) as pool:
 
         async with GraduationBot(
