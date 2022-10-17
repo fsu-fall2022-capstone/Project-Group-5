@@ -8,18 +8,19 @@ from aiohttp import ClientSession
 from discord.ext import commands
 from dotenv import load_dotenv
 
+from DAOs.nationstates_api import NationStatesAPI
 from utils.logger import Logger
 
 load_dotenv()
 
 
-class GraduationBot(commands.Bot):
+class NationStatesBot(commands.Bot):
     def __init__(
         self,
         *args,
         initial_extensions: List[str],
-        db_pool: asyncpg.Pool = None,
-        web_client: ClientSession = None,
+        db_pool: asyncpg.Pool,
+        web_client: ClientSession,
         testing_guild_id: Optional[int] = None,
         **kwargs,
     ):
@@ -29,6 +30,8 @@ class GraduationBot(commands.Bot):
 
         self.db_pool = db_pool
         self.web_client = web_client
+
+        self.nationstates_api = NationStatesAPI(self.web_client)
 
         self.testing_guild_id = testing_guild_id
 
@@ -59,10 +62,10 @@ async def main():
             exts.append(f"cogs.{filename[:-3]}")
 
     async with ClientSession() as web_client, asyncpg.create_pool(
-        database="flips", user=os.environ.get("USER"), command_timeout=30
+        database="nations", user=os.environ.get("USER"), command_timeout=30
     ) as pool:
 
-        async with GraduationBot(
+        async with NationStatesBot(
             commands.when_mentioned,
             intents=discord.Intents.default(),
             db_pool=pool,

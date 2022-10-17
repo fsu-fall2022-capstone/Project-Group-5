@@ -5,12 +5,12 @@ from discord import app_commands
 from discord.ext import commands
 
 from controllers.config_controller import ConfigController, cog_autocomplete
-from graduation_tracker_bot import GraduationBot
+from nationstates_bot import NationStatesBot
 from utils.logger import Logger
 
 
 class Config(commands.Cog):
-    def __init__(self, bot: GraduationBot):
+    def __init__(self, bot: NationStatesBot):
         self.bot = bot
         self.config_controller = ConfigController(bot)
 
@@ -55,5 +55,5 @@ class Config(commands.Cog):
         self.logger.info(f"Synced commands to {option}")
 
 
-async def setup(bot: GraduationBot):
+async def setup(bot: NationStatesBot):
     await bot.add_cog(Config(bot))

@@ -12,7 +12,7 @@ class CommandUsage(BaseSQLTable):
 
     @ensure_connection
     async def increment_command(self, *, command: str, con: Optional[Connection] = None):
-        await con.fetch(
+        await con.execute(
             f"""
             UPDATE {self.TABLE_NAME}
             SET usage_count = usage_count + 1
