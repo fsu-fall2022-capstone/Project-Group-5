@@ -4,12 +4,12 @@ import discord
 from discord import app_commands
 from discord.ext import commands
 
-from graduation_tracker_bot import GraduationBot
+from nationstates_bot import NationStatesBot
 from utils.logger import Logger
 
 
 class Example(commands.Cog):
-    def __init__(self, bot: GraduationBot):
+    def __init__(self, bot: NationStatesBot):
         self.bot = bot
 
         self.logger = Logger("example")
@@ -31,5 +31,5 @@ class Example(commands.Cog):
         await interaction.response.send_message(f"You picked {pick} and said : {string * number}")
 
 
-async def setup(bot: GraduationBot):
+async def setup(bot: NationStatesBot):
     await bot.add_cog(Example(bot))
