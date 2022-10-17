@@ -48,11 +48,17 @@ class Config(commands.Cog):
         await self.config_controller.reload(interaction, cog)
         self.logger.info(f"Reloaded cogs")
 
-    @app_commands.command(description="Sync slash commands to discord")
-    @ConfigController.is_owner()
-    async def sync(self, interaction: discord.Interaction, option: Literal["Global", "Guild"]):
-        await self.config_controller.sync(interaction, option)
-        self.logger.info(f"Synced commands to {option}")
+    @commands.command()
+    @commands.guild_only()
+    @commands.is_owner()
+    async def sync(
+        self,
+        ctx: commands.Context,
+        guilds: commands.Greedy[discord.Object],
+        spec: Optional[Literal["~", "*", "^"]] = None,
+    ):
+        await self.config_controller.sync(ctx, guilds, spec)
+        self.logger.info("Synced commands")
 
 
 async def setup(bot: NationStatesBot):
