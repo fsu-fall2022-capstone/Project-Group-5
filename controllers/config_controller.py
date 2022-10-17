@@ -1,6 +1,6 @@
 import os
 import traceback
-from typing import Literal
+from typing import Literal, Optional
 
 import discord
 from discord import app_commands
@@ -10,6 +10,41 @@ from controllers.base_controller import BaseController
 
 
 class ConfigController(BaseController):
+    async def sync(
+        self,
+        ctx: commands.Context,
+        guilds: commands.Greedy[discord.Object],
+        spec: Optional[Literal["~", "*", "^"]] = None,
+    ) -> None:
+        if not guilds:
+            if spec == "~":
+                synced = await self.bot.tree.sync(guild=ctx.guild)
+            elif spec == "*":
+                self.bot.tree.copy_global_to(guild=ctx.guild)
+                synced = await self.bot.tree.sync(guild=ctx.guild)
+            elif spec == "^":
+                self.bot.tree.clear_commands(guild=ctx.guild)
+                await self.bot.tree.sync(guild=ctx.guild)
+                synced = []
+            else:
+                synced = await self.bot.tree.sync()
+
+            await ctx.send(
+                f"Synced {len(synced)} commands {'globally' if spec is None else 'to the current guild.'}"
+            )
+            return
+
+        ret = 0
+        for guild in guilds:
+            try:
+                await self.bot.tree.sync(guild=guild)
+            except discord.HTTPException:
+                pass
+            else:
+                ret += 1
+
+        await ctx.send(f"Synced the tree to {ret}/{len(guilds)}.")
+
     async def load(self, interaction: discord.Interaction, cog: str):
         if not self.verify_file(cog):
             return await interaction.response.send_message(
@@ -59,10 +94,6 @@ class ConfigController(BaseController):
                 f"Failed to reload all\nReloaded {reloaded_cogs}\n{traceback.format_exc()}",
                 ephemeral=True,
             )
-
-    async def sync(self, interaction: discord.Interaction, option: Literal["Global", "Guild"]):
-        guild = interaction.guild if option == "Guild" else None
-        await self.bot.tree.sync(guild=guild)
 
     @staticmethod
     def verify_file(cog_name: str):
