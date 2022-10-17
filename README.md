@@ -1,11 +1,13 @@
-# Graduation Tracker
+# Nation States
 ----
 
-## A discord bot designed to help track how close you are to graduating. 
+# A discord bot designed to be a wrapper for the online game [nationstates](nationstates.net). 
 
-***This bot is for students of FSU. Although, a lot of the logic can be expanded to work for other schools too***
+## Implemented Commands
+*entry*
 
-## Setup
+
+## Personal Hosting
 
 ```cmd
 $ pip3 install -r requirements.txt
