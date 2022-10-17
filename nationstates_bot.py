@@ -21,7 +21,6 @@ class NationStatesBot(commands.Bot):
         initial_extensions: List[str],
         db_pool: asyncpg.Pool,
         web_client: ClientSession,
-        testing_guild_id: Optional[int] = None,
         **kwargs,
     ):
         super().__init__(*args, **kwargs)
@@ -33,21 +32,12 @@ class NationStatesBot(commands.Bot):
 
         self.nationstates_api = NationStatesAPI(self.web_client)
 
-        self.testing_guild_id = testing_guild_id
-
         self.initial_extensions = initial_extensions
 
     async def setup_hook(self) -> None:
         # Load in cogs
         for extension in self.initial_extensions:
             await self.load_extension(extension)
-
-        # Sync tree with testing guild
-        # Only do this to testing guild and not global
-        if self.testing_guild_id:
-            guild = discord.Object(self.testing_guild_id)
-            self.tree.copy_global_to(guild=guild)
-            await self.tree.sync(guild=guild)
 
         self.base_logger.info(
             f"Logged in as: {self.user.name} - {self.user.id}\tVersion: {discord.__version__}"
@@ -71,9 +61,7 @@ async def main():
             db_pool=pool,
             web_client=web_client,
             initial_extensions=exts,
-            # testing_guild_id=1012371257494360115,
         ) as bot:
-
             await bot.start(os.getenv("TOKEN"))
 
 
