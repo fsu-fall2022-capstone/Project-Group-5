@@ -7,7 +7,7 @@ from dotenv import load_dotenv
 
 async def db_init():
     async with asyncpg.create_pool(
-        database="school", user=os.environ.get("USER"), command_timeout=60
+        database="nations", user=os.environ.get("USER"), command_timeout=60
     ) as pool:
         async with pool.acquire() as con:
             # Command Usage
