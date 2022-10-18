@@ -17,7 +17,7 @@ class NationStatesAPI:
         self.__ratelimit_start_time = datetime.now()
 
     async def get_response(self, headers: dict, params: dict):
-        await self.__rate_limit()
+        # await self.__rate_limit()
         self.__concurrent_requests__ += 1
         output = None
         async with self.web_client.get(
@@ -28,10 +28,11 @@ class NationStatesAPI:
             if response.ok:
                 output = await response.text()
         self.__concurrent_requests__ -= 1
+        return output
 
     async def __rate_limit(self):
         # await asyncio.sleep(0.1)
-        pass
+        return
 
     async def get_public_nation_data(self, nation: str, shards: Optional[list[str]] = None):
         params = {"nation": nation}
