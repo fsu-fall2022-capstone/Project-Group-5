@@ -10,7 +10,7 @@ from utils.logger import Logger
 
 
 class DM(commands.Cog):
-    """Handle communication in DMs (play by yourself)"""
+    """Handle DM based nation (play by yourself)"""
 
     def __init__(self, bot: NationStatesBot):
         self.bot = bot
