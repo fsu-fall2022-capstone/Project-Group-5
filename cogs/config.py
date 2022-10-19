@@ -1,10 +1,9 @@
 from typing import Literal, Optional
 
 import discord
+from controllers.config_controller import ConfigController, cog_autocomplete
 from discord import app_commands
 from discord.ext import commands
-
-from controllers.config_controller import ConfigController, cog_autocomplete
 from nationstates_bot import NationStatesBot
 from utils.logger import Logger
 
@@ -57,6 +56,15 @@ class Config(commands.Cog):
         guilds: commands.Greedy[discord.Object],
         spec: Optional[Literal["~", "*", "^"]] = None,
     ):
+        """
+        Use
+        ----
+         * `@bot sync` -> global sync
+         * `@bot sync` ~ -> sync current guild
+         * `@bot sync` * -> copies all global app commands to the current guild and syncs
+         * `@bot sync` ^ -> clears all commands from the current guild target and syncs (removes guild commands)
+         * `@bot sync` id_1 id_2 -> syncs guilds with id 1 and 2
+        """
         await self.config_controller.sync(ctx, guilds, spec)
         self.logger.info("Synced commands")
 
