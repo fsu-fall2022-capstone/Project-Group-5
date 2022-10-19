@@ -104,3 +104,21 @@ VALID_REGION_SHARDS = (
     "wabadges",
     "zombie",
 )
+
+
+VALID_WORLD_ASSEMBLY_SHARDS = (
+    "numnations",
+    "numdelegates",
+    "delegates",
+    "members",
+    "happenings",
+    "proposals",
+    "resolution",
+    "voters",
+    "votetrack",
+    "dellog",
+    "delvotes",
+    "lastresolution",
+)
+
+SPECIAL_WORLD_ASSEMBLY_SHARDS = ("voters", "votetrack", "dellog", "delvotes")
