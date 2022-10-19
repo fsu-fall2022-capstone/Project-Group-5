@@ -3,3 +3,4 @@
 discord*.log
 .vscode
 __pycache__
+.fleet
