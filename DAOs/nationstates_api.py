@@ -6,7 +6,7 @@ from aiohttp import ClientSession
 
 
 class NationStatesAPI:
-
+    USER_AGENT = "NS Discord Bot"
     BASE_URL = "https://www.nationstates.net/cgi-bin/api.cgi"
 
     def __init__(self, web_client: ClientSession) -> None:
@@ -34,19 +34,19 @@ class NationStatesAPI:
         # await asyncio.sleep(0.1)
         return
 
-    async def get_public_nation_data(self, nation: str, shards: Optional[list[str]] = None):
-        params = {"nation": nation}
+    async def get_x_data(self, type: str, type_value: str, shards: Optional[list[str]] = None):
+        params = {type: type_value}
         if shards:
             params["q"] = "+".join(shards)
-        headers = {'User-Agent': 'NS Discord Bot'}
+        headers = {"User-Agent": self.USER_AGENT}
         return await self.get_response(headers, params)
-    
+
+    async def get_public_nation_data(self, nation: str, shards: Optional[list[str]] = None):
+        return await self.get_x_data("nation", nation, shards)
+
     async def get_region_data(self, region: str, shards: Optional[list[str]] = None):
-        params = {"region": region}
-        if shards:
-            params["q"] = "+".join(shards)
-        headers = {'User-Agent': 'NS Discord Bot'}
-        return await self.get_response(headers,params)
+        return await self.get_x_data("region", region, shards)
+
 
 # url = "https://www.nationstates.net/cgi-bin/api.cgi"
 # p = {"nation" : "Computer Chip", "q":"policies"}
