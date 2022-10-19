@@ -22,8 +22,7 @@ We performed functional testing for our Discord bot by running the commands pert
 We would run commands such as `/nation info` to confirm that the data requested was properly fetched. Proper display of commands and their options were also tested this way.   
 
 ## Execution-based Non-Functional Testing:
-The NationStates API has its own rate limits: 50 calls/30s. Adhering to this has not been implemented. Nor has testing.  
-Password security was manually checked and reviewed for proper encryption. Stage is not yet implemented but, the functionality was tested in isolation.
+The NationStates API has its own rate limits: 50 calls/30s. Adherence to this limit has not been implemented yet. Password security was manually checked and reviewed for proper encryption. Stage is not yet implemented but, the functionality was tested in isolation.
 
 ## Non-Execution-based Testing:
-Large sweeping changes require an all-hands walkthrough. Nothing (besides text related changes) is allowed to be directly pushed to main. All pull-requests have to be reviewed by the manager before merging. At least 1 other person should have a look at the code before a pull-request is made.  
+Large sweeping changes require an all-hands walkthrough. Nothing (besides text related changes) is allowed to be directly pushed to main. All pull-requests have to be reviewed by the manager before merging. At least 1 other person should have a look at the code before a pull-request is made.
