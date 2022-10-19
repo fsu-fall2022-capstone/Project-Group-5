@@ -1,19 +1,29 @@
 # Software Implementation and Testing Document for Group 5, Version 1.0
+
 ## Authors:
-### Cameron Cornell, Nicholas Green, Joshua Kane, Tyler Mihelich
+Cameron Cornell  
+Nicholas Green  
+Joshua Kane  
+Tyler Mihelich  
+
 ## Programming Languages:
-The programming language we will be using for this project is Python.
+The programming language we use for this project is Python.
+
 ## Platforms, APIs, Databases, and other technologies used:
-For this project, we are using [Discord API](discord.com) and [NationStates API](nationstates.net)
-in order to develop a discord bot that allows you to play NationStates through Discord commands
+APIs:
+ * [discord.py](https://discordpy.readthedocs.io/en/latest/) - a discord bot
+ * [NationStates](https://www.nationstates.net/pages/api.html) - connecting to the games DB and submitting actions to the game  
+
+Databases:
+ * [PostgreSQL](https://www.postgresql.org/)
+
 ## Execution-based Functional Testing:
-We performed functional testing for out Discord bot by running the commands pertaining to the bot directly in Discord.
-We would run commands such as `/nation info` in order to gather information of our nation that we created in the game,
-as well as basic commands like `/example` and `sync *` in order to sync new attributes to your current guild in the game.
+We performed functional testing for our Discord bot by running the commands pertaining to the bot directly in Discord.  
+We would run commands such as `/nation info` to confirm that the data requested was properly fetched. Proper display of commands and their options were also tested this way.   
+
 ## Execution-based Non-Functional Testing:
-Due to limitations of the NationStates API, we are only able to allow for up to 50 requests for the bot within 30 seconds.
-To abide by this limitation, we implemented a rate limit of 40 and a limit reached function that causes the bot
-to sleep for 0.1 milliseconds whenever 40 requests is reached.
+The NationStates API has its own rate limits: 50 calls/30s. Adhering to this has not been implemented. Nor has testing.  
+Password security was manually checked and reviewed for proper encryption. Stage is not yet implemented but, the functionality was tested in isolation.
+
 ## Non-Execution-based Testing:
-For non-execution-based testing, we would review and discuss the NationStates API and Discord API together
-in Discord, and then study each of these APIs individually on our own time.
+Large sweeping changes require an all-hands walkthrough. Nothing (besides text related changes) is allowed to be directly pushed to main. All pull-requests have to be reviewed by the manager before merging. At least 1 other person should have a look at the code before a pull-request is made.  
