@@ -1,10 +1,9 @@
 from typing import Literal, Optional
 
 import discord
+from controllers.config_controller import ConfigController, cog_autocomplete
 from discord import app_commands
 from discord.ext import commands
-
-from controllers.config_controller import ConfigController, cog_autocomplete
 from nationstates_bot import NationStatesBot
 from utils.logger import Logger
 

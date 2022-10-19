@@ -2,17 +2,17 @@ import traceback
 from typing import Literal, Optional
 
 import discord
+from data.shards import VALID_PUBLIC_NATION_SHARDS
 from discord import app_commands
 from discord.ext import commands
 
 from controllers.base_nationstate_controller import BaseNationstateController
-from controllers.shards import VALID_PUBLIC_NATION_SHARDS
 
 
 class NationController(BaseNationstateController):
     @classmethod
     async def public_nation_shards_autocomplete(
-        cls, interaction: discord.Interaction, current: str
+        cls, _: discord.Interaction, current: str
     ) -> list[app_commands.Choice[str]]:
         return cls.shard_autocomplete(current, VALID_PUBLIC_NATION_SHARDS)
 

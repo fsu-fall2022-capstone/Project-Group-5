@@ -3,9 +3,10 @@ from typing import Literal, Optional
 import discord
 from discord import app_commands
 from discord.ext import commands
-
 from nationstates_bot import NationStatesBot
 from utils.logger import Logger
+
+# TODO DELETE this file
 
 
 class Example(commands.Cog):
