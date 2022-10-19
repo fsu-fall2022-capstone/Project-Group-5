@@ -47,6 +47,9 @@ class NationStatesAPI:
     async def get_region_data(self, region: str, shards: Optional[list[str]] = None):
         return await self.get_x_data("region", region, shards)
 
+    async def get_wa_data(self, council: int, shards: Optional[list[str]] = None):
+        return await self.get_x_data("wa", council, shards)
+
 
 # url = "https://www.nationstates.net/cgi-bin/api.cgi"
 # p = {"nation" : "Computer Chip", "q":"policies"}
