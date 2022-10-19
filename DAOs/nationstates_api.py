@@ -40,7 +40,13 @@ class NationStatesAPI:
             params["q"] = "+".join(shards)
         headers = {'User-Agent': 'NS Discord Bot'}
         return await self.get_response(headers, params)
-
+    
+    async def get_region_data(self, region: str, shards: Optional[list[str]] = None):
+        params = {"region": region}
+        if shards:
+            params["q"] = "+".join(shards)
+        headers = {'User-Agent': 'NS Discord Bot'}
+        return await self.get_response(headers,params)
 
 # url = "https://www.nationstates.net/cgi-bin/api.cgi"
 # p = {"nation" : "Computer Chip", "q":"policies"}
