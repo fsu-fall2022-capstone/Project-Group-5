@@ -1,11 +1,10 @@
 from typing import Literal, Optional
 
 import discord
-from discord import app_commands
-from discord.ext import commands
-
 from controllers.server_controller import ServerController
 from DAOs.nationstates_api import NationStatesAPI
+from discord import app_commands
+from discord.ext import commands
 from nationstates_bot import NationStatesBot
 from utils.logger import Logger
 

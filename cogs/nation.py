@@ -1,10 +1,9 @@
 from typing import Literal, Optional
 
 import discord
+from controllers.nation_controller import NationController
 from discord import app_commands
 from discord.ext import commands
-
-from controllers.nation_controller import NationController
 from nationstates_bot import NationStatesBot
 from utils.logger import Logger
 
@@ -30,7 +29,7 @@ class Nation(commands.GroupCog, group_name="nation"):
     async def info(
         self, interaction: discord.Interaction, nation: str, shard: Optional[str] = None
     ):
-        self.logger.info(f"starting to fetch data with {nation=} and {shard=}")
+        self.logger.info(f"starting to fetch data with {nation = } and {shard = }")
         await self.nation_controller.info(interaction, nation, shard)
         self.logger.info(f"fetched {shard} for {nation = }")
 
