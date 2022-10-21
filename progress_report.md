@@ -37,9 +37,9 @@
 > 2) The software requirements and design document was written by Robert, this includes all sections/diagrams as well.
 > 3) The software IT document was written by Cameron, this includes all sections.
 > 4) Source code contributions:
->>> Joshua: Worked on all sections of the source code, including all commands and base setup of the bot.
->>> Nicholas: Worked on region cog/ region controller which implemented commands for fetching region shards.
->>> Tyler: Worked on setting up our encryption and decryption methods for 
+>>> Joshua: Worked on all sections of the source code, including all commands and base setup of the bot.  
+>>> Nicholas: Worked on region cog/ region controller which implemented commands for fetching region shards.  
+>>> Tyler: Worked on setting up our encryption and decryption methods which will be used when we implement the database.
 > 5) Everyone contributed to the video.
 
 ## 6) **Plans for the next increment**
