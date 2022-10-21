@@ -4,7 +4,8 @@
 Cameron Cornell  
 Nicholas Green  
 Joshua Kane  
-Tyler Mihelich  
+Tyler Mihelich
+Robert Whitworth
 
 ## Programming Languages:
 The programming language we use for this project is Python.
