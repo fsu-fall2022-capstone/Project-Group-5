@@ -46,7 +46,8 @@ Class Diagram:
 
 ## Operating Environment 
 The bot instance will be run by python and the user will interact with the bot through discord.
-Any users operating system that can install discord will be able to use the bot. PostgreSQL.
+Any users operating system that can install discord will be able to use the bot. PostgreSQL.  
+The bot could be hosted on any VPS with python. 
 
 
 ## Assumptions and Dependencies 
