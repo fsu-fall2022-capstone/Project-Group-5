@@ -30,7 +30,9 @@ they are not a part of. Currently being worked on, not fully implemented yet.
 
 
 ## Use Case Diagram
-todo
+Basic uses cases implmeneted at the moment along with their relation with the user.
+![image](https://user-images.githubusercontent.com/72528884/197101853-2461ab8a-c372-407a-b2f3-598d105ed8db.png)
+
 
 ## Class Diagram
 todo
