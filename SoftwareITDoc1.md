@@ -4,7 +4,7 @@
 Cameron Cornell  
 Nicholas Green  
 Joshua Kane  
-Tyler Mihelich
+Tyler Mihelich  
 Robert Whitworth
 
 ## Programming Languages:
