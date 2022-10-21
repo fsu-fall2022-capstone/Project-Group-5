@@ -21,32 +21,31 @@
 
 ## 3) **Accomplishments and overall project status during this increment** 
 
-> *Describe in detail what was accomplished during this increment and where your project stands overall compared to the initial scope and functionality proposed.*
+> This increment we got the base of the bot set-up. We worked on getting a few commands implemented; commands to fetch nation information, region information, world assembly information, as well as some basic config commands. In the overall scope of what we're aiming for with this bot, we're a little under a third of the way to completeness. 
 
 ## 4) **Challenges, changes in the plan and scope of the project and things that went wrong during this increment**
 
-> *Please describe here in detail:*
+> The biggest challenge in this increment, outside of deciding to change focus, was just getting everyone familiar with [discord.py](ttps://discordpy.readthedocs.io/en/stable/) and the design patterns for the project.
+> 
+> Originally we had planned on making a Discord bot that would allow FSU students to track their various graduation requirements. However upon review we felt that in order to make this bot anything useful and longlasting, we would need far more time than originally thought. We then decided that we would still make a Discord bot,   however our focus has shifted from graduation tracking to making a wrapper for the [NationStates api](https://www.nationstates.net/pages/api.html).
 >
-> *- anything that was challenging during this increment and how you dealt with the challenges*
->
-> Originally we had planned on making a Discord bot that would allow FSU students to track their various graduation requirements. However upon review we felt that in     order to make this bot anything useful and longlasting, we would need far more time than originally thought. We then decided that we would still make a Discord bot,   however our focus has shifted from graduation tracking to making a wrapper for the [NationStates api](https://www.nationstates.net/pages/api.html).
->
-> *- anything that went wrong during this increment*
+> There weren't many big issues that popped up during this increment. The main issue was a PostgreSQL issue; since we don't have a hosted database yet, we would get errors in running the bot if we didnt have a local database set up on our machine. 
 
 ## 5) **Team Member Contribution for this increment**
-
-> *Please list each individual member and their contributions to **each of the deliverables in this increment** (be as detailed as possible). In other words, describe > the contribution of each team member to:*
-> 
-> 1) *the **progress report**, including the sections they wrote or contributed to*
-> 2) *the **requirements and design document**, including the sections they wrote or contributed to*
-> 3) *the **implementation and testing document**, including the sections they wrote or contributed to*
-> 4) *the **source code** (be detailed about **which** parts of the system each team member contributed to and **how**)*
-> 5) *the **video or presentation***
+ 
+> 1) The progress report was written by Nicholas with contributions, in the form of challenges/goals/progress from everyone.
+> 2) The software requirements and design document was written by Robert, this includes all sections/diagrams as well.
+> 3) The software IT document was written by Cameron, this includes all sections.
+> 4) Source code contributions:
+>>> Joshua: Worked on all sections of the source code, including all commands and base setup of the bot.
+>>> Nicholas: Worked on region cog/ region controller which implemented commands for fetching region shards.
+>>> Tyler: Worked on setting up our encryption and decryption methods for 
+> 5) Everyone contributed to the video.
 
 ## 6) **Plans for the next increment**
 
-> *If this report if for the first or second increment, describe what are you planning to achieve in the next increment.*
+> For the next increment we want to focus our efforts on connecting nations to the bot and setting up our database.
 
 ## 7) **Link to video**
 
-> *Paste here the link to your video.*
+> [Increment 1]()
