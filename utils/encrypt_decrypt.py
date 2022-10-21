@@ -4,15 +4,15 @@ import os
 
 
 def decrypt(encrypted_password):
-    fernet = Fernet(os.getenv("s_key"))    # pass the secret key to fernet to create an instance
-    decryptedPassword = fernet.decrypt(    # decrypts encrypted_password and sets it equal to decryptedPassword
+    fernet = Fernet(os.getenv("s_key"))
+    decryptedPassword = fernet.decrypt(    
         encrypted_password              
     ).decode()
     return decryptedPassword                
 
 def encrypt(password):
-    fernet = Fernet(os.getenv("s_key"))     # pass the secret key to fernet to create an instance
-    encryptedPassword = fernet.encrypt(     # ecnrypts the password and sets it equal to encryptedPassword
+    fernet = Fernet(os.getenv("s_key"))     
+    encryptedPassword = fernet.encrypt(     
         password.encode()
     )
     return encryptedPassword
