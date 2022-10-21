@@ -43,4 +43,6 @@ Any users operating system that can install discord will be able to use the bot.
 
 
 ## Assumptions and Dependencies 
-todo
+We are using multiple third party wrappers. If the discord API changed, which it has in the past, it could cause issues for the longevity of our project. 
+A similar idea is shared with the discord.py wrapper. We are dependent on the nationstates API to remain consistent so that calls and information stored will
+remain working.
