@@ -1,6 +1,4 @@
-from dis import disco
-from typing import Literal, Optional, List
-import aiohttp
+from typing import Literal, Optional
 
 import discord
 from controllers.server_controller import ServerController
@@ -20,22 +18,7 @@ class Server(commands.Cog):
         self.server_controller = ServerController(bot)
 
         self.logger = Logger("server")
-        self.logger.info("server loaded")  
-
-    @app_commands.command(name="shards")
-    @app_commands.describe(
-        nation ="Name of the nation to be targeted",
-        shards ="List of shards to find"
-        )
-    async def fetch_shards(
-        self,
-        interaction: discord.Interaction,
-        nation: str,
-        shards: str,
-        ):
-        async with NationStatesAPI as session:
-            async with session.get(f'https://www.nationstates.net/cgi-bin/api.cgi?nation={nation}') as resp:
-                await interaction.response.send_message(await resp.text() )
+        self.logger.info("server loaded")
 
 
 async def setup(bot: NationStatesBot):
