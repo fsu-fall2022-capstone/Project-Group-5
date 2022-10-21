@@ -35,7 +35,14 @@ Basic uses cases implmeneted at the moment along with their relation with the us
 
 
 ## Class Diagram
-todo
+Sequence Diagram:
+
+![image](https://user-images.githubusercontent.com/72528884/197253511-99552700-2fb8-493a-8997-ed752f955b3b.png)
+  
+Class Diagram:  
+![image](https://user-images.githubusercontent.com/72528884/197253154-32e79f9e-6557-46d2-b372-81e8d4c95185.png)
+
+
 
 ## Operating Environment 
 The bot instance will be run by python and the user will interact with the bot through discord.
