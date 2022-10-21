@@ -3,11 +3,10 @@ from typing import Literal, Optional, List
 import aiohttp
 
 import discord
+from controllers.server_controller import ServerController
+from DAOs.nationstates_api import NationStatesAPI
 from discord import app_commands
 from discord.ext import commands
-from requests import session
-
-from DAOs.nationstates_api import NationStatesAPI
 from nationstates_bot import NationStatesBot
 from utils.logger import Logger
 
@@ -17,6 +16,8 @@ class Server(commands.Cog):
 
     def __init__(self, bot: NationStatesBot):
         self.bot = bot
+
+        self.server_controller = ServerController(bot)
 
         self.logger = Logger("server")
         self.logger.info("server loaded")  

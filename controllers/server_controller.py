@@ -1,13 +1,12 @@
-import os
 import traceback
-from typing import Literal
+from typing import Literal, Optional
 
 import discord
 from discord import app_commands
 from discord.ext import commands
 
-from controllers.base_controller import BaseController
+from controllers.base_nationstate_controller import BaseNationstateController
 
 
-class ServerController(BaseController):
+class ServerController(BaseNationstateController):
     pass

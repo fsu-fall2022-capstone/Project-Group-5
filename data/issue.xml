@@ -1,0 +1,17 @@
+<!-- Example of an issue to convert into embed -->
+<NATION id="computer_chip">
+    <ISSUES>
+        <ISSUE id="1467">
+            <TITLE>Gay Men Held by Police</TITLE>
+            <TEXT>Computer Chipian tourists Louis Quimby and Colin Wolowitz were recently on a romantic city break in the capital of Sacerdia, and like many other couples made a point of kissing by moonlight on the world-famous Lovers’ Bridge. Unfortunately for them, homosexuality is a crime in Sacerdia, and they were arrested.</TEXT>
+            <AUTHOR>candlewhisper_archive</AUTHOR>
+            <EDITOR>candlewhisper_archive</EDITOR>
+            <PIC1>t1</PIC1>
+            <PIC2>s1</PIC2>
+            <OPTION id="0">“Louis and Colin perhaps could have been more circumspect, but they’re Computer Chipian citizens who have committed no crime under our laws,” observes Computer Chipian Consulate Officer Paul Myfinger. “We have a moral obligation to negotiate their release. I suggest we could make a couple of trade concessions, favouring Sacerdian woolen goods with selective tariffs on competitor nations, for example. In return, our out-of-the-closet citizens can be gotten out of hot water. I’m also confident we can establish procedures to send home any future Computer Chipians arrested there. Everybody wins.”</OPTION>
+            <OPTION id="2">Reverend Indy Nile is both a priest and a general in the Sacerdian Holy Army, and he has a counter-proposal. “Gayness is against the will of the Lord our God. We will give you back these transgressors, but you must recognise the holy truth that homosexuality is a grave sin. Ban batty-boy loving in Computer Chip, and we’ll extradite these criminals to your jurisdiction. Let us move forward together, in faith.” He gazes up adoringly at a semi-naked statuary depiction of his deity.</OPTION>
+            <OPTION id="3">“We have to be balanced about this, I’m afraid,” offers Foreign Office diplomat Hyde Yorlove. “Out of respect for judicial sovereignty we must leave the couple to the mercy of the Sacerdian justice system. To stop this happening again, maybe we can set up a bureau to issue guidance and travel advice for gay holiday-makers.”</OPTION>
+            <OPTION id="4">“RAAAAAAAAAARGH!” bellows perpetually angry gay activist Neil Foreman, tipping your desk over in a rage. “I am Gay Man! Hear me roar! My leader, we cannot negotiate with filthy homophobes and bigoted scum! Send the army in, and rescue my proud brethren, then bomb Sacerdia till they agree to repeal their homophobic laws. We’ll give these blighters cold hard steel... cause they don’t like it up ‘em, you know!”</OPTION>
+        </ISSUE>
+    </ISSUES>
+</NATION>
