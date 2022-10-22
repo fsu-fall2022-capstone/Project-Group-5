@@ -1,12 +1,19 @@
-# In devlopment
+# In development
+-------
+-------
+
 # Nation States
 ----
 
 # A discord bot designed to be a wrapper for the online game [nationstates](nationstates.net). 
 
 ## Implemented Commands
-*entry*
-
+ * nation
+    * info \<nation> [shard]
+ * region
+    * info \<region> [shard]
+ * wa
+    * info \<General Assembly | Security Council> [shard]
 
 ## Personal Hosting
 
