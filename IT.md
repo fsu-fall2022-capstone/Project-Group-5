@@ -1,11 +1,11 @@
 # Software Implementation and Testing Document for Group 5, Version 1.0
 
 ## Authors:
-Cameron Cornell  
-Nicholas Green  
-Joshua Kane  
-Tyler Mihelich  
-Robert Whitworth
+> Joshua Kane, jdk10bn, CoderJoshDK  
+> Robert Whitworth, rw18cg, rwhitwo  
+> Nicholas Green, njg19, dynamic-friction  
+> Tyler Mihelich, tpm18b, tpm18b  
+> Cameron Cornell, cc19n, cameron-cornell 
 
 ## Programming Languages:
 The programming language we use for this project is Python.

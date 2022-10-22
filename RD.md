@@ -1,11 +1,11 @@
 # Software Requirements and Design Document for Group 5, Version 1.0
 
 ## Authors:
-Cameron Cornell  
-Nicholas Green  
-Joshua Kane  
-Tyler Mihelich  
-Robert Whitworth
+> Joshua Kane, jdk10bn, CoderJoshDK  
+> Robert Whitworth, rw18cg, rwhitwo  
+> Nicholas Green, njg19, dynamic-friction  
+> Tyler Mihelich, tpm18b, tpm18b  
+> Cameron Cornell, cc19n, cameron-cornell 
 
 ## Overview:
 Our system is focused on a game that is played in discord. More specifically, it will be a discord bot that is designed to be a wrapper for the game. 
@@ -22,7 +22,7 @@ The database system being used is PostgresSQL. The user will interact with the s
 
 
 ## Non-functional Requirements
-Nationstates API has call limits - The requirement is placed by nationstates. Exceeding 50 requests per 30 seconds limit will temporailry lock the system.
+Nationstates API has call limits - The requirement is placed by nationstates. Exceeding 50 requests per 30 seconds limit will temporarily lock the system.
 Not yet enforced/implemented.
 
 Encryption and Decryption of nations passwords - This requirement is needed for the user to access their nation/region and prevent others from accessing nations
@@ -30,7 +30,7 @@ they are not a part of. Currently being worked on, not fully implemented yet.
 
 
 ## Use Case Diagram
-Basic uses cases implmeneted at the moment along with their relation with the user.
+Basic uses cases implemented at the moment along with their relation with the user.  
 ![image](https://user-images.githubusercontent.com/72528884/197101853-2461ab8a-c372-407a-b2f3-598d105ed8db.png)
 
 

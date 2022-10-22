@@ -27,9 +27,9 @@
 
 > The biggest challenge in this increment, outside of deciding to change focus, was just getting everyone familiar with [discord.py](ttps://discordpy.readthedocs.io/en/stable/) and the design patterns for the project.
 > 
-> Originally we had planned on making a Discord bot that would allow FSU students to track their various graduation requirements. However upon review we felt that given the everchanging nature course requirements, this project would be rendered obsolete very quickly. Since none of us want to work on something that will be useless in a matter of months, we decided to shift our focus from graduation tracking to making a wrapper (still in the form of a Discord bot) for the [NationStates api](https://www.nationstates.net/pages/api.html).
+> Originally we had planned on making a Discord bot that would allow FSU students to track their various graduation requirements. However upon review we felt that given the ever-changing nature course requirements, this project would be rendered obsolete very quickly. Since none of us want to work on something that will be useless in a matter of months, we decided to shift our focus from graduation tracking to making a wrapper (still in the form of a Discord bot) for the [NationStates api](https://www.nationstates.net/pages/api.html).
 >
-> There weren't many big issues that popped up during this increment. The main issue was a PostgreSQL issue; since we don't have a hosted database yet, we would get errors in running the bot if we didnt have a local database set up on our machine. 
+> There weren't many big issues that popped up during this increment. The main issue was a PostgreSQL issue; since we don't have a hosted database yet, we would get errors in running the bot if we didn't have a local database set up on our machine. 
 
 ## 5) **Team Member Contribution for this increment**
  
