@@ -1,12 +1,12 @@
 from typing import Literal, Optional
 
 import discord
-from controllers.world_assembly_controller import WorldAssemblyController
 from discord import app_commands
 from discord.app_commands import Choice
 from discord.ext import commands
 from nationstates_bot import NationStatesBot
-from utils.logger import Logger
+from ns_bot.controllers.world_assembly_controller import WorldAssemblyController
+from ns_bot.utils.logger import Logger
 
 
 class WorldAssembly(commands.GroupCog, group_name="wa"):

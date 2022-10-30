@@ -1,11 +1,11 @@
 from typing import Literal, Optional
 
 import discord
-from DAOs.nationstates_api import NationStatesAPI
 from discord import app_commands
 from discord.ext import commands
 from nationstates_bot import NationStatesBot
-from utils.logger import Logger
+from ns_bot.DAOs.nationstates_api import NationStatesAPI
+from ns_bot.utils.logger import Logger
 
 
 class DM(commands.Cog):
