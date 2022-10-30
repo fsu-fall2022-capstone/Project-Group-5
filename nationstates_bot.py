@@ -8,8 +8,8 @@ from aiohttp import ClientSession
 from discord.ext import commands
 from dotenv import load_dotenv
 
-from DAOs.nationstates_api import NationStatesAPI
-from utils.logger import Logger
+from ns_bot.DAOs.nationstates_api import NationStatesAPI
+from ns_bot.utils.logger import Logger
 
 load_dotenv()
 
@@ -47,9 +47,9 @@ class NationStatesBot(commands.Bot):
 async def main():
 
     exts = []
-    for filename in os.listdir("./cogs"):
+    for filename in os.listdir("./ns_bot/cogs"):
         if filename.endswith(".py") and not filename.startswith("_"):
-            exts.append(f"cogs.{filename[:-3]}")
+            exts.append(f"ns_bot.cogs.{filename[:-3]}")
 
     async with ClientSession() as web_client, asyncpg.create_pool(
         database="nations", user=os.environ.get("USER"), command_timeout=30
