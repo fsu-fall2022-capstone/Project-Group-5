@@ -1,11 +1,11 @@
 from typing import Literal, Optional
 
 import discord
-from controllers.config_controller import ConfigController, cog_autocomplete
 from discord import app_commands
 from discord.ext import commands
 from nationstates_bot import NationStatesBot
-from utils.logger import Logger
+from ns_bot.controllers.config_controller import ConfigController, cog_autocomplete
+from ns_bot.utils.logger import Logger
 
 
 class Config(commands.Cog):
