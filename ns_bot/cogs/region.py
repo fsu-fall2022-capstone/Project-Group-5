@@ -1,11 +1,11 @@
 from typing import Literal, Optional
 
 import discord
-from controllers.region_controller import RegionController
 from discord import app_commands
 from discord.ext import commands
 from nationstates_bot import NationStatesBot
-from utils.logger import Logger
+from ns_bot.controllers.region_controller import RegionController
+from ns_bot.utils.logger import Logger
 
 
 class Region(commands.GroupCog, group_name="region"):
