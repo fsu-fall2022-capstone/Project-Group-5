@@ -30,7 +30,7 @@ class BaseSQLTable:
 
     async def get_batch_of_all(self, *, con: Connection, batch_size: int):
         table_cursor: cursor.Cursor = await self.get_cursor(con=con)
-        table_row_count = await self.get_row_count(con=con)
+        table_row_count = await self.get_row_count()
         for _ in range(-(-table_row_count // batch_size)):
             yield await table_cursor.fetch(batch_size)
 
@@ -39,4 +39,4 @@ class BaseSQLTable:
 
     @ensure_connection
     async def get_row_count(self, *, con: Optional[Connection] = None) -> int:
-        return await con.fetchval("SELECT COUNT(*) FROM amazon_products")
+        return await con.fetchval(f"SELECT COUNT(*) FROM {self.TABLE_NAME}")
