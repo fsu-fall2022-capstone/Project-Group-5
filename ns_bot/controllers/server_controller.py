@@ -26,15 +26,18 @@ class ServerController(BaseNationstateController):
         await interaction.response.send_message(
             "Please log into your existing nation or create a new one",
             view=new_nation_view,
+            ephemeral=True,
         )
 
     async def remove_nation(self, interaction: discord.Interaction, nation: str):
         guild_id = await self.nation_table.get_guild_id(nation=nation)
         if guild_id == interaction.guild_id:
             await self.nation_table.remove_nation(nation=nation)
-            return await interaction.response.send_message(
+            await self.login_table.remove_nation(nation=nation)
+            await interaction.response.send_message(
                 f"{nation} is no longer associated with this server.", ephemeral=True
             )
-        return await interaction.response.send_message(
+            return
+        await interaction.response.send_message(
             f"{nation} was already not associated with this server.", ephemeral=True
         )

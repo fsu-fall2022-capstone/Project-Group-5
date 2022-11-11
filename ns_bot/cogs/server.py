@@ -29,15 +29,15 @@ class Server(commands.Cog):
     async def configure(self, interaction: discord.Interaction):
         await self.server_controller.configure(interaction)
 
-    @app_commands.command(name="add nation", description="Add a nation to this server")
+    @app_commands.command(description="Add a nation to this server")
     @app_commands.checks.has_permissions(administrator=True)
     async def add_nation(self, interaction: discord.Interaction):
         await self.server_controller.add_nation(interaction)
 
-    @app_commands.command(name="remove nation", description="Remove a nation from this server")
+    @app_commands.command(description="Remove a nation from this server")
     @app_commands.checks.has_permissions(administrator=True)
     @app_commands.describe(nation="The name of the nation you would like to remove")
-    async def remove_nation(self, interaction: discord.Interaction, nation=str):
+    async def remove_nation(self, interaction: discord.Interaction, nation: str):
         await self.server_controller.remove_nation(interaction, nation)
 
 
