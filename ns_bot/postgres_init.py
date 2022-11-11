@@ -36,8 +36,7 @@ async def db_init():
                 """
                 CREATE TABLE IF NOT EXISTS nation (
                     nation text PRIMARY KEY not null,
-                    id bigint not null,
-                    dm bool not null,
+                    guild_id bigint not null,
                     vote_time int default -1,
                     vote_channel bigint
                 )
