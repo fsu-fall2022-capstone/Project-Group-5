@@ -3,12 +3,14 @@ from typing import Literal, Optional
 import discord
 from discord import app_commands
 from discord.ext import commands
+
 from nationstates_bot import NationStatesBot
 from ns_bot.controllers.server_controller import ServerController
 from ns_bot.DAOs.nationstates_api import NationStatesAPI
 from ns_bot.utils.logger import Logger
 
 
+@app_commands.guild_only()
 class Server(commands.Cog):
     """Handle server based nation"""
 
