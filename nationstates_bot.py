@@ -31,7 +31,7 @@ class NationStatesBot(commands.Bot):
         self.db_pool = db_pool
         self.web_client = web_client
 
-        self.nationstates_api = NationStatesAPI(self.web_client)
+        self.nationstates_api = NationStatesAPI(self.web_client, self.db_pool)
 
         self.initial_extensions = initial_extensions
 

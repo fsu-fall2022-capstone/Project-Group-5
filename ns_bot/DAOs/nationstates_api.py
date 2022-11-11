@@ -2,7 +2,10 @@ import asyncio
 from datetime import datetime
 from typing import Optional
 
+import asyncpg
 from aiohttp import ClientSession
+
+from ns_bot.DAOs.postgresql import Login
 
 
 def ratelimit(function):
@@ -20,12 +23,14 @@ class NationStatesAPI:
     USER_AGENT = "NS Discord Bot"
     BASE_URL = "https://www.nationstates.net/cgi-bin/api.cgi"
 
-    def __init__(self, web_client: ClientSession) -> None:
+    def __init__(self, web_client: ClientSession, db_pool: asyncpg.Pool) -> None:
         self.web_client = web_client
         self.__rate_limit__ = 40
         self.ratelimit_sleep_time = 4
         self.__concurrent_requests__ = 0
         self.__ratelimit_start_time = datetime.now()
+
+        self.login_table = Login(db_pool)
 
     @ratelimit
     async def get_response(self, headers: dict, params: dict):
@@ -62,6 +67,9 @@ class NationStatesAPI:
             headers={"User-Agent": self.USER_AGENT, "X-password": password},
             params={"nation": nation, "q": "ping"},
         ) as response:
+            if pin := response.headers.get("X-Pin"):
+                await self.login_table.update_nation_pin(nation=nation, pin=pin)
+
             return response.ok
 
     async def _rate_limit(self):
