@@ -8,6 +8,7 @@ from aiohttp import ClientSession
 from discord.ext import commands
 from dotenv import load_dotenv
 
+import ns_bot.postgres_init as p_init
 from ns_bot.DAOs.nationstates_api import NationStatesAPI
 from ns_bot.utils.logger import Logger
 
@@ -30,7 +31,7 @@ class NationStatesBot(commands.Bot):
         self.db_pool = db_pool
         self.web_client = web_client
 
-        self.nationstates_api = NationStatesAPI(self.web_client)
+        self.nationstates_api = NationStatesAPI(self.web_client, self.db_pool)
 
         self.initial_extensions = initial_extensions
 
@@ -45,6 +46,7 @@ class NationStatesBot(commands.Bot):
 
 
 async def main():
+    await p_init.db_init()
 
     exts = []
     for filename in os.listdir("./ns_bot/cogs"):

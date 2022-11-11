@@ -3,6 +3,7 @@ from typing import Literal, Optional
 import discord
 from discord import app_commands
 from discord.ext import commands
+
 from nationstates_bot import NationStatesBot
 from ns_bot.controllers.region_controller import RegionController
 from ns_bot.utils.logger import Logger
