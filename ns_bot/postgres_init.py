@@ -45,12 +45,17 @@ async def db_init():
             )
 
 
+async def quick_test():
+    pass
+
+
 async def populate_table(table: str):
     pass
 
 
 async def main():
     await db_init()
+    # await quick_test()
 
 
 if __name__ == "__main__":
