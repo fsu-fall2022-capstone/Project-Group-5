@@ -4,8 +4,7 @@ from DAOs.postgresql.base_sql_table import *
 class Nation(BaseSQLTable):
     """
     * nation text PRIMARY KEY not null,
-    * id bigint not null,
-    * dm bool not null,
+    * guild_id bigint not null,
     * vote_time int default -1,
     * vote_channel bigint
     """
@@ -27,20 +26,10 @@ class Nation(BaseSQLTable):
         return True if check else False
 
     @ensure_connection
-    async def is_dm(self, *, nation: str, con: Optional[Connection] = None) -> bool:
+    async def get_guild_id(self, *, nation: str, con: Optional[Connection] = None):
         return await con.fetchval(
             f"""
-            SELECT dm from {self.TABLE_NAME} 
-            WHERE nation = $1
-            """,
-            nation,
-        )
-
-    @ensure_connection
-    async def get_id(self, *, nation: str, con: Optional[Connection] = None):
-        return await con.fetchval(
-            f"""
-            SELECT id from {self.TABLE_NAME} 
+            SELECT guild_id from {self.TABLE_NAME} 
             WHERE nation = $1
             """,
             nation,
