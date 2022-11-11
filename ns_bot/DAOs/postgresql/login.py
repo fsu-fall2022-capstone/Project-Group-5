@@ -12,6 +12,17 @@ class Login(BaseSQLTable):
         super().__init__("login", db_pool)
 
     @ensure_connection
+    async def add_nation(self, *, nation: str, password: str, con: Optional[Connection] = None):
+        await con.execute(
+            f"""
+            INSERT INTO {self.TABLE_NAME}
+            VALUES ($1, $2)
+            """,
+            nation,
+            password,
+        )
+
+    @ensure_connection
     async def get_nation_login(self, *, nation: str, con: Optional[Connection] = None) -> tuple:
         return await con.fetchval(
             f"""

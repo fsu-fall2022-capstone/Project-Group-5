@@ -13,6 +13,45 @@ class Nation(BaseSQLTable):
         super().__init__("nation", db_pool)
 
     @ensure_connection
+    async def add_nation(self, *, nation: str, guild_id: int, con: Optional[Connection] = None):
+        await con.execute(
+            f"""
+            insert into {self.TABLE_NAME} (nation, guild_id)
+            values ($1, $2)
+            """,
+            nation,
+            guild_id,
+        )
+
+    @ensure_connection
+    async def update_nation_guild(
+        self, *, nation: str, guild_id: int, con: Optional[Connection] = None
+    ):
+        await self.remove_nation(nation=nation, con=con)
+        await self.add_nation(nation=nation, guild_id=guild_id, con=con)
+
+    @ensure_connection
+    async def upsert_nation(self, *, nation: str, guild_id: int, con: Optional[Connection] = None):
+        if self.nation_already_present(nation=nation, con=con):
+            return await con.execute(
+                f"""
+                UPDATE {self.TABLE_NAME} 
+                SET guild_id = $1
+                WHERE nation = $2
+                """,
+                guild_id,
+                nation,
+            )
+        return await con.execute(
+            f"""
+            insert into {self.TABLE_NAME} (nation, guild_id)
+            values ($1, $2)
+            """,
+            nation,
+            guild_id,
+        )
+
+    @ensure_connection
     async def nation_already_present(
         self, *, nation: str, con: Optional[Connection] = None
     ) -> bool:
