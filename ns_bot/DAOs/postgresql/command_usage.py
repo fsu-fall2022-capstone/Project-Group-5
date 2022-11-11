@@ -1,4 +1,4 @@
-from DAOs.postgresql.base_sql_table import *
+from ns_bot.DAOs.postgresql.base_sql_table import *
 
 
 class CommandUsage(BaseSQLTable):
