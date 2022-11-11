@@ -5,7 +5,7 @@ from typing import Optional
 from aiohttp import ClientSession
 
 
-def ratelimit(self, function):
+def ratelimit(function):
     async def runner(calling_object, *args, **kwargs):
         await calling_object.__rate_limit()
         calling_object.__concurrent_requests__ += 1
