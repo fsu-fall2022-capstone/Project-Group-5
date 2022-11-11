@@ -1,3 +1,3 @@
-from command_usage import CommandUsage
-from login import Login
-from nation import Nation
+from ns_bot.DAOs.postgresql.command_usage import CommandUsage
+from ns_bot.DAOs.postgresql.login import Login
+from ns_bot.DAOs.postgresql.nation import Nation
