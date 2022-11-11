@@ -26,7 +26,7 @@ async def db_init():
                 """
                 CREATE TABLE IF NOT EXISTS login (
                     nation text PRIMARY KEY not null,
-                    password text not null,
+                    password bytea not null,
                     pin text
                 )
                 """

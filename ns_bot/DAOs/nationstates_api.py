@@ -7,10 +7,11 @@ from aiohttp import ClientSession
 
 def ratelimit(function):
     async def runner(calling_object, *args, **kwargs):
-        await calling_object.__rate_limit()
+        await calling_object._rate_limit()
         calling_object.__concurrent_requests__ += 1
-        await function(calling_object, *args, **kwargs)
+        output = await function(calling_object, *args, **kwargs)
         calling_object.__concurrent_requests__ -= 1
+        return output
 
     return runner
 
@@ -21,7 +22,7 @@ class NationStatesAPI:
 
     def __init__(self, web_client: ClientSession) -> None:
         self.web_client = web_client
-        self.__rate_limit = 40
+        self.__rate_limit__ = 40
         self.ratelimit_sleep_time = 4
         self.__concurrent_requests__ = 0
         self.__ratelimit_start_time = datetime.now()
@@ -63,7 +64,7 @@ class NationStatesAPI:
         ) as response:
             return response.ok
 
-    async def __rate_limit(self):
+    async def _rate_limit(self):
         # await asyncio.sleep(0.1)
         return
 
