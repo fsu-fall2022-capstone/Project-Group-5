@@ -4,6 +4,7 @@ from typing import Literal, Optional
 import discord
 from discord import app_commands
 from discord.ext import commands
+from ns_bot.utils.formatter import format_embed_tree
 from ns_bot.controllers.base_nationstate_controller import BaseNationstateController
 from ns_bot.data.shards import VALID_PUBLIC_NATION_SHARDS
 
@@ -21,4 +22,4 @@ class NationController(BaseNationstateController):
         data = await self.bot.nationstates_api.get_public_nation_data(
             nation, shards=[shard] if shard else None
         )
-        await interaction.response.send_message(embed=discord.Embed(title=nation, description=data))
+        await interaction.response.send_message( embed=format_embed_tree(data) )
