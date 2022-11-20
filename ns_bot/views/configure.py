@@ -48,7 +48,7 @@ class LoginDetails(discord.ui.Modal, title="Login"):
 
             await self.nation_table.add_nation(nation=nation, guild_id=interaction.guild_id)
             await interaction.response.send_message(
-                "Thank you! To configure your nation, please use the configure command",
+                "Thank you! To configure your nation, please use </configure:1043927229517811712>",
                 ephemeral=True,
             )
         else:
