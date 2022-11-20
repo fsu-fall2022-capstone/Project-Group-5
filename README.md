@@ -16,6 +16,7 @@
     * info \<General Assembly | Security Council> [shard]
  * add_nation
  * remove_nation
+ * configure
 
 ## Personal Hosting
 
