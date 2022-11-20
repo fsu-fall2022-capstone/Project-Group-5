@@ -31,7 +31,9 @@ async def generate_issue_newspaper(
 
     top_paper = Image.open("ns_bot/data/newspaper-references/paper1.png")
     header_paper = Image.open("ns_bot/data/newspaper-references/paper2.png")
-    header_font = ImageFont.truetype("ns_bot/data/newspaper-references/UnifrakturCook-Bold.ttf", 25)
+    header_font = ImageFont.truetype(
+        "ns_bot/data/newspaper-references/UnifrakturCook-Bold.ttf", 25
+    )
     paper_name = ImageDraw.Draw(header_paper)
     paper_name.text(
         (header_paper.width / 3, 10),
@@ -39,7 +41,9 @@ async def generate_issue_newspaper(
         font=header_font,
         fill=(68, 68, 68),
     )
-    currency_font = ImageFont.truetype("ns_bot/data/newspaper-references/times new roman.ttf", 10)
+    currency_font = ImageFont.truetype(
+        "ns_bot/data/newspaper-references/times new roman.ttf", 10
+    )
     paper_name.text(
         (header_paper.width - 120, 10),
         f"1 {currency}",
@@ -48,13 +52,20 @@ async def generate_issue_newspaper(
     )
 
     title_paper = Image.open("ns_bot/data/newspaper-references/paper4.png")
-    title_font = ImageFont.truetype("ns_bot/data/newspaper-references/times new roman.ttf", 30)
+    title_font = ImageFont.truetype(
+        "ns_bot/data/newspaper-references/times new roman.ttf", 30
+    )
     headline = ImageDraw.Draw(title_paper)
     headline.text((35, 10), f"{article_title}", font=title_font, fill=(68, 68, 68))
 
     bottom_paper = Image.open("ns_bot/data/newspaper-references/paper5.png")
 
-    total_height = top_paper.height + header_paper.height + title_paper.height + bottom_paper.height
+    total_height = (
+        top_paper.height
+        + header_paper.height
+        + title_paper.height
+        + bottom_paper.height
+    )
 
     paper_template = Image.new("RGBA", (bottom_paper.width, total_height))
     paper_template.paste(top_paper, (0, 0))
@@ -65,19 +76,3 @@ async def generate_issue_newspaper(
 
     paper_template.show()
 
-
-async def main():
-    """TEMP Testing function"""
-    async with ClientSession() as session:
-        await generate_issue_newspaper(
-            session,
-            "Group5",
-            "Dollars",
-            "Cloning Research Promises New Breakthrough",
-            "t1",
-            "s1",
-            "flags/uploads/computer_chip__602300t1.png",
-        )
-
-
-results = asyncio.run(main())
