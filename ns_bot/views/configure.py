@@ -92,8 +92,7 @@ class TimeSelect(discord.ui.Select):
         self.nation = nation
         self.nation_table = nation_table
         select_options = [
-            discord.SelectOption(label=f"{i}", description=f"Answer after {i} hours")
-            for i in range(1, 25)
+            discord.SelectOption(label=f"Answer after {i} hours", value=i) for i in range(1, 25)
         ]
         select_options.insert(
             0,
