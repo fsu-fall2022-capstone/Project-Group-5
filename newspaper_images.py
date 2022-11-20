@@ -1,7 +1,6 @@
 import asyncio
 import os
 import sys
-from io import BytesIO
 
 import requests
 from aiohttp import ClientSession
