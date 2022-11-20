@@ -48,7 +48,7 @@ class LoginDetails(discord.ui.Modal, title="Login"):
 
             await self.nation_table.add_nation(nation=nation, guild_id=interaction.guild_id)
             await interaction.response.send_message(
-                "Thank you! To configure your nation, please use the configure command",
+                "Thank you! To configure your nation, please use </configure:1043927229517811712>",
                 ephemeral=True,
             )
         else:
@@ -84,4 +84,61 @@ class NewNation(discord.ui.View):
                 login_table=self.login_table,
                 nation_table=self.nation_table,
             )
+        )
+
+
+class TimeSelect(discord.ui.Select):
+    def __init__(self, nation: str, nation_table: Nation) -> None:
+        self.nation = nation
+        self.nation_table = nation_table
+        select_options = [
+            discord.SelectOption(label=f"Answer after {i} hours", value=i) for i in range(1, 25)
+        ]
+        select_options.insert(
+            0,
+            discord.SelectOption(
+                label="Do not auto answer",
+                value=-1,
+                description=f"Display the most voted after 24 hours",
+            ),
+        )
+        super().__init__(
+            placeholder="Select how long to wait to respond to issues", options=select_options
+        )
+
+    async def callback(self, interaction: discord.Interaction):
+        vote_time = int(self.values[0])
+        await self.nation_table.update_vote_time(nation=self.nation, vote_time=vote_time)
+        if vote_time == -1:
+            return await interaction.response.send_message(
+                f"I will not respond to issues for `{self.nation}`", ephemeral=True
+            )
+
+        await interaction.response.send_message(
+            f"I will now respond to `{self.nation}`'s issues every `{vote_time}` hours",
+            ephemeral=True,
+        )
+
+
+class ConfigureNation(discord.ui.View):
+    def __init__(self, nation: str, nation_table: Nation):
+        super().__init__()
+        self.nation = nation
+        self.nation_table = nation_table
+        self.add_item(TimeSelect(nation, nation_table))
+
+    @discord.ui.select(
+        cls=discord.ui.ChannelSelect,
+        channel_types=[discord.ChannelType.text],
+        placeholder="Select the channel to send issues to",
+    )
+    async def select_channels(
+        self, interaction: discord.Interaction, select: discord.ui.ChannelSelect
+    ):
+        await self.nation_table.update_vote_channel(
+            nation=self.nation, vote_channel=select.values[0].id
+        )
+        return await interaction.response.send_message(
+            f"I will now send `{self.nation}`'s issues to {select.values[0].mention}",
+            ephemeral=True,
         )
