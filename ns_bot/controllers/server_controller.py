@@ -8,7 +8,7 @@ from discord.ext import commands
 from nationstates_bot import NationStatesBot
 from ns_bot.controllers.base_nationstate_controller import BaseNationstateController
 from ns_bot.DAOs.postgresql import Login, Nation
-from ns_bot.views.configure import NewNation
+from ns_bot.views.configure import ConfigureNation, NewNation
 
 
 class ServerController(BaseNationstateController):
@@ -17,14 +17,12 @@ class ServerController(BaseNationstateController):
         self.login_table = login_table
         self.nation_table = nation_table
 
-    async def configure(self, interaction: discord.Interaction):
-        """TODO add setup for them to add a nation"""
-        pass
-
     async def add_nation(self, interaction: discord.Interaction):
         new_nation_view = NewNation(self.bot.nationstates_api, self.login_table, self.nation_table)
         await interaction.response.send_message(
-            "Please log into your existing nation or create a new one",
+            "Please log into your existing nation or create a new one\
+            \nLog in at your own risk. We store an encrypted version of your information, but even so,\
+            please understand the risks associated with sharing your login information",
             view=new_nation_view,
             ephemeral=True,
         )
@@ -40,4 +38,17 @@ class ServerController(BaseNationstateController):
             return
         await interaction.response.send_message(
             f"{nation} was already not associated with this server.", ephemeral=True
+        )
+
+    async def configure_nation(self, interaction: discord.Interaction, nation: str):
+        guild_id = await self.nation_table.get_guild_id(nation=nation)
+        if interaction.guild.id != guild_id:
+            return await interaction.response.send_message(
+                f"{nation} is not associated with this server", ephemeral=True
+            )
+
+        await interaction.response.send_message(
+            "Please select how long each voting period should be. And what channel issues should appear in.",
+            ephemeral=True,
+            view=ConfigureNation(nation, self.nation_table),
         )
