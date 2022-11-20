@@ -24,10 +24,11 @@ class Server(commands.Cog):
         self.logger = Logger("server")
         self.logger.info("server loaded")
 
-    @app_commands.command(description="Configure your server to host a nation")
+    @app_commands.command(description="Configure the nation on your server")
     @app_commands.checks.has_permissions(administrator=True)
-    async def configure(self, interaction: discord.Interaction):
-        await self.server_controller.configure(interaction)
+    @app_commands.describe(nation="The name of the nation you would like to configure")
+    async def configure(self, interaction: discord.Interaction, nation: str):
+        await self.server_controller.configure_nation(interaction, nation)
 
     @app_commands.command(description="Add a nation to this server")
     @app_commands.checks.has_permissions(administrator=True)
