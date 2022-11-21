@@ -25,12 +25,15 @@ async def generate_issue_newspaper(
             results.append(Image.open(BytesIO(await response.content.read())))
 
     # TODO put these images in place
-    flag_image = results[0]
+    flag_image = results[0].convert("RGB")
+    new_flag_image = flag_image.resize((30, 20)) 
+
     banner_1_image = results[1]
     banner_2_image = results[2]
 
     top_paper = Image.open("ns_bot/data/newspaper-references/paper1.png")
     header_paper = Image.open("ns_bot/data/newspaper-references/paper2.png")
+    header_paper.paste(new_flag_image, (35, 10))
     header_font = ImageFont.truetype(
         "ns_bot/data/newspaper-references/UnifrakturCook-Bold.ttf", 25
     )
@@ -72,7 +75,13 @@ async def generate_issue_newspaper(
     paper_template.paste(header_paper, (0, top_paper.height))
     paper_template.paste(title_paper, (0, top_paper.height + header_paper.height))
     paper_template.paste(bottom_paper, (0, total_height - bottom_paper.height))
-    paper_template.paste(banner_1_image, (35, total_height - bottom_paper.height))
 
-    paper_template.show()
+    final_template = Image.new("RGBA", paper_template.size)
+    final_template.paste(banner_1_image, (35, (total_height - bottom_paper.height) - 6))
+    final_template.paste(
+        banner_2_image,
+        (bottom_paper.width - 175, (total_height - bottom_paper.height) - 6),
+    )
+    final_template.paste(paper_template, (0, 0), paper_template)
+    final_template.show()
 
