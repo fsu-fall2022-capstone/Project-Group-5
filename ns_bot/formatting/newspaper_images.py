@@ -5,6 +5,7 @@ from aiohttp import ClientSession
 from PIL import Image, ImageDraw, ImageFont
 
 BASE_IMAGE_URL = "https://www.nationstates.net/images/"
+LIGHT_BLACK = (68, 68, 68)
 
 
 async def generate_issue_newspaper(
@@ -14,12 +15,16 @@ async def generate_issue_newspaper(
     article_title: str,
     banner_1: str,
     banner_2: str,
-    flag,
-    number: str,
+    flag: str,
+    issue_number: str,
 ):
+    verdana_font = ImageFont.truetype("ns_bot/data/newspaper-references/verdana.ttf", 12)
+    header_font = ImageFont.truetype("ns_bot/data/newspaper-references/UnifrakturCook-Bold.ttf", 25)
+    currency_font = ImageFont.truetype("ns_bot/data/newspaper-references/times new roman.ttf", 10)
+    title_font = ImageFont.truetype("ns_bot/data/newspaper-references/times new roman.ttf", 30)
+
     results = []
-    urls = [flag, f"newspaper/{banner_1}-1.jpg", f"newspaper/{banner_2}-2.jpg"]
-    for url in urls:
+    for url in [flag, f"newspaper/{banner_1}-1.jpg", f"newspaper/{banner_2}-2.jpg"]:
         async with web_session.get(
             BASE_IMAGE_URL + url, headers={"User-Agent": "NS Discord Bot"}
         ) as response:
@@ -32,70 +37,65 @@ async def generate_issue_newspaper(
     top_paper = Image.open("ns_bot/data/newspaper-references/paper1.png")
     header_paper = Image.open("ns_bot/data/newspaper-references/paper2.png").convert("RGBA")
     header_paper.paste(flag_image, (35, 10))
-    line_1 = ImageDraw.Draw(header_paper)
-    line_2 = ImageDraw.Draw(header_paper)
-    line_1.line((header_paper.width - 63, 45, 35, 45), fill=(68, 68, 68), width=7)
-    day = ImageDraw.Draw(header_paper)
-    city_final = ImageDraw.Draw(header_paper)
-    issue_volume = ImageDraw.Draw(header_paper)
-    today = date.today()
-    verdana_font = ImageFont.truetype("ns_bot/data/newspaper-references/verdana.ttf", 12)
-    city_final.text(
-        (35, header_paper.height - 19), "CITY FINAL", font=verdana_font, fill=(68, 68, 68)
-    )
-    day.text(
-        ((header_paper.width / 3) + 20, header_paper.height - 19),
-        today.strftime("%A %B %d, %Y"),
-        font=verdana_font,
-        fill=(68, 68, 68),
-    )
-    issue_volume.text(
-        (header_paper.width - 172, header_paper.height - 19),
-        f"VOL 32 NO. {number}",
-        font=verdana_font,
-        fill=(68, 68, 68),
-    )
-    line_2.line(
+
+    header_draw_paper = ImageDraw.Draw(header_paper)
+    header_draw_paper.line((header_paper.width - 63, 45, 35, 45), fill=LIGHT_BLACK, width=7)
+    header_draw_paper.line(
         (header_paper.width - 63, header_paper.height, 35, header_paper.height),
-        fill=(68, 68, 68),
+        fill=LIGHT_BLACK,
         width=5,
     )
 
-    header_font = ImageFont.truetype("ns_bot/data/newspaper-references/UnifrakturCook-Bold.ttf", 25)
-    paper_name = ImageDraw.Draw(header_paper)
-    paper_name.text(
+    header_draw_paper.text(
+        (35, header_paper.height - 19), "CITY FINAL", font=verdana_font, fill=LIGHT_BLACK
+    )
+    header_draw_paper.text(
+        ((header_paper.width / 3) + 20, header_paper.height - 19),
+        date.today().strftime("%A %B %d, %Y"),
+        font=verdana_font,
+        fill=LIGHT_BLACK,
+    )
+    header_draw_paper.text(
+        (header_paper.width - 172, header_paper.height - 19),
+        f"VOL 32 NO. {issue_number}",
+        font=verdana_font,
+        fill=LIGHT_BLACK,
+    )
+    header_draw_paper.text(
         (header_paper.width / 3, 10),
         f"The {nation} Chronicle",
         font=header_font,
-        fill=(68, 68, 68),
+        fill=LIGHT_BLACK,
     )
-    currency_font = ImageFont.truetype("ns_bot/data/newspaper-references/times new roman.ttf", 10)
-    paper_name.text(
+    header_draw_paper.text(
         (header_paper.width - 120, 10),
         f"1 {currency}",
         font=currency_font,
-        fill=(68, 68, 68),
+        fill=LIGHT_BLACK,
     )
 
     title_paper = Image.open("ns_bot/data/newspaper-references/paper4.png")
-    title_font = ImageFont.truetype("ns_bot/data/newspaper-references/times new roman.ttf", 30)
     headline = ImageDraw.Draw(title_paper)
-    headline.text((35, 10), f"{article_title}", font=title_font, fill=(68, 68, 68))
-    bottom_paper = Image.open("ns_bot/data/newspaper-references/paper5.png")
+    headline.text((35, 10), f"{article_title}", font=title_font, fill=LIGHT_BLACK)
 
-    total_height = top_paper.height + header_paper.height + title_paper.height + bottom_paper.height
-
-    paper_template = Image.new("RGBA", (bottom_paper.width, total_height))
-    paper_template.paste(top_paper, (0, 0))
-    paper_template.paste(header_paper, (0, top_paper.height))
-    paper_template.paste(title_paper, (0, top_paper.height + header_paper.height))
-    paper_template.paste(bottom_paper, (0, total_height - bottom_paper.height))
-
-    final_template = Image.new("RGBA", paper_template.size)
-    final_template.paste(banner_1_image, (35, (total_height - bottom_paper.height) - 6))
-    final_template.paste(
-        banner_2_image,
-        (bottom_paper.width - 175, (total_height - bottom_paper.height) - 6),
+    bottom_paper_original = Image.open("ns_bot/data/newspaper-references/paper5.png").convert(
+        "RGBA"
     )
-    final_template.paste(paper_template, (0, 0), paper_template)
-    final_template.show()
+    bottom_paper = bottom_paper_original.copy()
+
+    TOTAL_HEIGHT = top_paper.height + header_paper.height + title_paper.height + bottom_paper.height
+
+    bottom_paper.paste(banner_1_image, (35, -6))
+    bottom_paper.paste(
+        banner_2_image,
+        (bottom_paper.width - 175, -6),
+    )
+    bottom_paper.paste(bottom_paper_original, (0, 0), bottom_paper_original)
+
+    newspaper = Image.new("RGBA", (bottom_paper.width, TOTAL_HEIGHT))
+    newspaper.paste(top_paper, (0, 0))
+    newspaper.paste(header_paper, (0, top_paper.height))
+    newspaper.paste(title_paper, (0, top_paper.height + header_paper.height))
+    newspaper.paste(bottom_paper, (0, TOTAL_HEIGHT - bottom_paper.height))
+
+    return newspaper
