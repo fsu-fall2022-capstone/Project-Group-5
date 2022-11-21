@@ -1,6 +1,5 @@
-import asyncio
-from io import BytesIO
 from datetime import date
+from io import BytesIO
 
 from aiohttp import ClientSession
 from PIL import Image, ImageDraw, ImageFont
@@ -40,7 +39,7 @@ async def generate_issue_newspaper(
     city_final = ImageDraw.Draw(header_paper)
     issue_volume = ImageDraw.Draw(header_paper)
     today = date.today()
-    verdana_font = ImageFont.truetype("ns-bot/data/newspaper-references/verdana.ttf", 12)
+    verdana_font = ImageFont.truetype("ns_bot/data/newspaper-references/verdana.ttf", 12)
     city_final.text(
         (35, header_paper.height - 19), "CITY FINAL", font=verdana_font, fill=(68, 68, 68)
     )
@@ -72,7 +71,10 @@ async def generate_issue_newspaper(
     )
     currency_font = ImageFont.truetype("ns_bot/data/newspaper-references/times new roman.ttf", 10)
     paper_name.text(
-        (header_paper.width - 120, 10), f"1 {currency}", font=currency_font, fill=(68, 68, 68),
+        (header_paper.width - 120, 10),
+        f"1 {currency}",
+        font=currency_font,
+        fill=(68, 68, 68),
     )
 
     title_paper = Image.open("ns_bot/data/newspaper-references/paper4.png")
@@ -92,7 +94,8 @@ async def generate_issue_newspaper(
     final_template = Image.new("RGBA", paper_template.size)
     final_template.paste(banner_1_image, (35, (total_height - bottom_paper.height) - 6))
     final_template.paste(
-        banner_2_image, (bottom_paper.width - 175, (total_height - bottom_paper.height) - 6),
+        banner_2_image,
+        (bottom_paper.width - 175, (total_height - bottom_paper.height) - 6),
     )
     final_template.paste(paper_template, (0, 0), paper_template)
     final_template.show()
