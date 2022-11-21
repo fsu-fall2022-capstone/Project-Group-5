@@ -18,6 +18,14 @@ async def generate_issue_newspaper(
     flag: str,
     issue_number: str,
 ):
+    top_paper = Image.open("ns_bot/data/newspaper-references/paper1.png")
+    header_paper = Image.open("ns_bot/data/newspaper-references/paper2.png").convert("RGBA")
+    bottom_paper_original = Image.open("ns_bot/data/newspaper-references/paper5.png").convert(
+        "RGBA"
+    )
+    title_paper = Image.open("ns_bot/data/newspaper-references/paper4.png")
+    TOTAL_HEIGHT = top_paper.height + header_paper.height + title_paper.height + bottom_paper.height
+
     verdana_font = ImageFont.truetype("ns_bot/data/newspaper-references/verdana.ttf", 12)
     header_font = ImageFont.truetype("ns_bot/data/newspaper-references/UnifrakturCook-Bold.ttf", 25)
     currency_font = ImageFont.truetype("ns_bot/data/newspaper-references/times new roman.ttf", 10)
@@ -34,8 +42,6 @@ async def generate_issue_newspaper(
     banner_1_image = results[1]
     banner_2_image = results[2]
 
-    top_paper = Image.open("ns_bot/data/newspaper-references/paper1.png")
-    header_paper = Image.open("ns_bot/data/newspaper-references/paper2.png").convert("RGBA")
     header_paper.paste(flag_image, (35, 10))
 
     header_draw_paper = ImageDraw.Draw(header_paper)
@@ -74,16 +80,10 @@ async def generate_issue_newspaper(
         fill=LIGHT_BLACK,
     )
 
-    title_paper = Image.open("ns_bot/data/newspaper-references/paper4.png")
     headline = ImageDraw.Draw(title_paper)
     headline.text((35, 10), f"{article_title}", font=title_font, fill=LIGHT_BLACK)
 
-    bottom_paper_original = Image.open("ns_bot/data/newspaper-references/paper5.png").convert(
-        "RGBA"
-    )
     bottom_paper = bottom_paper_original.copy()
-
-    TOTAL_HEIGHT = top_paper.height + header_paper.height + title_paper.height + bottom_paper.height
 
     bottom_paper.paste(banner_1_image, (35, -6))
     bottom_paper.paste(
