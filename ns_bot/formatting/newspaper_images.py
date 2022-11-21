@@ -16,6 +16,7 @@ async def generate_issue_newspaper(
     banner_1: str,
     banner_2: str,
     flag,
+    number: str,
 ):
     results = []
     urls = [flag, f"newspaper/{banner_1}-1.jpg", f"newspaper/{banner_2}-2.jpg"]
@@ -36,12 +37,23 @@ async def generate_issue_newspaper(
     line_2 = ImageDraw.Draw(header_paper)
     line_1.line((header_paper.width - 63, 45, 35, 45), fill=(68, 68, 68), width=7)
     day = ImageDraw.Draw(header_paper)
+    city_final = ImageDraw.Draw(header_paper)
+    issue_volume = ImageDraw.Draw(header_paper)
     today = date.today()
-    day_font = ImageFont.truetype("ns-bot/data/newspaper-references/verdana.ttf", 12)
+    verdana_font = ImageFont.truetype("ns-bot/data/newspaper-references/verdana.ttf", 12)
+    city_final.text(
+        (35, header_paper.height - 19), "CITY FINAL", font=verdana_font, fill=(68, 68, 68)
+    )
     day.text(
-        (header_paper.width / 3, header_paper.height - 19),
+        ((header_paper.width / 3) + 20, header_paper.height - 19),
         today.strftime("%A %B %d, %Y"),
-        font=day_font,
+        font=verdana_font,
+        fill=(68, 68, 68),
+    )
+    issue_volume.text(
+        (header_paper.width - 172, header_paper.height - 19),
+        f"VOL 32 NO. {number}",
+        font=verdana_font,
         fill=(68, 68, 68),
     )
     line_2.line(
