@@ -25,15 +25,13 @@ async def generate_issue_newspaper(
             results.append(Image.open(BytesIO(await response.content.read())))
 
     # TODO put these images in place
-    flag_image = results[0].convert("RGB")
-    new_flag_image = flag_image.resize((30, 20))
-
+    flag_image = results[0]
     banner_1_image = results[1]
     banner_2_image = results[2]
 
     top_paper = Image.open("ns_bot/data/newspaper-references/paper1.png")
-    header_paper = Image.open("ns_bot/data/newspaper-references/paper2.png")
-    header_paper.paste(new_flag_image, (35, 10))
+    header_paper = Image.open("ns_bot/data/newspaper-references/paper2.png").convert("RGBA")
+    header_paper.paste(flag_image, (35, 10))
     header_font = ImageFont.truetype("ns_bot/data/newspaper-references/UnifrakturCook-Bold.ttf", 25)
     paper_name = ImageDraw.Draw(header_paper)
     paper_name.text(
