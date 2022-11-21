@@ -1,5 +1,6 @@
 import asyncio
 from io import BytesIO
+from datetime import date
 
 from aiohttp import ClientSession
 from PIL import Image, ImageDraw, ImageFont
@@ -24,7 +25,6 @@ async def generate_issue_newspaper(
         ) as response:
             results.append(Image.open(BytesIO(await response.content.read())))
 
-    # TODO put these images in place
     flag_image = results[0]
     banner_1_image = results[1]
     banner_2_image = results[2]
@@ -32,6 +32,24 @@ async def generate_issue_newspaper(
     top_paper = Image.open("ns_bot/data/newspaper-references/paper1.png")
     header_paper = Image.open("ns_bot/data/newspaper-references/paper2.png").convert("RGBA")
     header_paper.paste(flag_image, (35, 10))
+    line_1 = ImageDraw.Draw(header_paper)
+    line_2 = ImageDraw.Draw(header_paper)
+    line_1.line((header_paper.width - 63, 45, 35, 45), fill=(68, 68, 68), width=7)
+    day = ImageDraw.Draw(header_paper)
+    today = date.today()
+    day_font = ImageFont.truetype("ns-bot/data/newspaper-references/verdana.ttf", 12)
+    day.text(
+        (header_paper.width / 3, header_paper.height - 19),
+        today.strftime("%A %B %d, %Y"),
+        font=day_font,
+        fill=(68, 68, 68),
+    )
+    line_2.line(
+        (header_paper.width - 63, header_paper.height, 35, header_paper.height),
+        fill=(68, 68, 68),
+        width=5,
+    )
+
     header_font = ImageFont.truetype("ns_bot/data/newspaper-references/UnifrakturCook-Bold.ttf", 25)
     paper_name = ImageDraw.Draw(header_paper)
     paper_name.text(
@@ -42,17 +60,13 @@ async def generate_issue_newspaper(
     )
     currency_font = ImageFont.truetype("ns_bot/data/newspaper-references/times new roman.ttf", 10)
     paper_name.text(
-        (header_paper.width - 120, 10),
-        f"1 {currency}",
-        font=currency_font,
-        fill=(68, 68, 68),
+        (header_paper.width - 120, 10), f"1 {currency}", font=currency_font, fill=(68, 68, 68),
     )
 
     title_paper = Image.open("ns_bot/data/newspaper-references/paper4.png")
     title_font = ImageFont.truetype("ns_bot/data/newspaper-references/times new roman.ttf", 30)
     headline = ImageDraw.Draw(title_paper)
     headline.text((35, 10), f"{article_title}", font=title_font, fill=(68, 68, 68))
-
     bottom_paper = Image.open("ns_bot/data/newspaper-references/paper5.png")
 
     total_height = top_paper.height + header_paper.height + title_paper.height + bottom_paper.height
@@ -66,8 +80,7 @@ async def generate_issue_newspaper(
     final_template = Image.new("RGBA", paper_template.size)
     final_template.paste(banner_1_image, (35, (total_height - bottom_paper.height) - 6))
     final_template.paste(
-        banner_2_image,
-        (bottom_paper.width - 175, (total_height - bottom_paper.height) - 6),
+        banner_2_image, (bottom_paper.width - 175, (total_height - bottom_paper.height) - 6),
     )
     final_template.paste(paper_template, (0, 0), paper_template)
     final_template.show()
