@@ -24,7 +24,9 @@ async def generate_issue_newspaper(
         "RGBA"
     )
     title_paper = Image.open("ns_bot/data/newspaper-references/paper4.png")
-    TOTAL_HEIGHT = top_paper.height + header_paper.height + title_paper.height + bottom_paper.height
+    TOTAL_HEIGHT = (
+        top_paper.height + header_paper.height + title_paper.height + bottom_paper_original.height
+    )
 
     verdana_font = ImageFont.truetype("ns_bot/data/newspaper-references/verdana.ttf", 12)
     header_font = ImageFont.truetype("ns_bot/data/newspaper-references/UnifrakturCook-Bold.ttf", 25)
@@ -68,18 +70,20 @@ async def generate_issue_newspaper(
         fill=LIGHT_BLACK,
     )
     header_draw_paper.text(
-        (header_paper.width / 3, 10),
-        f"The {nation} Chronicle",
-        font=header_font,
-        fill=LIGHT_BLACK,
+        (header_paper.width / 3, 10), f"The {nation} Chronicle", font=header_font, fill=LIGHT_BLACK,
     )
     header_draw_paper.text(
-        (header_paper.width - 120, 10),
-        f"1 {currency}",
-        font=currency_font,
-        fill=LIGHT_BLACK,
+        (header_paper.width - 120, 10), f"1 {currency}", font=currency_font, fill=LIGHT_BLACK,
     )
 
+    for i in range(99):
+        if title_font.getsize(article_title)[0] >= (title_paper.width - 65):
+            title_font = ImageFont.truetype(
+                "ns_bot/data/newspaper-references/times new roman.ttf", 30 - i
+            )
+            continue
+        if title_font.getsize(article_title)[0] < (title_paper.width - 65):
+            break
     headline = ImageDraw.Draw(title_paper)
     headline.text((35, 10), f"{article_title}", font=title_font, fill=LIGHT_BLACK)
 
@@ -87,8 +91,7 @@ async def generate_issue_newspaper(
 
     bottom_paper.paste(banner_1_image, (35, -6))
     bottom_paper.paste(
-        banner_2_image,
-        (bottom_paper.width - 175, -6),
+        banner_2_image, (bottom_paper.width - 175, -6),
     )
     bottom_paper.paste(bottom_paper_original, (0, 0), bottom_paper_original)
 
