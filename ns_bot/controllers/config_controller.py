@@ -100,7 +100,9 @@ class ConfigController(BaseController):
 
     @staticmethod
     def verify_file(cog_name: str):
-        return os.path.exists(f"./cogs/{cog_name.lower()}.py") and not cog_name.startswith("_")
+        return os.path.exists(f"./ns_bot/cogs/{cog_name.lower()}.py") and not cog_name.startswith(
+            "_"
+        )
 
     @staticmethod
     def get_cogs(cog_name: str = None) -> list[str]:
@@ -109,7 +111,7 @@ class ConfigController(BaseController):
         else:
             return [
                 ext[:-3]
-                for ext in os.listdir("./cogs/")
+                for ext in os.listdir("./ns_bot/cogs/")
                 if ext.endswith(".py") and not ext.startswith("_")
             ]
 
