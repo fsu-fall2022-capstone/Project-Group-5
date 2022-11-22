@@ -3,6 +3,7 @@ from io import BytesIO
 
 from aiohttp import ClientSession
 from PIL import Image, ImageDraw, ImageFont
+from PIL.ImageFont import FreeTypeFont
 
 BASE_IMAGE_URL = "https://www.nationstates.net/images/"
 LIGHT_BLACK = (68, 68, 68)
@@ -31,7 +32,15 @@ async def generate_issue_newspaper(
     verdana_font = ImageFont.truetype("ns_bot/data/newspaper-references/verdana.ttf", 12)
     header_font = ImageFont.truetype("ns_bot/data/newspaper-references/UnifrakturCook-Bold.ttf", 25)
     currency_font = ImageFont.truetype("ns_bot/data/newspaper-references/times new roman.ttf", 10)
-    title_font = ImageFont.truetype("ns_bot/data/newspaper-references/times new roman.ttf", 30)
+    title_font = ImageFont.truetype("ns_bot/data/newspaper-references/times new roman.ttf", 50)
+
+    # Make sure the article title fits the image
+    title_font_size = 50
+    while title_font_size > 1 and title_font.getlength(article_title) >= (title_paper.width - 98):
+        title_font_size -= 1
+        title_font = ImageFont.truetype(
+            "ns_bot/data/newspaper-references/times new roman.ttf", title_font_size
+        )
 
     results = []
     for url in [flag, f"newspaper/{banner_1}-1.jpg", f"newspaper/{banner_2}-2.jpg"]:
@@ -40,9 +49,9 @@ async def generate_issue_newspaper(
         ) as response:
             results.append(Image.open(BytesIO(await response.content.read())))
 
-    flag_image = results[0]
-    banner_1_image = results[1]
-    banner_2_image = results[2]
+    flag_image: Image.Image = results[0]
+    banner_1_image: Image.Image = results[1]
+    banner_2_image: Image.Image = results[2]
 
     header_paper.paste(flag_image, (35, 10))
 
@@ -57,9 +66,17 @@ async def generate_issue_newspaper(
     header_draw_paper.text(
         (35, header_paper.height - 19), "CITY FINAL", font=verdana_font, fill=LIGHT_BLACK
     )
+    date_string = date.today().strftime("%A %B %d, %Y")
     header_draw_paper.text(
-        ((header_paper.width / 3) + 20, header_paper.height - 19),
-        date.today().strftime("%A %B %d, %Y"),
+        (
+            get_left_corner_for_center(
+                verdana_font,
+                date_string,
+                header_paper.width,
+            ),
+            header_paper.height - 19,
+        ),
+        date_string,
         font=verdana_font,
         fill=LIGHT_BLACK,
     )
@@ -69,29 +86,42 @@ async def generate_issue_newspaper(
         font=verdana_font,
         fill=LIGHT_BLACK,
     )
+    nation_string = f"The {nation} Chronicle"
     header_draw_paper.text(
-        (header_paper.width / 3, 10), f"The {nation} Chronicle", font=header_font, fill=LIGHT_BLACK,
+        (
+            get_left_corner_for_center(
+                header_font,
+                nation_string,
+                header_paper.width,
+            ),
+            10,
+        ),
+        nation_string,
+        font=header_font,
+        fill=LIGHT_BLACK,
     )
     header_draw_paper.text(
-        (header_paper.width - 120, 10), f"1 {currency}", font=currency_font, fill=LIGHT_BLACK,
+        (header_paper.width - 120, 10),
+        f"1 {currency}",
+        font=currency_font,
+        fill=LIGHT_BLACK,
     )
 
-    for i in range(99):
-        if title_font.getsize(article_title)[0] >= (title_paper.width - 65):
-            title_font = ImageFont.truetype(
-                "ns_bot/data/newspaper-references/times new roman.ttf", 30 - i
-            )
-            continue
-        if title_font.getsize(article_title)[0] < (title_paper.width - 65):
-            break
     headline = ImageDraw.Draw(title_paper)
-    headline.text((35, 10), f"{article_title}", font=title_font, fill=LIGHT_BLACK)
+
+    headline.text(
+        (35, (title_paper.height - title_font.getsize(article_title)[1]) / 2),
+        f"{article_title}",
+        font=title_font,
+        fill=LIGHT_BLACK,
+    )
 
     bottom_paper = bottom_paper_original.copy()
 
     bottom_paper.paste(banner_1_image, (35, -6))
     bottom_paper.paste(
-        banner_2_image, (bottom_paper.width - 175, -6),
+        banner_2_image,
+        (bottom_paper.width - 175, -6),
     )
     bottom_paper.paste(bottom_paper_original, (0, 0), bottom_paper_original)
 
@@ -102,3 +132,8 @@ async def generate_issue_newspaper(
     newspaper.paste(bottom_paper, (0, TOTAL_HEIGHT - bottom_paper.height))
 
     return newspaper
+
+
+def get_left_corner_for_center(font: FreeTypeFont, string: str, total_width: int):
+    total_width = total_width - 108
+    return ((total_width - font.getlength(string)) / 2) + 45
