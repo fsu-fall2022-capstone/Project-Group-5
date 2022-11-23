@@ -3,7 +3,6 @@ import os
 
 import asyncpg
 from asyncpg import Connection
-from dotenv import load_dotenv
 
 
 async def db_init():
@@ -39,6 +38,27 @@ async def db_init():
                     guild_id bigint not null,
                     vote_time int default -1,
                     vote_channel bigint
+                )
+                """
+            )
+
+            await con.execute(
+                """
+                CREATE TABLE IF NOT EXISTS live_issues (
+                    nation text not null,
+                    issue_id int not null,
+                    issue_channel bigint not null,
+                    start_time timestamp WITH TIME ZONE DEFAULT (current_timestamp AT TIME ZONE 'UTC')
+                )
+                """
+            )
+
+            await con.execute(
+                """
+                CREATE TABLE IF NOT EXISTS issue_votes (
+                    issue_channel bigint not null,
+                    voter bigint not null,
+                    option int not null
                 )
                 """
             )
