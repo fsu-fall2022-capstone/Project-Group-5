@@ -1,11 +1,11 @@
 import discord
 from discord import app_commands
-from discord.ext import commands
+from discord.ext import commands, tasks
 
 from nationstates_bot import NationStatesBot
 from ns_bot.controllers.server_controller import ServerController
 from ns_bot.DAOs.nationstates_api import NationStatesAPI
-from ns_bot.DAOs.postgresql import Login, Nation
+from ns_bot.DAOs.postgresql import IssueVotes, LiveIssues, Login, Nation
 from ns_bot.utils.logger import Logger
 
 
@@ -18,11 +18,35 @@ class Server(commands.Cog):
 
         self.login_table = Login(self.bot.db_pool)
         self.nation_table = Nation(self.bot.db_pool)
+        self.issues_votes_table = IssueVotes(self.bot.db_pool)
+        self.live_issues_table = LiveIssues(self.bot.db_pool)
 
-        self.server_controller = ServerController(bot, self.login_table, self.nation_table)
+        self.server_controller = ServerController(
+            bot,
+            self.login_table,
+            self.nation_table,
+            self.live_issues_table,
+            self.issues_votes_table,
+        )
 
         self.logger = Logger("server")
         self.logger.info("server loaded")
+
+    @tasks.loop(minutes=60)
+    async def check_for_issues(self):
+        self.logger.info("starting issue loop")
+        try:
+            await self.server_controller.update_live_issues()
+            await self.server_controller.fetch_new_issues()
+        except Exception as e:
+            self.logger.critical(e, exc_info=True)
+        self.logger.info("finished issue loop")
+
+    @tasks.loop(hours=24)
+    async def ns_data_dump(self):
+        # TODO get the data dump and update the cached info
+        # put this logic into its own cog/controller (draft idea)
+        self.logger.info("got daily dump of nations info")
 
     @app_commands.command(description="Configure the nation on your server")
     @app_commands.checks.has_permissions(administrator=True)
