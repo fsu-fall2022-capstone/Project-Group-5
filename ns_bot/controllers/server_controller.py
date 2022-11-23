@@ -5,6 +5,7 @@ import discord
 from nationstates_bot import NationStatesBot
 from ns_bot.controllers.base_nationstate_controller import BaseNationstateController
 from ns_bot.DAOs.postgresql import IssueVotes, LiveIssues, Login, Nation
+from ns_bot.formatting.newspaper_images import generate_issue_newspaper
 from ns_bot.views.configure import ConfigureNation, NewNation
 from ns_bot.views.issues import IssueView
 
@@ -73,21 +74,31 @@ class ServerController(BaseNationstateController):
         # TODO Remove temp things :
         """
         issue_id from xml
-        image should be from newspaper generator
         option_amount = len(xml.option)
         """
         issue_channel = self.bot.get_channel(
             await self.nation_table.get_vote_channel(nation=nation)
         )
-        # file = discord.File("path/to/my/image.png", filename="image.png")
-        # embed = discord.Embed()
-        # embed.set_image(url="attachment://image.png")
-        # await channel.send(file=file, embed=embed)
-        issue_embed = discord.Embed(title="Reporting for (Jury) Duty")
-        issue_embed.set_image(url="https://www.nationstates.net/images/newspaper/i7-1.jpg")
+        file = discord.File(
+            await generate_issue_newspaper(
+                self.bot.web_client,
+                nation,
+                currency,
+                article_title,
+                banner_1,
+                banner_2,
+                flag,
+                issue_number,
+            ),
+            filename="image.png",
+        )
+        issue_embed = discord.Embed(title=article_title)
+        issue_embed.set_image(url="attachment://image.png")
 
-        msg = await issue_channel.send(embed=issue_embed)
-        thd = await issue_channel.create_thread(name=f"{nation} Issue #issue_id", message=msg)
+        message = await issue_channel.send(file=file, embed=issue_embed)
+        thread = await issue_channel.create_thread(
+            name=f"{nation} Issue #{issue_number}", message=message
+        )
 
         issue_amount = 3
         embeds = [
@@ -98,7 +109,7 @@ class ServerController(BaseNationstateController):
             for i in range(issue_amount)
         ]
 
-        await thd.send(embeds=embeds, view=IssueView(issue_amount))
+        await thread.send(embeds=embeds, view=IssueView(issue_amount))
 
     async def fetch_new_issues(self):
         for nation in await self.nation_table.get_all():
