@@ -72,6 +72,7 @@ class NationStatesAPI:
 
             return response.ok
 
+    @ratelimit
     async def get_nation_issues(self, nation: str):
         password, pin = await self.login_table.get_nation_login(nation=nation)
         async with self.web_client.get(
@@ -82,7 +83,20 @@ class NationStatesAPI:
             if pin := response.headers.get("X-Pin"):
                 await self.login_table.update_nation_pin(nation=nation, pin=pin)
 
-            return response.text()
+            return await response.text()
+
+    @ratelimit
+    async def respond_to_issue(self, nation: str, issue_id: int, option: int):
+        password, pin = await self.login_table.get_nation_login(nation=nation)
+        async with self.web_client.get(
+            self.BASE_URL,
+            headers={"User-Agent": self.USER_AGENT, "X-password": password, "X-Pin": pin},
+            params={"nation": nation, "c": "issue", "issue": issue_id, "option": option},
+        ) as response:
+            if pin := response.headers.get("X-Pin"):
+                await self.login_table.update_nation_pin(nation=nation, pin=pin)
+
+            return await response.text()
 
     async def _rate_limit(self):
         # await asyncio.sleep(0.1)
