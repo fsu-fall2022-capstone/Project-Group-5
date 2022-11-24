@@ -22,4 +22,4 @@ class NationController(BaseNationstateController):
         data = await self.bot.nationstates_api.get_public_nation_data(
             nation, shards=[shard] if shard else None
         )
-        await interaction.response.send_message(embed=format_xml(data))
+        await interaction.response.send_message(embeds=format_xml(data))
