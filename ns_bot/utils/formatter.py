@@ -1,14 +1,15 @@
 import discord
 import xmltodict
-import xml.etree.ElementTree as ET
 
-def format_embed_tree(data):
-    try:
-        root = ET.fromstring(data)
-        embed = discord.Embed(title=root.tag)
-        for element in root.iter():
-            embed.add_field (name=element.tag, value=element.attrib)
-        return embed
-    except:
-        print('Unable to parse data')
-        return discord.Embed(title='ERROR',description='XML PARSING ERROR OCCURRED')
+def format_xml(data):
+    dictionary = xmltodict.parse(data)
+    return build_embed(discord.Embed(), dictionary)
+
+def build_embed(embed, dictionary):
+    for key, value in dictionary.items():
+        if isinstance(value,dict):
+            build_embed(embed, value)
+        else:    
+            embed.add_field(name = str(key), value = str(value)) 
+    return embed     
+
