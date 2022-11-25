@@ -29,6 +29,8 @@ class Server(commands.Cog):
             self.issues_votes_table,
         )
 
+        self.check_for_issues_loop = self.check_for_issues.start()
+
         self.logger = Logger("server")
         self.logger.info("server loaded")
 
@@ -41,6 +43,10 @@ class Server(commands.Cog):
         except Exception as e:
             self.logger.critical(e, exc_info=True)
         self.logger.info("finished issue loop")
+
+    @check_for_issues.before_loop
+    async def before_check_for_issues(self):
+        await self.bot.wait_until_ready()
 
     @tasks.loop(hours=24)
     async def ns_data_dump(self):
