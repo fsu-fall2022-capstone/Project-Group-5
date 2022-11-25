@@ -35,8 +35,7 @@ class ServerController(BaseNationstateController):
         new_nation_view = NewNation(self.bot.nationstates_api, self.login_table, self.nation_table)
         await interaction.response.send_message(
             "Please log into your existing nation or create a new one\
-            \nLog in at your own risk. We store an encrypted version of your information, but even so,\
-            please understand the risks associated with sharing your login information",
+            \nLog in at your own risk. We store an encrypted version of your information, but even so, please understand the risks associated with sharing your login information",
             view=new_nation_view,
             ephemeral=True,
         )
