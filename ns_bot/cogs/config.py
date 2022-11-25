@@ -6,7 +6,7 @@ from discord.ext import commands
 
 from nationstates_bot import NationStatesBot
 from ns_bot.controllers.config_controller import ConfigController, cog_autocomplete
-from ns_bot.utils.logger import Logger
+from ns_bot.utils import Logger
 
 
 class Config(commands.Cog):
