@@ -129,7 +129,10 @@ class ServerController(BaseNationstateController):
             nation_name: str = nation["nation"]
             issues = await self.bot.nationstates_api.get_nation_issues(nation_name)
             nation_issues = await self.live_issues_table.get_nation_issues(nation=nation_name)
-            issues = (await async_xmltodict(issues))["NATION"]["ISSUES"]["ISSUE"]
+            issues = await async_xmltodict(issues)
+            if not issues:
+                return
+            issues = issues["NATION"]["ISSUES"]["ISSUE"]
             for issue in issues:
                 issue_id = int(issue["@id"])
                 if issue_id in nation_issues:
@@ -162,12 +165,14 @@ class ServerController(BaseNationstateController):
         # but this can be simplified by ordering/grouping by nation (same time for each issue for each nation)
         data = await self.live_issues_table.get_all()
         for issue in data:
-            time_difference: datetime.timedelta = issue["start_time"] - datetime.datetime.utcnow()
-            vote_time = self.nation_table.get_vote_time(nation=issue["nation"])
+            time_difference: datetime.timedelta = issue[
+                "start_time"
+            ] - datetime.datetime.utcnow().replace(tzinfo=datetime.timezone.utc)
+            vote_time = await self.nation_table.get_vote_time(nation=issue["nation"])
             if vote_time == -1:
-                if time_difference.seconds > (datetime.timedelta(seconds=3600 * 24)):
+                if time_difference > datetime.timedelta(seconds=(3600 * 24) - 600):
                     await self.send_issue_option(issue, False)
-            elif time_difference.seconds > (datetime.timedelta(seconds=3600 * vote_time)):
+            elif time_difference > datetime.timedelta(seconds=(3300 * vote_time) - 600):
                 await self.send_issue_option(issue, True)
 
     async def send_issue_option(self, issue: dict, respond_to_api: bool):
@@ -195,7 +200,7 @@ class ServerController(BaseNationstateController):
             await channel.send(issue_response_result)
 
         await self.live_issues_table.remove_issue(nation=nation, issue_id=issue_id)
-        await self.issue_votes_table.remove_issue(issue_channel=channel)
+        await self.issue_votes_table.remove_issue(issue_channel=channel.id)
         self.logger.info(f"{issue_id = } submitted {option = } for {nation = }")
 
     # async def data_dump(self):
@@ -204,3 +209,43 @@ class ServerController(BaseNationstateController):
     #     # data_dict = xmltodict.parse(data_dump_from_ns)
     #     data_dict = {}
     #     nations = data_dict["NATIONS"]["NATION"]
+
+    # nations_keys = (
+    #     [
+    #         "NAME",
+    #         "TYPE",
+    #         "FULLNAME",
+    #         "MOTTO",
+    #         "CATEGORY",
+    #         "UNSTATUS",
+    #         "ENDORSEMENTS",
+    #         "ISSUES_ANSWERED",
+    #         "FREEDOM",
+    #         "REGION",
+    #         "POPULATION",
+    #         "TAX",
+    #         "ANIMAL",
+    #         "CURRENCY",
+    #         "DEMONYM",
+    #         "DEMONYM2",
+    #         "DEMONYM2PLURAL",
+    #         "FLAG",
+    #         "MAJORINDUSTRY",
+    #         "GOVTPRIORITY",
+    #         "GOVT",
+    #         "FOUNDED",
+    #         "FIRSTLOGIN",
+    #         "LASTLOGIN",
+    #         "LASTACTIVITY",
+    #         "INFLUENCE",
+    #         "FREEDOMSCORES",
+    #         "PUBLICSECTOR",
+    #         "DEATHS",
+    #         "LEADER",
+    #         "CAPITAL",
+    #         "RELIGION",
+    #         "FACTBOOKS",
+    #         "DISPATCHES",
+    #         "DBID",
+    #     ]
+    # )
