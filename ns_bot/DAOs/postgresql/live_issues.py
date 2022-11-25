@@ -26,6 +26,16 @@ class LiveIssues(BaseSQLTable):
         )
 
     @ensure_connection
+    async def get_nation_issues(self, *, nation: str, con: Optional[Connection] = None):
+        return await con.fetch(
+            f"""
+            SELECT * from {self.TABLE_NAME} 
+            WHERE nation = $1
+            """,
+            nation,
+        )
+
+    @ensure_connection
     async def insert_issue(
         self, *, nation: str, issue_id: int, issue_channel: int, con: Optional[Connection] = None
     ):

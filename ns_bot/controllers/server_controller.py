@@ -110,10 +110,16 @@ class ServerController(BaseNationstateController):
         ]
 
         await thread.send(embeds=embeds, view=IssueView(issue_amount))
+        await self.live_issues_table.insert_issue(
+            nation=nation, issue_id=issue_number, issue_channel=thread.id
+        )
 
     async def fetch_new_issues(self):
         for nation in await self.nation_table.get_all():
             issues = await self.bot.nationstates_api.get_nation_issues(nation["nation"])
+            nation_issues = await self.live_issues_table.get_nation_issues(nation=nation["nation"])
+            # if issue_id not in nation_issues:
+            #       generate_issue()
             # loop through the issues and check if a new one is present
             # or make another db (or edit current) to store the time till nation has new issue
 
