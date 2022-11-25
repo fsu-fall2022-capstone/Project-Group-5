@@ -50,7 +50,7 @@ class IssueVotes(BaseSQLTable):
             f"""
             UPDATE {self.TABLE_NAME} SET 
             option = $1
-            WHERE issue_channel = $2, voter = $3
+            WHERE issue_channel = $2 and voter = $3
             """,
             option,
             issue_channel,
