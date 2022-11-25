@@ -7,6 +7,7 @@ from ns_bot.controllers.server_controller import ServerController
 from ns_bot.DAOs.nationstates_api import NationStatesAPI
 from ns_bot.DAOs.postgresql import IssueVotes, LiveIssues, Login, Nation
 from ns_bot.utils import Logger
+from ns_bot.views.issues import IssueView
 
 
 @app_commands.guild_only()
@@ -28,6 +29,8 @@ class Server(commands.Cog):
             self.live_issues_table,
             self.issues_votes_table,
         )
+
+        self.bot.add_view(IssueView(0, self.live_issues_table, self.issues_votes_table))
 
         self.check_for_issues_loop = self.check_for_issues.start()
 
