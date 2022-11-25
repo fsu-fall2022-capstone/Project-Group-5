@@ -116,7 +116,10 @@ class ServerController(BaseNationstateController):
         ]
         embeds.insert(0, discord.Embed(title="The issue", description=issue_summary))
 
-        await thread.send(embeds=embeds, view=IssueView(len(options)))
+        await thread.send(
+            embeds=embeds,
+            view=IssueView(len(options), self.live_issues_table, self.issue_votes_table),
+        )
         await self.live_issues_table.insert_issue(
             nation=nation, issue_id=issue_number, issue_channel=thread.id
         )
@@ -133,7 +136,7 @@ class ServerController(BaseNationstateController):
             if not issues:
                 return
             issues = issues["NATION"]["ISSUES"]["ISSUE"]
-            for issue in issues:
+            for issue in issues if type(issues) == list else [issues]:
                 issue_id = int(issue["@id"])
                 if issue_id in nation_issues:
                     continue
@@ -179,10 +182,12 @@ class ServerController(BaseNationstateController):
         votes = await self.issue_votes_table.get_votes_for_issue(
             issue_channel=issue["issue_channel"]
         )
+        votes = [vote["option"] for vote in votes]
         option = max(set(votes), key=votes.count) if votes else -1
         nation = issue["nation"]
         issue_id = issue["issue_id"]
         channel: discord.TextChannel = self.bot.get_channel(issue["issue_channel"])
+        print(option)
         if option == -1:
             issue_response_result = "The server voted to dismiss this option"
         else:

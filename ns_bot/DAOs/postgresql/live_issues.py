@@ -36,6 +36,18 @@ class LiveIssues(BaseSQLTable):
         )
 
     @ensure_connection
+    async def get_issue_id_from_channel(
+        self, *, issue_channel: int, con: Optional[Connection] = None
+    ):
+        return await con.fetchval(
+            f"""
+            SELECT issue_id from {self.TABLE_NAME} 
+            WHERE issue_channel = $1
+            """,
+            issue_channel,
+        )
+
+    @ensure_connection
     async def insert_issue(
         self, *, nation: str, issue_id: int, issue_channel: int, con: Optional[Connection] = None
     ):
