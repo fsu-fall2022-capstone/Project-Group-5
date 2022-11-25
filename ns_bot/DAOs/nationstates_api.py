@@ -6,6 +6,7 @@ import asyncpg
 from aiohttp import ClientSession
 
 from ns_bot.DAOs.postgresql import Login
+from ns_bot.utils import decrypt
 
 
 def ratelimit(function):
@@ -75,6 +76,7 @@ class NationStatesAPI:
     @ratelimit
     async def get_nation_issues(self, nation: str):
         password, pin = await self.login_table.get_nation_login(nation=nation)
+        password = decrypt(password)
         async with self.web_client.get(
             self.BASE_URL,
             headers={"User-Agent": self.USER_AGENT, "X-password": password, "X-Pin": pin},
@@ -88,6 +90,7 @@ class NationStatesAPI:
     @ratelimit
     async def respond_to_issue(self, nation: str, issue_id: int, option: int):
         password, pin = await self.login_table.get_nation_login(nation=nation)
+        password = decrypt(password)
         async with self.web_client.get(
             self.BASE_URL,
             headers={"User-Agent": self.USER_AGENT, "X-password": password, "X-Pin": pin},
