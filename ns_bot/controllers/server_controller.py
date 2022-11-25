@@ -132,10 +132,10 @@ class ServerController(BaseNationstateController):
             nation_name: str = nation["nation"]
             issues = await self.bot.nationstates_api.get_nation_issues(nation_name)
             nation_issues = await self.live_issues_table.get_nation_issues(nation=nation_name)
-            issues = await async_xmltodict(issues)
+            issues: dict = await async_xmltodict(issues)
             if not issues:
                 return
-            issues = issues["NATION"]["ISSUES"]["ISSUE"]
+            issues = issues.get("NATION", {}).get("ISSUES", {}).get("ISSUE", [])
             for issue in issues if type(issues) == list else [issues]:
                 issue_id = int(issue["@id"])
                 if issue_id in nation_issues:
