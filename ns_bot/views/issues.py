@@ -40,7 +40,9 @@ class VotingDropdown(discord.ui.Select):
             return await interaction.response.send_message(
                 f"You voted to skip this issue", ephemeral=True
             )
-        await interaction.response.send_message(f"You voted for {clean_option}", ephemeral=True)
+        await interaction.response.send_message(
+            f"You voted for option {clean_option}", ephemeral=True
+        )
 
 
 class IssueView(discord.ui.View):
