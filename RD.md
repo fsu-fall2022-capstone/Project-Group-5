@@ -37,7 +37,8 @@ Basic uses cases implemented at the moment along with their relation with the us
 ## Class Diagram
 Sequence Diagram:
 
-![image](https://user-images.githubusercontent.com/72528884/197253511-99552700-2fb8-493a-8997-ed752f955b3b.png)
+![sequence diagram without configure](https://user-images.githubusercontent.com/72528884/204078360-6f2adbcb-a538-4671-820b-7af4f73b0c8c.jpg)
+
   
 Class Diagram:  
 ![inc2classdiagram](https://user-images.githubusercontent.com/72528884/203927568-9a5e07f1-b05a-49db-a8ef-b97f2efca40e.jpg)
