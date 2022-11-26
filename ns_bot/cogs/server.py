@@ -33,6 +33,7 @@ class Server(commands.Cog):
         self.bot.add_view(IssueView(0, self.live_issues_table, self.issues_votes_table))
 
         self.check_for_issues_loop = self.check_for_issues.start()
+        self.ns_data_dump_loop = self.ns_data_dump.start()
 
         self.logger = Logger("server")
         self.logger.info("server loaded")
@@ -53,8 +54,7 @@ class Server(commands.Cog):
 
     @tasks.loop(hours=24)
     async def ns_data_dump(self):
-        # TODO get the data dump and update the cached info
-        # put this logic into its own cog/controller (draft idea)
+        await self.server_controller.ns_data_dump()
         self.logger.info("got daily dump of nations info")
 
     @app_commands.command(description="Configure the nation on your server")
