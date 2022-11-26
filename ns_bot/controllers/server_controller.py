@@ -218,45 +218,5 @@ class ServerController(BaseNationstateController):
         nation_table_data = await self.nation_table.get_all()
         tracked_nations = {nation["nation"] for nation in nation_table_data}
         for nation in nations:
-            if nation in tracked_nations:
+            if nation["NAME"] in tracked_nations:
                 self.nation_dump[nation["NAME"]] = nation
-
-    # nations_keys = (
-    #     [
-    #         "NAME",
-    #         "TYPE",
-    #         "FULLNAME",
-    #         "MOTTO",
-    #         "CATEGORY",
-    #         "UNSTATUS",
-    #         "ENDORSEMENTS",
-    #         "ISSUES_ANSWERED",
-    #         "FREEDOM",
-    #         "REGION",
-    #         "POPULATION",
-    #         "TAX",
-    #         "ANIMAL",
-    #         "CURRENCY",
-    #         "DEMONYM",
-    #         "DEMONYM2",
-    #         "DEMONYM2PLURAL",
-    #         "FLAG",
-    #         "MAJORINDUSTRY",
-    #         "GOVTPRIORITY",
-    #         "GOVT",
-    #         "FOUNDED",
-    #         "FIRSTLOGIN",
-    #         "LASTLOGIN",
-    #         "LASTACTIVITY",
-    #         "INFLUENCE",
-    #         "FREEDOMSCORES",
-    #         "PUBLICSECTOR",
-    #         "DEATHS",
-    #         "LEADER",
-    #         "CAPITAL",
-    #         "RELIGION",
-    #         "FACTBOOKS",
-    #         "DISPATCHES",
-    #         "DBID",
-    #     ]
-    # )
