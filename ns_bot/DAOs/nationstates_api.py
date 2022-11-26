@@ -79,7 +79,7 @@ class NationStatesAPI:
         password = decrypt(password)
         async with self.web_client.get(
             self.BASE_URL,
-            headers={"User-Agent": self.USER_AGENT, "X-password": password, "X-Pin": pin},
+            headers={"User-Agent": self.USER_AGENT, "X-password": password, "X-Pin": pin or ""},
             params={"nation": nation, "q": "issues"},
         ) as response:
             if pin := response.headers.get("X-Pin"):
@@ -93,7 +93,7 @@ class NationStatesAPI:
         password = decrypt(password)
         async with self.web_client.get(
             self.BASE_URL,
-            headers={"User-Agent": self.USER_AGENT, "X-password": password, "X-Pin": pin},
+            headers={"User-Agent": self.USER_AGENT, "X-password": password, "X-Pin": pin or ""},
             params={"nation": nation, "c": "issue", "issue": issue_id, "option": option},
         ) as response:
             if pin := response.headers.get("X-Pin"):
