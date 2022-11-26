@@ -31,7 +31,7 @@ they are not a part of. Currently being worked on, not fully implemented yet.
 
 ## Use Case Diagram
 Basic uses cases implemented at the moment along with their relation with the user.  
-![image](https://user-images.githubusercontent.com/72528884/197101853-2461ab8a-c372-407a-b2f3-598d105ed8db.png)
+![ucase inc 2](https://user-images.githubusercontent.com/72528884/204110148-41b8bd66-544d-401b-8f23-59518866a3a2.png)
 
 
 ## Class Diagram
