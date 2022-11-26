@@ -101,6 +101,13 @@ class NationStatesAPI:
 
             return await response.text()
 
+    @ratelimit
+    async def get_nation_dump(self):
+        URL = "https://www.nationstates.net/pages/nations.xml.gz"
+        headers = {"User-Agent": self.USER_AGENT}
+        async with self.web_client.get(URL, headers=headers) as response:
+            return await response.content.read()
+
     async def _rate_limit(self):
         # await asyncio.sleep(0.1)
         return
