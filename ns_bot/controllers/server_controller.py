@@ -1,4 +1,5 @@
 import datetime
+import gzip
 from io import BytesIO, StringIO
 
 import discord
@@ -28,6 +29,8 @@ class ServerController(BaseNationstateController):
         self.live_issues_table = live_issues_table
         self.issue_votes_table = issue_votes_table
         self.nation_dump = {}
+
+        self.async_xmltodict = async_wrapper(xmltodict.parse)
 
         self.logger = Logger("server_controller")
 
@@ -125,13 +128,11 @@ class ServerController(BaseNationstateController):
         self.logger.info(f"sent {nation} {issue_number = } to {thread.id}")
 
     async def fetch_new_issues(self):
-        async_xmltodict = async_wrapper(xmltodict.parse)
-
         for nation in await self.nation_table.get_all():
             nation_name: str = nation["nation"]
             issues = await self.bot.nationstates_api.get_nation_issues(nation_name)
             nation_issues = await self.live_issues_table.get_nation_issues(nation=nation_name)
-            issues: dict = await async_xmltodict(issues)
+            issues: dict = await self.async_xmltodict(issues)
             if not issues:
                 return
             issues = issues.get("NATION", {}).get("ISSUES", {}).get("ISSUE", [])
@@ -207,12 +208,18 @@ class ServerController(BaseNationstateController):
         await self.issue_votes_table.remove_issue(issue_channel=channel.id)
         self.logger.info(f"{issue_id = } submitted {option = } for {nation = }")
 
-    # async def data_dump(self):
-    #     # TODO implement a fetch of the nation data dump for things like
-    #     # flags to limit calls to API
-    #     # data_dict = xmltodict.parse(data_dump_from_ns)
-    #     data_dict = {}
-    #     nations = data_dict["NATIONS"]["NATION"]
+    async def ns_data_dump(self):
+        dump_data = await self.bot.nationstates_api.get_nation_dump()
+        async_decompress = async_wrapper(gzip.decompress)
+        dump_data = await async_decompress(dump_data)
+
+        data_dict = await self.async_xmltodict(dump_data)
+        nations = data_dict["NATIONS"]["NATION"]
+        nation_table_data = await self.nation_table.get_all()
+        tracked_nations = {nation["nation"] for nation in nation_table_data}
+        for nation in nations:
+            if nation in tracked_nations:
+                self.nation_dump[nation["NAME"]] = nation
 
     # nations_keys = (
     #     [
