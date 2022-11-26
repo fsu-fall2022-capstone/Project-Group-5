@@ -4,3 +4,4 @@ python-dotenv==0.21.0
 aiohttp>=3.8.1
 cryptography
 Pillow>=9.2.0
+xmltodict==0.13.0
