@@ -4,9 +4,10 @@ from typing import Literal, Optional
 import discord
 from discord import app_commands
 from discord.ext import commands
-from ns_bot.utils.formatter import format_xml
+
 from ns_bot.controllers.base_nationstate_controller import BaseNationstateController
 from ns_bot.data.shards import VALID_REGION_SHARDS
+from ns_bot.utils.formatter import format_xml
 
 
 class RegionController(BaseNationstateController):
