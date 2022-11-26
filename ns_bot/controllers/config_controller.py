@@ -53,7 +53,7 @@ class ConfigController(BaseController):
             )
         else:
             try:
-                await self.bot.load_extension(f"cogs.{cog}")
+                await self.bot.load_extension(f"ns_bot.cogs.{cog}")
                 return await interaction.response.send_message(f"Loaded {cog}", ephemeral=True)
             except Exception:
                 return await interaction.response.send_message(
@@ -68,7 +68,7 @@ class ConfigController(BaseController):
                 ephemeral=True,
             )
         try:
-            await self.bot.unload_extension(f"cogs.{cog}")
+            await self.bot.unload_extension(f"ns_bot.cogs.{cog}")
             return await interaction.response.send_message(f"Unloaded {cog}", ephemeral=True)
         except Exception:
             return await interaction.response.send_message(
@@ -86,8 +86,8 @@ class ConfigController(BaseController):
         reloaded_cogs = []
         try:
             for cog in cogs:
-                await self.bot.unload_extension(f"cogs.{cog}")
-                await self.bot.load_extension(f"cogs.{cog}")
+                await self.bot.unload_extension(f"ns_bot.cogs.{cog}")
+                await self.bot.load_extension(f"ns_bot.cogs.{cog}")
                 reloaded_cogs.append(cog)
             return await interaction.response.send_message(
                 f"Reloaded {reloaded_cogs}", ephemeral=True

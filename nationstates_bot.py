@@ -10,7 +10,7 @@ from dotenv import load_dotenv
 
 import ns_bot.postgres_init as p_init
 from ns_bot.DAOs.nationstates_api import NationStatesAPI
-from ns_bot.utils.logger import Logger
+from ns_bot.utils import Logger
 
 load_dotenv()
 

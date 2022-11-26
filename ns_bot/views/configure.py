@@ -4,8 +4,7 @@ import discord
 
 from ns_bot.DAOs.nationstates_api import NationStatesAPI
 from ns_bot.DAOs.postgresql import Login, Nation
-from ns_bot.utils.encrypt_decrypt import encrypt
-from ns_bot.utils.logger import Logger
+from ns_bot.utils import Logger, encrypt
 
 
 class LoginDetails(discord.ui.Modal, title="Login"):

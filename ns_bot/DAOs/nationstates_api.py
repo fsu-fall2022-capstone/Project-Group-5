@@ -6,6 +6,7 @@ import asyncpg
 from aiohttp import ClientSession
 
 from ns_bot.DAOs.postgresql import Login
+from ns_bot.utils import decrypt
 
 
 def ratelimit(function):
@@ -71,6 +72,41 @@ class NationStatesAPI:
                 await self.login_table.update_nation_pin(nation=nation, pin=pin)
 
             return response.ok
+
+    @ratelimit
+    async def get_nation_issues(self, nation: str):
+        password, pin = await self.login_table.get_nation_login(nation=nation)
+        password = decrypt(password)
+        async with self.web_client.get(
+            self.BASE_URL,
+            headers={"User-Agent": self.USER_AGENT, "X-password": password, "X-Pin": pin},
+            params={"nation": nation, "q": "issues"},
+        ) as response:
+            if pin := response.headers.get("X-Pin"):
+                await self.login_table.update_nation_pin(nation=nation, pin=pin)
+
+            return await response.text()
+
+    @ratelimit
+    async def respond_to_issue(self, nation: str, issue_id: int, option: int):
+        password, pin = await self.login_table.get_nation_login(nation=nation)
+        password = decrypt(password)
+        async with self.web_client.get(
+            self.BASE_URL,
+            headers={"User-Agent": self.USER_AGENT, "X-password": password, "X-Pin": pin},
+            params={"nation": nation, "c": "issue", "issue": issue_id, "option": option},
+        ) as response:
+            if pin := response.headers.get("X-Pin"):
+                await self.login_table.update_nation_pin(nation=nation, pin=pin)
+
+            return await response.text()
+
+    @ratelimit
+    async def get_nation_dump(self):
+        URL = "https://www.nationstates.net/pages/nations.xml.gz"
+        headers = {"User-Agent": self.USER_AGENT}
+        async with self.web_client.get(URL, headers=headers) as response:
+            return await response.content.read()
 
     async def _rate_limit(self):
         # await asyncio.sleep(0.1)
