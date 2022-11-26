@@ -54,7 +54,11 @@ class Server(commands.Cog):
 
     @tasks.loop(hours=24)
     async def ns_data_dump(self):
-        await self.server_controller.ns_data_dump()
+        self.logger.info("starting daily dump extraction")
+        try:
+            await self.server_controller.ns_data_dump()
+        except Exception as e:
+            self.logger.critical(e, exc_info=True)
         self.logger.info("got daily dump of nations info")
 
     @app_commands.command(description="Configure the nation on your server")
