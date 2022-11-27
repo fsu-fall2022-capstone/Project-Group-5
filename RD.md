@@ -20,6 +20,21 @@ The database system being used is PostgresSQL. The user will interact with the s
 
 (3) /WA Info (Priority: High) - Provides all information related to a world assembly(the worlds governing body).
 
+(4) Add nation (Priority: High) - Adds a user made nation.
+
+(5) Remove nation (Priority: Medium) - Remove nation from the discord server it is currently in.
+
+(6) Login (Priority: High) - Login to an existing Nationstates Nation. Authenticate and check againt Nationstates API for correct credentials. Only need to login once to use nation for future.
+
+(7) Logout (Priority: Medium) - Logout of nation the discord server is currently logged in to.
+
+(8) Configure (Priority: High) - Configure nation to choose what channel issues are sent to. Also used to configure how long the timeframe for issues is.
+
+(9) Create issues (Priority: High) - Creates a random issue and provides variable amounts of options for the users of the Nationstates system.
+
+(10) View issues (Priority: High) - Formats the issues from xml into a more readable format for the users.
+
+(11) Vote on issues (Priority: High) - Allows the users to vote on issue options to decide what the nation will choose. 
 
 ## Non-functional Requirements
 Nationstates API has call limits - The requirement is placed by nationstates. Exceeding 50 requests per 30 seconds limit will temporarily lock the system.
