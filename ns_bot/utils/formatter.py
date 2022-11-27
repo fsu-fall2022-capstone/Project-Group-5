@@ -1,3 +1,4 @@
+from itertools import islice
 
 import discord
 import xml.etree.ElementTree as ET
