@@ -15,18 +15,23 @@ async def format_nation_info(data:str, shard):
     if shard:
         match shard:
             case 'admirable':
-                return [discord.Embed(title=f"The people of {nation} are known for being very {text}.", color=color)]
+                return [discord.Embed(title=f"The people of {nation} are well-known for being very {text}.", color=color)]
             case 'admirables':
-                embed=discord.Embed(title=f"Admirable Traits of {nation}", color=color)
+                traits = ''
                 for i in range(0, len(root[0])):
-                    embed.add_field(name=f"Trait {i+1}",value=str(root[0][i].text.title()), inline=False)
-                return [embed]
+                    if i == 0:
+                        traits = traits + root[0][i].text
+                    elif i == len(root[0]) - 1:
+                        traits = traits + ", and " + root[0][i].text
+                    else:
+                        traits = traits + ", " + root[0][i].text
+                return [discord.Embed(title=f"The people of {nation} are known to be {traits}.", color=color)]
             case 'animal':
                 return [discord.Embed(title=f"{nation}'s national animal is the: {text.title()}", color=color)]
             case 'animaltrait':
-                return [discord.Embed(title=f"The national animal of {nation} has this trait:", description=f"{text.capitalize()}", color=color)]
+                return [discord.Embed(title=f"The national animal of {nation} {text}.", color=color)]
             case 'answered':
-                return [discord.Embed(title=f"{nation} has voted on {text.capitalize()} issues", color=color)]
+                return [discord.Embed(title=f"{nation} has voted on {text} issues", color=color)]
             case 'banner':
                 pass
             case 'banners':
@@ -42,7 +47,7 @@ async def format_nation_info(data:str, shard):
                 embed.add_field(name="Score on the ", value=root[0][0][0].text, inline=False)
                 return [embed]
             case 'crime':
-                return [discord.Embed(title=f"Criminal activity in {nation}", description=f"{text.capitalize()}", color=color)]
+                return [discord.Embed(title=f"{text.capitalize()}", color=color)]
             case 'currency':
                 return [discord.Embed(title=f"The {text.capitalize()} is the national currency of {nation}", color=color)]
             case 'customleader':
@@ -137,7 +142,7 @@ async def format_nation_info(data:str, shard):
                 else:
                     return [discord.Embed(title=f"{nation} has a population of {float(text) / 1000} billion.", color=color)]
             case 'publicsector':
-                [discord.Embed(title=f"{text}% of the economy is owned by the government of {nation}.", color=color)]
+                return [discord.Embed(title=f"{text}% of {nation}'s economy is controlled by it's government.", color=color)]
             case 'rcensus':
                 pass
             case 'region':
@@ -177,11 +182,10 @@ async def format_nation_info(data:str, shard):
                 else:
                     return [discord.Embed(title=f"{nation}'s has no from the world assembly.", color=color)]
             case 'wcensus':
-                pass
+                return [discord.Embed(title=f"{nation}'s mining industry ranks {text} in the world.", color=color)]
             case 'zombie':
                 pass
     else:
-        embeds = []
         return [discord.Embed(title="Nation Info", description=data)]
 
 def format_region_info(data,shard):
