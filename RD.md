@@ -20,6 +20,21 @@ The database system being used is PostgresSQL. The user will interact with the s
 
 (3) /WA Info (Priority: High) - Provides all information related to a world assembly(the worlds governing body).
 
+(4) Add nation (Priority: High) - Adds a user made nation.
+
+(5) Remove nation (Priority: Medium) - Remove nation from the discord server it is currently in.
+
+(6) Login (Priority: High) - Login to an existing Nationstates Nation. Authenticate and check againt Nationstates API for correct credentials. Only need to login once to use nation for future.
+
+(7) Logout (Priority: Medium) - Logout of nation the discord server is currently logged in to.
+
+(8) Configure (Priority: High) - Configure nation to choose what channel issues are sent to. Also used to configure how long the timeframe for issues is.
+
+(9) Create issues (Priority: High) - Creates a random issue and provides variable amounts of options for the users of the Nationstates system.
+
+(10) View issues (Priority: High) - Formats the issues from xml into a more readable format for the users.
+
+(11) Vote on issues (Priority: High) - Allows the users to vote on issue options to decide what the nation will choose. 
 
 ## Non-functional Requirements
 Nationstates API has call limits - The requirement is placed by nationstates. Exceeding 50 requests per 30 seconds limit will temporarily lock the system.
@@ -31,18 +46,17 @@ they are not a part of. Currently being worked on, not fully implemented yet.
 
 ## Use Case Diagram
 Basic uses cases implemented at the moment along with their relation with the user.  
-![image](https://user-images.githubusercontent.com/72528884/197101853-2461ab8a-c372-407a-b2f3-598d105ed8db.png)
+![usecasediainc2](https://user-images.githubusercontent.com/72528884/204115032-11453325-dba3-4290-a526-1a4e5ed6f9b6.png)
 
 
 ## Class Diagram
 Sequence Diagram:
 
-![image](https://user-images.githubusercontent.com/72528884/197253511-99552700-2fb8-493a-8997-ed752f955b3b.png)
+![seqdiainc2](https://user-images.githubusercontent.com/72528884/204115028-c46f653f-3d94-48be-b1c4-7544382380eb.png)
+
   
 Class Diagram:  
-![image](https://user-images.githubusercontent.com/72528884/197253154-32e79f9e-6557-46d2-b372-81e8d4c95185.png)
-
-
+![inc2classdiagram](https://user-images.githubusercontent.com/72528884/203927568-9a5e07f1-b05a-49db-a8ef-b97f2efca40e.jpg)
 
 ## Operating Environment 
 The bot instance will be run by python and the user will interact with the bot through discord.
