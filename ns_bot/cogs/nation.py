@@ -3,9 +3,10 @@ from typing import Literal, Optional
 import discord
 from discord import app_commands
 from discord.ext import commands
+
 from nationstates_bot import NationStatesBot
 from ns_bot.controllers.nation_controller import NationController
-from ns_bot.utils.logger import Logger
+from ns_bot.utils import Logger
 
 
 class Nation(commands.GroupCog, group_name="nation"):
