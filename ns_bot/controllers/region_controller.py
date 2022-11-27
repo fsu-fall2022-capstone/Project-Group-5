@@ -4,7 +4,7 @@ from typing import Literal, Optional
 import discord
 from discord import app_commands
 from discord.ext import commands
-from ns_bot.utils.formatter import format_xml
+from ns_bot.utils.formatter import format_region_info
 from ns_bot.controllers.base_nationstate_controller import BaseNationstateController
 from ns_bot.data.shards import VALID_REGION_SHARDS
 
@@ -22,4 +22,4 @@ class RegionController(BaseNationstateController):
         data = await self.bot.nationstates_api.get_region_data(
             region, shards=[shard] if shard else None
         )
-        await interaction.response.send_message(embeds=format_xml(data))
+        await interaction.response.send_message(embed=format_region_info(data))
