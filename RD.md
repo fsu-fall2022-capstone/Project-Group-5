@@ -46,13 +46,13 @@ they are not a part of. Currently being worked on, not fully implemented yet.
 
 ## Use Case Diagram
 Basic uses cases implemented at the moment along with their relation with the user.  
-![ucase inc 2](https://user-images.githubusercontent.com/72528884/204110148-41b8bd66-544d-401b-8f23-59518866a3a2.png)
+![usecasediainc2](https://user-images.githubusercontent.com/72528884/204115032-11453325-dba3-4290-a526-1a4e5ed6f9b6.png)
 
 
 ## Class Diagram
 Sequence Diagram:
 
-![sequence diagram without configure](https://user-images.githubusercontent.com/72528884/204078360-6f2adbcb-a538-4671-820b-7af4f73b0c8c.jpg)
+![seqdiainc2](https://user-images.githubusercontent.com/72528884/204115028-c46f653f-3d94-48be-b1c4-7544382380eb.png)
 
   
 Class Diagram:  
