@@ -34,9 +34,9 @@ async def format_nation_info(data:str, shard):
             case 'answered':
                 return [discord.Embed(title=f"{nation} has voted on {text} issues", color=color)]
             case 'banner':
-                pass
+                return [discord.Embed(title="ERROR", description=data, color=color)]
             case 'banners':
-                pass
+                return [discord.Embed(title="ERROR", description=data, color=color)]
             case 'capital':
                 return [discord.Embed(title=f"{text.title()} is the capital city of {nation} ", color=color)]
             case 'category':
@@ -132,9 +132,9 @@ async def format_nation_info(data:str, shard):
             case 'notable':
                 return [discord.Embed(title=f"{nation} is known for their {text}.", color=color)]
             case 'notables':
-                pass
+                return [discord.Embed(title="ERROR", description=data, color=color)]
             case 'policies':
-                pass
+                return [discord.Embed(title="ERROR", description=data, color=color)]
             case 'poorest':
                 return [discord.Embed(title=f"The poorest 10% of people in {nation} have a reported income of  {text} {national_currency}.", color=color)]
             case 'population':
@@ -145,7 +145,7 @@ async def format_nation_info(data:str, shard):
             case 'publicsector':
                 return [discord.Embed(title=f"{text}% of {nation}'s economy is controlled by it's government.", color=color)]
             case 'rcensus':
-                pass
+                return [discord.Embed(title=f"{nation}'s mining industry is ranked {text} within its region.",color=color)]
             case 'region':
                 return [discord.Embed(title=f"{nation} can be found in the {text} region.", color=color)]
             case 'religion':
@@ -185,7 +185,7 @@ async def format_nation_info(data:str, shard):
             case 'wcensus':
                 return [discord.Embed(title=f"{nation}'s mining industry ranks {text} in the world.", color=color)]
             case 'zombie':
-                pass
+                return [discord.Embed(title="ERROR", description=data, color=color)]
     else:
         return [discord.Embed(title="Nation Info", description=data)]
 
