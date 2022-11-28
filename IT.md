@@ -24,7 +24,7 @@ We would run commands such as `/nation info` to confirm that the data requested 
 tested this way. We have since included the `/add_nation` command in order to bring up a login/ create a new nation button, as well as a sync function 
 `@Nation States sync [~ |* | ^]` that allows for the global sync of a users nation, a copy of all global commands to the current guild then syncing, and the 
 removal of guild commands. `/configure` allows you to configure your nation in the context of receiving issues and sending them to specific channels within the 
-discord server. The user is able to determine when they want their issue vote to be recieved by their nation, between 1 and 24 hours. These issues that are sent 
+discord server. The user is able to determine when they want their issue vote to be received by their nation, between 1 and 24 hours. These issues that are sent 
 to the user are sent hourly, with an image of the newspaper issue that is being addressed shown to the user when sent, along with a thread that allows the user 
 to pick their option for the issue.
 

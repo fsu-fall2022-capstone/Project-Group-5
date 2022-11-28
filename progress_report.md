@@ -41,7 +41,7 @@
 >>> Robert: Worked on XML formatting and parsing.
 >>> Nicholas: Worked on XML formatting and parsing as well as the wrappers.
 >>> Tyler: Worked on setting up our encryption and decryption methods which will be used when we implement the database.
->>> Cameron: Worked on formatting issues into newpaper images.
+>>> Cameron: Worked on formatting issues into newspaper images.
 > 5) Everyone contributed to the video.
 
 ## 6) **Plans for the next increment**

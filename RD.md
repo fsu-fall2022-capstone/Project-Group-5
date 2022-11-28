@@ -24,11 +24,11 @@ The database system being used is PostgresSQL. The user will interact with the s
 
 (5) Remove nation (Priority: Medium) - Remove nation from the discord server it is currently in.
 
-(6) Login (Priority: High) - Login to an existing Nationstates Nation. Authenticate and check againt Nationstates API for correct credentials. Only need to login once to use nation for future.
+(6) Login (Priority: High) - Login to an existing Nationstates Nation. Authenticate and check against Nationstates API for correct credentials. Only need to login once to use nation for future.
 
 (7) Logout (Priority: Medium) - Logout of nation the discord server is currently logged in to.
 
-(8) Configure (Priority: High) - Configure nation to choose what channel issues are sent to. Also used to configure how long the timeframe for issues is.
+(8) Configure (Priority: High) - Configure nation to choose what channel issues are sent to. Also used to configure how long the time-frame for issues is.
 
 (9) Create issues (Priority: High) - Creates a random issue and provides variable amounts of options for the users of the Nationstates system.
 
