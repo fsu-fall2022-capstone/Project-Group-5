@@ -6,7 +6,7 @@ import discord
 from ns_bot.utils.wrappers import async_wrapper
 
 
-async def format_nation_info(data: str, shard):
+async def format_nation_info(data: str, shard: str):
 
     async_parse = async_wrapper(ET.fromstring)
     root: ET.Element = await async_parse(data)
