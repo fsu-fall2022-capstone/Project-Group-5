@@ -60,7 +60,7 @@ async def format_nation_info(
             return [embed]
         case "banners":
             interaction.response.defer(thinking=True)
-            banner_urls = [BASE_BANNER_URL + banner.txt for banner in root[0]]
+            banner_urls = [BASE_BANNER_URL + banner.text for banner in root[0]]
             list_length = len(banner_urls)
             results = []
             for url in banner_urls:
