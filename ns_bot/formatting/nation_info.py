@@ -59,7 +59,7 @@ async def format_nation_info(
             embed.set_image(url=BASE_BANNER_URL + text)
             return [embed]
         case "banners":
-            interaction.response.defer(thinking=True)
+            await interaction.response.defer(thinking=True)
             banner_urls = [BASE_BANNER_URL + banner.text for banner in root[0]]
             list_length = len(banner_urls)
             results = []
@@ -73,8 +73,10 @@ async def format_nation_info(
             for i in range(list_length):
                 img.paste(results[i], (0, results[0].height * i))
 
+            img.show()
             embed = discord.Embed(title=f"Banners for {nation}.", color=color)
             embed.set_image(img)
+            await interaction.followup.send(embeds=[embed])
             return [embed]
         case "capital":
             return [
