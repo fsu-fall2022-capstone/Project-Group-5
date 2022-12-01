@@ -1,12 +1,17 @@
 import xml.etree.ElementTree as ET
 from itertools import islice
 
+from PIL import Image
+from io import BytesIO
+from aiohttp import ClientSession
+
 import discord
 
 from ns_bot.utils.wrappers import async_wrapper
 
+BASE_BANNER_URL = "https://www.nationstates.net/images/banners/"
 
-async def format_nation_info(data: str, shard: str):
+async def format_nation_info(data: str, shard: str, web_session: ClientSession):
 
     async_parse = async_wrapper(ET.fromstring)
     root: ET.Element = await async_parse(data)
@@ -14,7 +19,6 @@ async def format_nation_info(data: str, shard: str):
     text = root[0].text
     color = discord.Color.random()
     national_currency = "UNKNOWN currency"
-    BASE_URL = "https://www.nationstates.net/images/banners/"
     if not shard:
         return [discord.Embed(title="Nation Info", description=data)]
     match shard:
@@ -51,10 +55,28 @@ async def format_nation_info(data: str, shard: str):
             return [discord.Embed(title=f"{nation} has voted on {text} issues", color=color)]
         case "banner":
             embed = discord.Embed(title=f"Banner of {nation}.",  color=color)
-            embed.set_image(url=BASE_URL + text)
+            embed.set_image(url=BASE_BANNER_URL + text)
             return [embed]
         case "banners":
-            return [discord.Embed(title="ERROR", description=data, color=color)]
+            banner_URL_Array = []
+            for i in range(0,len(root[0])):
+                banner_URL_Array.append(BASE_BANNER_URL + root[0][i].text)
+
+            list_length=len(banner_URL_Array)
+            results=[]
+            for i in range(0,list_length):
+                async with web_session.get(
+                    banner_URL_Array[i], headers={"User-Agent": "NS Discord Bot"}
+                    ) as response:
+                        results.append(Image.open(BytesIO(await response.content.read())))
+            
+            img = Image.new(mode="RGB", size=(results[0].width, results[0].height * list_length))
+            for i in range (0,list_length):
+                img.paste(results[i], (0,results[0].height * i))
+
+            embed.set_image(img)
+            embed = discord.Embed(title=f"Banners for {nation}.", color=color)
+            return [embed]
         case "capital":
             return [
                 discord.Embed(title=f"{text.title()} is the capital city of {nation} ", color=color)
@@ -343,6 +365,7 @@ async def format_nation_info(data: str, shard: str):
             ]
         case "zombie":
             return [discord.Embed(title="ERROR", description=data, color=color)]
+    
 
 
 def format_region_info(data, shard):
