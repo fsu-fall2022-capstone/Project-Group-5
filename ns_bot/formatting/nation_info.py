@@ -8,7 +8,7 @@ from PIL import Image
 from ns_bot.utils.wrappers import async_wrapper
 
 BASE_BANNER_URL = "https://www.nationstates.net/images/banners/"
-
+IMAGE_LIMIT=10
 
 async def format_nation_info(
     data: str, shard: str, web_session: ClientSession, interaction: discord.Interaction
@@ -62,25 +62,51 @@ async def format_nation_info(
             await interaction.response.defer(thinking=True)
             banner_urls = [BASE_BANNER_URL + banner.text for banner in root[0]]
             list_length = len(banner_urls)
+            if list_length>IMAGE_LIMIT:
+                list_length=IMAGE_LIMIT      
+
             results = []
             for url in banner_urls:
                 async with web_session.get(
                     url, headers={"User-Agent": "NS Discord Bot"}
                 ) as response:
                     results.append(Image.open(BytesIO(await response.content.read())))
+                        
+            w=results[0].width
+            h=results[0].height
+            half_len=-(-list_length//2)
 
-            img = Image.new(mode="RGB", size=(results[0].width, results[0].height * list_length))
+            img = Image.new(
+                mode="RGB", 
+                size=(w * 2, h * (half_len)), 
+                color=(47,49,54)
+            )
+  
             for i in range(list_length):
-                img.paste(results[i], (0, results[0].height * i))
+                #left column
+                if(i<list_length):
+                    img.paste(
+                        results[i], 
+                        (0, h * i)
+                    )
+                #right column
+                img.paste(
+                    results[i], 
+                    (w, h * (i-half_len))
+                )
 
-            img.show()
+            img_file = BytesIO()
+            img.save(img_file, format="PNG")
+            img_file.seek(0)
+            img_file = discord.File(img_file, filename="image.png")
             embed = discord.Embed(title=f"Banners for {nation}.", color=color)
-            embed.set_image(img)
-            await interaction.followup.send(embeds=[embed])
-            return [embed]
+            embed.set_image(url="attachment://image.png")
+            return[await interaction.followup.send(embed=embed, file=img_file)]
         case "capital":
             return [
-                discord.Embed(title=f"{text.title()} is the capital city of {nation} ", color=color)
+                discord.Embed(
+                    title=f"{text.title()} is the capital city of {nation} ", 
+                    color=color)
             ]
         case "category":
             return [discord.Embed(title=f"{nation} is a {text}!", color=color)]
