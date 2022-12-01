@@ -14,6 +14,7 @@ async def format_nation_info(data: str, shard: str):
     text = root[0].text
     color = discord.Color.random()
     national_currency = "UNKNOWN currency"
+    BASE_URL = "https://www.nationstates.net/images/banners/"
     if not shard:
         return [discord.Embed(title="Nation Info", description=data)]
     match shard:
@@ -49,7 +50,9 @@ async def format_nation_info(data: str, shard: str):
         case "answered":
             return [discord.Embed(title=f"{nation} has voted on {text} issues", color=color)]
         case "banner":
-            return [discord.Embed(title="ERROR", description=data, color=color)]
+            embed = discord.Embed(title=f"Banner of {nation}.",  color=color)
+            embed.set_image(url=BASE_URL + text)
+            return [embed]
         case "banners":
             return [discord.Embed(title="ERROR", description=data, color=color)]
         case "capital":
