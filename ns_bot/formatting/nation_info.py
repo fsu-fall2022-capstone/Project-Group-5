@@ -126,11 +126,17 @@ async def format_nation_info(
                 )
             ]
         case "customleader":
-            return [discord.Embed(title="ERROR", description=data)]
+            if text is None:
+                return [discord.Embed(title=f"{nation} has no custom leader.", color=color)]
+            return [discord.Embed(title=f"{nation}'s custom leader is: {text}",color=color)]
         case "customcapital":
-            return [discord.Embed(title="ERROR", description=data, color=color)]
+            if text is None:
+                return [discord.Embed(title=f"{nation} has no custom capital.", color=color)]
+            return [discord.Embed(title=f"{nation}'s custom capital is: {text}",color=color)]
         case "customreligion":
-            return [discord.Embed(title="ERROR", description=data, color=color)]
+            if text is None:
+                return [discord.Embed(title=f"{nation} has no custom religion.", color=color)]
+            return [discord.Embed(title=f"{nation}'s custom religion is: {text}",color=color)]
         case "dbid":
             return [discord.Embed(title=f"Database ID for {nation}: {text}", color=color)]
         case "deaths":
