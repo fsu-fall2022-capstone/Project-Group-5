@@ -338,7 +338,3 @@ async def format_nation_info(
             return [discord.Embed(title=f"{nation}'s mining industry ranks {text} in the world.")]
         case "zombie":
             return [discord.Embed(title="ERROR", description=data)]
-
-
-def format_region_info(data, shard):
-    return discord.Embed(title="Region Info", description=data)
