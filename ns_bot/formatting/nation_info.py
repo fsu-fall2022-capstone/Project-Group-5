@@ -15,7 +15,7 @@ async def format_nation_info(
 ):
 
     async_parse = async_wrapper(ET.fromstring)
-    root: ET.Element = await async_parse(data)
+    root: ET.Element = await async_parse(data.replace('&quot;', "\""))
     nation = " ".join(root.attrib["id"].title().split("_"))
     text = root[0].text
     color = discord.Color.random()
@@ -201,6 +201,8 @@ async def format_nation_info(
                 )
             ]
         case "factbooklist":
+            if text is None:
+                return [discord.Embed(title=f"{nation} has no factbook list.", color=color)]
             return [discord.Embed(title="ERROR", description=data, color=color)]
         case "firstlogin":
             return [
@@ -274,7 +276,18 @@ async def format_nation_info(
         case "leader":
             return [discord.Embed(title=f"{text} is the current leader of {nation}.", color=color)]
         case "legislation":
-            return [discord.Embed(title="ERROR", description=data, color=color)]
+            if text is None:
+                return [discord.Embed(title=f"{nation} has no dispatch list.", color=color)]
+            embed = discord.Embed(title=f"Dispatch list for {nation}", color=color)
+            counter=1
+            for id in root[0].findall('LAW'):
+                embed.add_field(
+                    name="\u200b",
+                    value=f"{counter}) {id.text}. ",
+                    inline=False
+                )
+                counter+= 1
+            return [embed]
         case "majorindustry":
             return [
                 discord.Embed(title=f"{text} is the biggest industry of {nation}!", color=color)
