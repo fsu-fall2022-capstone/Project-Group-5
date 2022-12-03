@@ -22,7 +22,4 @@ class NationController(BaseNationstateController):
         data = await self.bot.nationstates_api.get_public_nation_data(
             nation, shards=[shard] if shard else None
         )
-        embeds = await format_nation_info(nation, shard, data, self.bot.web_client, interaction)
-        if shard in ["banners"]:
-            return await interaction.followup.send(embeds=embeds)
-        await interaction.response.send_message(embeds=embeds)
+        await format_nation_info(nation, shard, data, self.bot, interaction)
