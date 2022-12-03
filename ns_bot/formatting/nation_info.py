@@ -15,7 +15,6 @@ IMAGE_LIMIT = 10
 async def format_nation_info(
     nation: str, shard: str, data: str, bot: NationStatesBot, interaction: discord.Interaction
 ):
-    web_session = bot.web_client
     async_parse = async_wrapper(ET.fromstring)
     root: ET.Element = await async_parse(data.replace("&quot;", '"'))
     text = root[0].text
@@ -53,16 +52,11 @@ async def format_nation_info(
             await interaction.response.send_message(embed=embed)
         case "banners":
             await interaction.response.defer(thinking=True)
-            banner_urls = [BASE_BANNER_URL + banner.text for banner in root[0]]
-            list_length = min(IMAGE_LIMIT, len(banner_urls))
 
-            image_results: list[Image.Image] = []
-            for url in banner_urls:
-                async with web_session.get(
-                    url, headers={"User-Agent": "NS Discord Bot"}
-                ) as response:
-                    image_results.append(Image.open(BytesIO(await response.content.read())))
+            banner_urls = [banner.text for banner in root[0]][:IMAGE_LIMIT]
+            image_results: list[Image.Image] = await bot.nationstates_api.get_banners(banner_urls)
 
+            list_length = len(image_results)
             w = image_results[0].width
             h = image_results[0].height
             half_len = -(-list_length // 2)
