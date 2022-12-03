@@ -28,7 +28,6 @@ class ServerController(BaseNationstateController):
         self.nation_table = nation_table
         self.live_issues_table = live_issues_table
         self.issue_votes_table = issue_votes_table
-        self.nation_dump = {}
 
         self.async_xmltodict = async_wrapper(xmltodict.parse)
 
@@ -142,7 +141,7 @@ class ServerController(BaseNationstateController):
                     continue
 
                 options = [option["#text"] for option in issue["OPTION"]]
-                nation_dump = self.nation_dump.get(nation_name, {})
+                nation_dump = self.bot.nation_dump.get(nation_name, {})
                 flag = nation_dump.get(
                     "FLAG", "https://www.nationstates.net/images/flags/default.jpg"
                 )
@@ -215,8 +214,5 @@ class ServerController(BaseNationstateController):
 
         data_dict = await self.async_xmltodict(dump_data)
         nations = data_dict["NATIONS"]["NATION"]
-        nation_table_data = await self.nation_table.get_all()
-        tracked_nations = {nation["nation"] for nation in nation_table_data}
         for nation in nations:
-            if nation["NAME"] in tracked_nations:
-                self.nation_dump[nation["NAME"]] = nation
+            self.bot.nation_dump[nation["NAME"]] = nation
