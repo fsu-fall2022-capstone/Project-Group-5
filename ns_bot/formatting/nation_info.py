@@ -302,7 +302,18 @@ async def format_nation_info(
             else:
                 return [discord.Embed(title=f"{nation} is not a member of the Security Council.")]
         case "sectors":
-            pass
+            if text is None:
+                return [discord.Embed(title=f"{nation} has no sector information.")]
+            embed = discord.Embed(title=f"{nation} has its sectors split in the following way:")
+            for id in root[0].iter('BLACKMARKET'): bm=id.text
+            for id in root[0].iter('GOVERNMENT'): gvt=id.text 
+            for id in root[0].iter('INDUSTRY'):ind=id.text
+            for id in root[0].iter('PUBLIC'): pub=id.text
+            embed.add_field(
+                name="\u200b",
+                value =f"Blackmarket:{bm}%\nGovernment:{gvt}%\nIndustry:{ind}%\nPublic:{pub}%\n"  
+            )
+            return [embed]
         case "sensibilities":
             return [discord.Embed(title=f"The people of {nation} are known to be {text}.")]
         case "tax":
