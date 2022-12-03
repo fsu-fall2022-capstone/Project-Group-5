@@ -4,6 +4,7 @@ from io import BytesIO
 import discord
 from aiohttp import ClientSession
 from PIL import Image
+from datetime import datetime
 
 from ns_bot.utils.wrappers import async_wrapper
 
@@ -250,7 +251,21 @@ async def format_nation_info(
                 )
             ]
         case "happenings":
-            return [discord.Embed(title="ERROR", description=data, color=color)]
+            if text is None:
+                return [discord.Embed(title=f"{nation} has no happenings.", color=color)]
+            embed = discord.Embed(title=f"Happenings for {nation}", color=color)
+            for id in root[0].findall('EVENT'):
+                results={}
+                for elem in id:
+                    results[elem.tag]=elem.text.strip()
+                ts=results.get('TIMESTAMP')
+                temp = float(ts)
+                dt=datetime.fromtimestamp(temp)
+                embed.add_field(
+                    name=dt,
+                    value=results.get('TEXT')
+                )
+            return [embed]
         case "income":
             return [
                 discord.Embed(
