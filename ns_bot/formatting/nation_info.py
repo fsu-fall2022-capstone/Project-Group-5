@@ -377,17 +377,18 @@ async def format_nation_info(
                 )
         case "sectors":
             if text is None:
-                return [discord.Embed(title=f"{nation} has no sector information.")]
-            embed = discord.Embed(title=f"{nation} has its sectors split in the following way:")
-            for id in root[0].iter('BLACKMARKET'): bm=id.text
-            for id in root[0].iter('GOVERNMENT'): gvt=id.text 
-            for id in root[0].iter('INDUSTRY'):ind=id.text
-            for id in root[0].iter('PUBLIC'): pub=id.text
-            embed.add_field(
-                name="\u200b",
-                value =f"Blackmarket:{bm}%\nGovernment:{gvt}%\nIndustry:{ind}%\nPublic:{pub}%\n"  
+                return interaction.response.send_message(
+                    embed=discord.Embed(title=f"{nation} has no sector information.")
+                )
+            await interaction.response.send_message(
+                embed=discord.Embed(
+                    title=f"{nation} sectors split",
+                    description=f"Blackmarket:{root[0].findtext('BLACKMARKET')}%\
+                    \nGovernment:{root[0].findtext('GOVERNMENT')}%\
+                    \nIndustry:{root[0].findtext('INDUSTRY')}%\
+                    \nPublic:{root[0].findtext('PUBLIC')}%\n",
+                )
             )
-            await interaction.response.send_message(embed=embed)
         case "sensibilities":
             await interaction.response.send_message(
                 embed=discord.Embed(title=f"The people of {nation} are known to be {text}.")
