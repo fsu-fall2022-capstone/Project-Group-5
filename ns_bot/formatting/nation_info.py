@@ -231,7 +231,24 @@ async def format_nation_info(
                 embed=discord.Embed(title=f"{nation} has a GDP of {text} {national_currency}!")
             )
         case "govt":
-            pass
+            embed = discord.Embed(title=f"{nation}'s government")
+            await interaction.response.send_message(
+                embed=discord.Embed(
+                    title=f"{nation} Government split",
+                    description=f"Administration:{root[0].findtext('ADMINISTRATION')}%\
+                    \nDefence:{root[0].findtext('DEFENCE')}%\
+                    \nEducation:{root[0].findtext('EDUCATION')}%\
+                    \nEnvironment:{root[0].findtext('ENVIRONMENT')}%\
+                    \nHealthcare:{root[0].findtext('HEALTHCARE')}%\
+                    \nCommerce:{root[0].findtext('COMMERCE')}%\
+                    \nInternational Aid:{root[0].findtext('INTERNATIONALAID')}%\
+                    \nLaw and Order:{root[0].findtext('LAWANDORDER')}%\
+                    \nPublic Transport:{root[0].findtext('PUBLICTRANSPORT')}%\
+                    \nSocial Equality:{root[0].findtext('SOCIALEQUALITY')}%\
+                    \nSpirituality:{root[0].findtext('SPIRITUALITY')}%\
+                    \nWelfare:{root[0].findtext('WELFARE')}%\n",
+                )
+            )
         case "govtdesc":
             await interaction.response.send_message(embed=discord.Embed(title=text))
         case "govtpriority":
@@ -306,8 +323,10 @@ async def format_nation_info(
                 embed=discord.Embed(title=f"{nation} is known for their {text}.")
             )
         case "notables":
+            notables = "\n".join([notables.text for notables in root[0]])
             await interaction.response.send_message(
-                embed=discord.Embed(title="ERROR", description=data)
+                embed=discord.Embed(title=f"The people of {nation} are known for:\n",
+                description=notables)
             )
         case "policies":
             await interaction.response.send_message(
