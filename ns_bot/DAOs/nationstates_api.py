@@ -1,9 +1,11 @@
 import asyncio
 from datetime import datetime
+from io import BytesIO
 from typing import Optional
 
 import asyncpg
 from aiohttp import ClientSession
+from PIL import Image
 
 from ns_bot.DAOs.postgresql import Login
 from ns_bot.utils import decrypt
@@ -23,6 +25,7 @@ def ratelimit(function):
 class NationStatesAPI:
     USER_AGENT = "NS Discord Bot"
     BASE_URL = "https://www.nationstates.net/cgi-bin/api.cgi"
+    BASE_IMAGE_URL = "https://www.nationstates.net/images/"
 
     def __init__(self, web_client: ClientSession, db_pool: asyncpg.Pool) -> None:
         self.web_client = web_client
@@ -107,6 +110,17 @@ class NationStatesAPI:
         headers = {"User-Agent": self.USER_AGENT}
         async with self.web_client.get(URL, headers=headers) as response:
             return await response.content.read()
+
+    @ratelimit
+    async def get_image(self, url: str):
+        async with self.web_client.get(url, headers={"User-Agent": self.USER_AGENT}) as response:
+            return Image.open(BytesIO(await response.content.read()))
+
+    async def get_banner(self, banner: str):
+        return await self.get_image(self.BASE_IMAGE_URL + banner)
+
+    async def get_banners(self, banners: list[str]):
+        return [await self.get_banner(banner) for banner in banners]
 
     async def _rate_limit(self):
         # await asyncio.sleep(0.1)
