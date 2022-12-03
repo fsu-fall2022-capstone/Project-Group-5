@@ -387,7 +387,7 @@ async def format_nation_info(
                 name="\u200b",
                 value =f"Blackmarket:{bm}%\nGovernment:{gvt}%\nIndustry:{ind}%\nPublic:{pub}%\n"  
             )
-            return [embed]
+            await interaction.response.send_message(embed=embed)
         case "sensibilities":
             await interaction.response.send_message(
                 embed=discord.Embed(title=f"The people of {nation} are known to be {text}.")
