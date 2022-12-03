@@ -6,6 +6,7 @@ import discord
 from aiohttp import ClientSession
 from PIL import Image
 
+from nationstates_bot import NationStatesBot
 from ns_bot.utils.wrappers import async_wrapper
 
 BASE_BANNER_URL = "https://www.nationstates.net/images/banners/"
@@ -13,13 +14,13 @@ IMAGE_LIMIT = 10
 
 
 async def format_nation_info(
-    nation: str, shard: str, data: str, web_session: ClientSession, interaction: discord.Interaction
+    nation: str, shard: str, data: str, bot: NationStatesBot, interaction: discord.Interaction
 ):
-
+    web_session = bot.web_client
     async_parse = async_wrapper(ET.fromstring)
     root: ET.Element = await async_parse(data.replace("&quot;", '"'))
     text = root[0].text
-    national_currency = "UNKNOWN currency"
+    national_currency = bot.nation_dump.get(nation, {}).get("CURRENCY", "Dollars")
     if not shard:
         return [discord.Embed(title="Nation Info", description=data)]
     match shard:
@@ -186,11 +187,7 @@ async def format_nation_info(
                 )
             ]
         case "gdp":
-            return [
-                discord.Embed(
-                    title=f"The nation of {nation} has a GDP of {text} {national_currency}!"
-                )
-            ]
+            return [discord.Embed(title=f"{nation} has a GDP of {text} {national_currency}!")]
         case "govt":
             pass
         case "govtdesc":
@@ -258,7 +255,7 @@ async def format_nation_info(
         case "poorest":
             return [
                 discord.Embed(
-                    title=f"The poorest 10% of people in {nation} have a reported income of  {text} {national_currency}."
+                    title=f"The poorest people in {nation}, on average have a reported income of {text} {national_currency}."
                 )
             ]
         case "population":
@@ -289,7 +286,7 @@ async def format_nation_info(
         case "richest":
             return [
                 discord.Embed(
-                    title=f"The richest 10% of people in {nation} have a reported income of  {text} {national_currency}."
+                    title=f"The richest people in {nation}, on average have a reported income of {text} {national_currency}."
                 )
             ]
         case "scvote":
