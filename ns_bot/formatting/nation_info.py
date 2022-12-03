@@ -1,22 +1,23 @@
 import xml.etree.ElementTree as ET
+from datetime import datetime
 from io import BytesIO
 
 import discord
 from aiohttp import ClientSession
 from PIL import Image
-from datetime import datetime
 
 from ns_bot.utils.wrappers import async_wrapper
 
 BASE_BANNER_URL = "https://www.nationstates.net/images/banners/"
-IMAGE_LIMIT=10
+IMAGE_LIMIT = 10
+
 
 async def format_nation_info(
     data: str, shard: str, web_session: ClientSession, interaction: discord.Interaction
 ):
 
     async_parse = async_wrapper(ET.fromstring)
-    root: ET.Element = await async_parse(data.replace('&quot;', "\""))
+    root: ET.Element = await async_parse(data.replace("&quot;", '"'))
     nation = " ".join(root.attrib["id"].title().split("_"))
     text = root[0].text
     color = discord.Color.random()
@@ -63,8 +64,8 @@ async def format_nation_info(
             await interaction.response.defer(thinking=True)
             banner_urls = [BASE_BANNER_URL + banner.text for banner in root[0]]
             list_length = len(banner_urls)
-            if list_length>IMAGE_LIMIT:
-                list_length=IMAGE_LIMIT      
+            if list_length > IMAGE_LIMIT:
+                list_length = IMAGE_LIMIT
 
             results = []
             for url in banner_urls:
@@ -72,29 +73,19 @@ async def format_nation_info(
                     url, headers={"User-Agent": "NS Discord Bot"}
                 ) as response:
                     results.append(Image.open(BytesIO(await response.content.read())))
-                        
-            w=results[0].width
-            h=results[0].height
-            half_len=-(-list_length//2)
 
-            img = Image.new(
-                mode="RGB", 
-                size=(w * 2, h * (half_len)), 
-                color=(47,49,54)
-            )
-  
+            w = results[0].width
+            h = results[0].height
+            half_len = -(-list_length // 2)
+
+            img = Image.new(mode="RGB", size=(w * 2, h * (half_len)), color=(47, 49, 54))
+
             for i in range(list_length):
-                #left column
-                if(i<list_length):
-                    img.paste(
-                        results[i], 
-                        (0, h * i)
-                    )
-                #right column
-                img.paste(
-                    results[i], 
-                    (w, h * (i-half_len))
-                )
+                # left column
+                if i < list_length:
+                    img.paste(results[i], (0, h * i))
+                # right column
+                img.paste(results[i], (w, h * (i - half_len)))
 
             img_file = BytesIO()
             img.save(img_file, format="PNG")
@@ -102,12 +93,10 @@ async def format_nation_info(
             img_file = discord.File(img_file, filename="image.png")
             embed = discord.Embed(title=f"Banners for {nation}.", color=color)
             embed.set_image(url="attachment://image.png")
-            return[await interaction.followup.send(embed=embed, file=img_file)]
+            return [await interaction.followup.send(embed=embed, file=img_file)]
         case "capital":
             return [
-                discord.Embed(
-                    title=f"{text.title()} is the capital city of {nation} ", 
-                    color=color)
+                discord.Embed(title=f"{text.title()} is the capital city of {nation} ", color=color)
             ]
         case "category":
             return [discord.Embed(title=f"{nation} is a {text}!", color=color)]
@@ -129,15 +118,15 @@ async def format_nation_info(
         case "customleader":
             if text is None:
                 return [discord.Embed(title=f"{nation} has no custom leader.", color=color)]
-            return [discord.Embed(title=f"{nation}'s custom leader is: {text}",color=color)]
+            return [discord.Embed(title=f"{nation}'s custom leader is: {text}", color=color)]
         case "customcapital":
             if text is None:
                 return [discord.Embed(title=f"{nation} has no custom capital.", color=color)]
-            return [discord.Embed(title=f"{nation}'s custom capital is: {text}",color=color)]
+            return [discord.Embed(title=f"{nation}'s custom capital is: {text}", color=color)]
         case "customreligion":
             if text is None:
                 return [discord.Embed(title=f"{nation} has no custom religion.", color=color)]
-            return [discord.Embed(title=f"{nation}'s custom religion is: {text}",color=color)]
+            return [discord.Embed(title=f"{nation}'s custom religion is: {text}", color=color)]
         case "dbid":
             return [discord.Embed(title=f"Database ID for {nation}: {text}", color=color)]
         case "deaths":
@@ -170,17 +159,15 @@ async def format_nation_info(
             if text is None:
                 return [discord.Embed(title=f"{nation} has no dispatch list.", color=color)]
             embed = discord.Embed(title=f"Dispatch list for {nation}", color=color)
-            results={}
-            for id in root[0].findall('DISPATCH'):
+            results = {}
+            for id in root[0].findall("DISPATCH"):
                 for elem in id:
-                    results[elem.tag]=elem.text.strip()
-                    kvpair=""
-                    for k,v in results.items():
-                        kvpair=kvpair + k + ": " + v + "\n"
-                embed.add_field(
-                    name=f"Dispatch ID: {id.attrib.get('id')}",
-                    value=kvpair)
-                results={}
+                    results[elem.tag] = elem.text.strip()
+                    kvpair = ""
+                    for k, v in results.items():
+                        kvpair = kvpair + k + ": " + v + "\n"
+                embed.add_field(name=f"Dispatch ID: {id.attrib.get('id')}", value=kvpair)
+                results = {}
             return [embed]
         case "endorsements":
             if text:
@@ -254,17 +241,14 @@ async def format_nation_info(
             if text is None:
                 return [discord.Embed(title=f"{nation} has no happenings.", color=color)]
             embed = discord.Embed(title=f"Happenings for {nation}", color=color)
-            for id in root[0].findall('EVENT'):
-                results={}
+            for id in root[0].findall("EVENT"):
+                results = {}
                 for elem in id:
-                    results[elem.tag]=elem.text.strip()
-                ts=results.get('TIMESTAMP')
+                    results[elem.tag] = elem.text.strip()
+                ts = results.get("TIMESTAMP")
                 temp = float(ts)
-                dt=datetime.fromtimestamp(temp)
-                embed.add_field(
-                    name=dt,
-                    value=results.get('TEXT')
-                )
+                dt = datetime.fromtimestamp(temp)
+                embed.add_field(name=dt, value=results.get("TEXT"))
             return [embed]
         case "income":
             return [
@@ -294,14 +278,10 @@ async def format_nation_info(
             if text is None:
                 return [discord.Embed(title=f"{nation} has no dispatch list.", color=color)]
             embed = discord.Embed(title=f"Dispatch list for {nation}", color=color)
-            counter=1
-            for id in root[0].findall('LAW'):
-                embed.add_field(
-                    name="\u200b",
-                    value=f"{counter}) {id.text}. ",
-                    inline=False
-                )
-                counter+= 1
+            counter = 1
+            for id in root[0].findall("LAW"):
+                embed.add_field(name="\u200b", value=f"{counter}) {id.text}. ", inline=False)
+                counter += 1
             return [embed]
         case "majorindustry":
             return [
