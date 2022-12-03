@@ -166,7 +166,21 @@ async def format_nation_info(
         case "dispatches":
             return [discord.Embed(title=f"{nation} has had {text} dispatches", color=color)]
         case "dispatchlist":
-            return [discord.Embed(title="ERROR", description=data, color=color)]
+            if text is None:
+                return [discord.Embed(title=f"{nation} has no dispatch list.", color=color)]
+            embed = discord.Embed(title=f"Dispatch list for {nation}", color=color)
+            results={}
+            for id in root[0].findall('DISPATCH'):
+                for elem in id:
+                    results[elem.tag]=elem.text.strip()
+                    kvpair=""
+                    for k,v in results.items():
+                        kvpair=kvpair + k + ": " + v + "\n"
+                embed.add_field(
+                    name=f"Dispatch ID: {id.attrib.get('id')}",
+                    value=kvpair)
+                results={}
+            return [embed]
         case "endorsements":
             if text:
                 return [
