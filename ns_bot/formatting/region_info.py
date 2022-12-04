@@ -11,7 +11,8 @@ from ns_bot.utils.wrappers import async_wrapper
 
 
 class FormatRegionInfo(Formatter):
-    async def __init__(self, interaction: discord.Interaction, shard: str, data: str) -> None:
+    @classmethod
+    async def format(cls, interaction: discord.Interaction, shard: str, data: str) -> None:
         await interaction.response.send_message(
             embed=discord.Embed(title="Region Info", description=data)
         )

@@ -10,8 +10,9 @@ from ns_bot.formatting import Formatter
 
 
 class FormatNationInfo(Formatter):
-    async def __init__(
-        self,
+    @classmethod
+    async def format(
+        cls,
         nation: str,
         shard: str,
         data: str,
@@ -19,8 +20,8 @@ class FormatNationInfo(Formatter):
         interaction: discord.Interaction,
     ) -> None:
 
-        data = self.clean_data(data)
-        root: ET.Element = await self.async_xml_parse(data)
+        data = cls.clean_data(data)
+        root: ET.Element = await cls.async_xml_parse(data)
         text = root[0].text
 
         if not shard:
@@ -54,10 +55,10 @@ class FormatNationInfo(Formatter):
                 )
             case "banner":
                 embed = discord.Embed(title=f"Banner of {nation}.")
-                embed.set_image(url=self.BASE_BANNER_URL + text)
+                embed.set_image(url=cls.BASE_BANNER_URL + text)
                 await interaction.response.send_message(embed=embed)
             case "banners":
-                await self.handle_banners(interaction, nation, root, bot)
+                await cls.handle_banners(interaction, nation, root, bot)
             case "capital":
                 await interaction.response.send_message(
                     embed=discord.Embed(title=f"{text.title()} is the capital city of {nation} ")
@@ -486,12 +487,13 @@ class FormatNationInfo(Formatter):
                     )
                 )
 
+    @classmethod
     async def handle_banners(
-        self, interaction: discord.Interaction, nation: str, root: ET.Element, bot: NationStatesBot
+        cls, interaction: discord.Interaction, nation: str, root: ET.Element, bot: NationStatesBot
     ):
         await interaction.response.defer(thinking=True)
 
-        banner_urls = [banner.text for banner in root[0]][: self.IMAGE_LIMIT]
+        banner_urls = [banner.text for banner in root[0]][: cls.IMAGE_LIMIT]
         image_results: list[Image.Image] = await bot.nationstates_api.get_banners(banner_urls)
 
         list_length = len(image_results)
