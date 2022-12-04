@@ -16,7 +16,7 @@ async def format_nation_info(
     nation: str, shard: str, data: str, bot: NationStatesBot, interaction: discord.Interaction
 ):
     async_parse = async_wrapper(ET.fromstring)
-    root: ET.Element = await async_parse(data.replace("&quot;", '"'))
+    root: ET.Element = await async_parse(data.replace("&quot;", '"').replace("@@",""))
     text = root[0].text
     if not shard:
         await interaction.response.send_message(
@@ -190,9 +190,13 @@ async def format_nation_info(
                 await interaction.response.send_message(
                     embed=discord.Embed(title=f"{nation} has no factbook list.")
                 )
-            await interaction.response.send_message(
-                embed=discord.Embed(title="ERROR", description=data)
-            )
+            embed = discord.Embed(title=f"Fact book for {nation}")
+            for id in root[0].findall("FACTBOOK")[:25]:
+                embed.add_field(
+                    name=f"Fact book ID: {id.attrib.get('id')}",
+                    value="\n".join(f"{element.tag}: {element.text.strip()}" for element in id),
+                )
+            await interaction.response.send_message(embed=embed)
         case "firstlogin":
             await interaction.response.send_message(
                 embed=discord.Embed(title=f"The nation of {nation} was first logged in on {text}.")
@@ -304,7 +308,7 @@ async def format_nation_info(
                 return await interaction.response.send_message(
                     embed=discord.Embed(title=f"{nation} has no dispatch list.")
                 )
-            embed = discord.Embed(title=f"Dispatch list for {nation}")
+            embed = discord.Embed(title=f"Legislation for {nation}")
             for counter, id in enumerate(root[0].findall("LAW")):
                 embed.add_field(name="\u200b", value=f"{counter + 1}) {id.text}. ", inline=False)
             await interaction.response.send_message(embed=embed)
@@ -404,10 +408,10 @@ async def format_nation_info(
             await interaction.response.send_message(
                 embed=discord.Embed(
                     title=f"{nation} sectors split",
-                    description=f"Blackmarket:{root[0].findtext('BLACKMARKET')}%\
-                    \nGovernment:{root[0].findtext('GOVERNMENT')}%\
-                    \nIndustry:{root[0].findtext('INDUSTRY')}%\
-                    \nPublic:{root[0].findtext('PUBLIC')}%\n",
+                    description=f"Blackmarket: {root[0].findtext('BLACKMARKET')}%\
+                    \nGovernment: {root[0].findtext('GOVERNMENT')}%\
+                    \nIndustry: {root[0].findtext('INDUSTRY')}%\
+                    \nPublic: {root[0].findtext('PUBLIC')}%\n",
                 )
             )
         case "sensibilities":
