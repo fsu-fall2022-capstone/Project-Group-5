@@ -7,7 +7,7 @@ from discord.ext import commands
 
 from ns_bot.controllers.base_nationstate_controller import BaseNationstateController
 from ns_bot.data.shards import VALID_REGION_SHARDS
-from ns_bot.formatting.region_info import format_region_info
+from ns_bot.formatting.region_info import FormatRegionInfo
 
 
 class RegionController(BaseNationstateController):
@@ -23,4 +23,4 @@ class RegionController(BaseNationstateController):
         data = await self.bot.nationstates_api.get_region_data(
             region, shards=[shard] if shard else None
         )
-        await interaction.response.send_message(embed=format_region_info(data))
+        await FormatRegionInfo(interaction, shard, data)
