@@ -11,4 +11,6 @@ class Formatter:
 
     @staticmethod
     def clean_data(data: str):
+        if not data:
+            return data
         return data.replace("&quot;", '"').replace("@@", "")
