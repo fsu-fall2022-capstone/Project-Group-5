@@ -16,7 +16,8 @@ async def format_nation_info(
     nation: str, shard: str, data: str, bot: NationStatesBot, interaction: discord.Interaction
 ):
     async_parse = async_wrapper(ET.fromstring)
-    root: ET.Element = await async_parse(data.replace("&quot;", '"').replace("@@",""))
+    data = data.replace("&quot;", '"').replace("@@", "")
+    root: ET.Element = await async_parse(data)
     text = root[0].text
     if not shard:
         await interaction.response.send_message(
@@ -289,7 +290,8 @@ async def format_nation_info(
             )
         case "industrydesc":
             await interaction.response.send_message(
-                embed=discord.Embed(title=f"Industry description for {nation}", description=text))
+                embed=discord.Embed(title=f"Industry description for {nation}", description=text)
+            )
         case "influence":
             await interaction.response.send_message(
                 embed=discord.Embed(
@@ -336,8 +338,9 @@ async def format_nation_info(
         case "notables":
             notables = "\n".join([notables.text for notables in root[0]])
             await interaction.response.send_message(
-                embed=discord.Embed(title=f"The people of {nation} are known for:\n",
-                description=notables)
+                embed=discord.Embed(
+                    title=f"The people of {nation} are known for:\n", description=notables
+                )
             )
         case "policies":
             if text is None:
@@ -461,11 +464,11 @@ async def format_nation_info(
             badges = ",".join([badges.text for badges in root[0]])
             if badges == "":
                 return await interaction.response.send_message(
-                    embed=discord.Embed(title=f"{nation} has no world assembly bagdes.")
+                    embed=discord.Embed(title=f"{nation} has no world assembly badges.")
                 )
-            embed=discord.Embed(
+            embed = discord.Embed(
                 title=f"{nation} has been commended by the following Security Council Resolutions:",
-                description=badges
+                description=badges,
             )
             await interaction.response.send_message(embed=embed)
         case "wcensus":
