@@ -29,22 +29,25 @@ class FormatNationInfo(Formatter):
                 await interaction.response.send_message(
                     embed=discord.Embed(title=f"{nation} has no dispatch list.")
                 )
+                return
             desc = ""
+            flag_url: str = "https://www.nationstates.net/images/flags/Default.svg"
             for id in root:
-                if id.tag == "FIRSTLOGIN" or id.tag== "LASTLOGIN":     
-                    temp = float(id.text)  
-                    ts = datetime.fromtimestamp(temp)  
-                    desc +=f"{id.tag}: {ts}\n"        
-                else:  
-                    desc +=f"{id.tag}: {id.text}\n"
-                for elem in id:
-                    if elem.tag == 'CAUSE':
-                        desc += f"-{elem.attrib}: {elem.text.strip()}\n"
+                if id.tag == "FLAG":
+                    flag_url = id.text
+                elif id.tag == "FIRSTLOGIN" or id.tag == "LASTLOGIN":
+                    time_stamp = datetime.fromtimestamp(float(id.text))
+                    desc += f"\n{id.tag}: {time_stamp}\n"
+                else:
+                    desc += f"\n{id.tag}: {id.text}"
+                for element in id:
+                    if element.tag == "CAUSE":
+                        desc += f"-{element.attrib}: {element.text.strip()}\n"
                     else:
-                        desc += f"-{elem.tag}: {elem.text.strip()}\n"
-            await interaction.response.send_message(
-                embed=discord.Embed(title=f"National information for {nation}", description=desc)
-            )
+                        desc += f"-{element.tag}: {element.text.strip()}\n"
+            embed = discord.Embed(title=f"National information for {nation}", description=desc)
+            embed.set_thumbnail(url=flag_url)
+            await interaction.response.send_message(embed=embed)
 
         match shard:
             case "admirable":
@@ -277,10 +280,10 @@ class FormatNationInfo(Formatter):
                 embed = discord.Embed(title=f"Happenings for {nation}")
                 for id in root[0].findall("EVENT"):
                     happenings_results = {}
-                    for elem in id:
-                        happenings_results[elem.tag] = elem.text.strip()
-                    ts = happenings_results.get("TIMESTAMP")
-                    temp = float(ts)
+                    for element in id:
+                        happenings_results[element.tag] = element.text.strip()
+                    time_stamp = happenings_results.get("TIMESTAMP")
+                    temp = float(time_stamp)
                     dt = datetime.fromtimestamp(temp)
                     embed.add_field(name=dt, value=happenings_results.get("TEXT"))
                 await interaction.response.send_message(embed=embed)
@@ -510,7 +513,7 @@ class FormatNationInfo(Formatter):
     ):
         await interaction.response.defer(thinking=True)
 
-        banner_urls = [banner.text for banner in root[0]][: cls.IMAGE_LIMIT]
+        banner_urls = [f"banners/{banner.text}" for banner in root[0]][: cls.IMAGE_LIMIT]
         image_results: list[Image.Image] = await bot.nationstates_api.get_banners(banner_urls)
 
         list_length = len(image_results)
@@ -522,7 +525,7 @@ class FormatNationInfo(Formatter):
             mode="RGB", size=(w * 2, h * (half_len)), color=(47, 49, 54)
         )
 
-        for i, banner in enumerate(list_length):
+        for i, banner in enumerate(image_results):
             # left column
             if i < list_length:
                 compiled_banners_image.paste(banner, (0, h * i))
