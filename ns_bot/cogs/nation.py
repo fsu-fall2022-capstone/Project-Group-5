@@ -31,7 +31,10 @@ class Nation(commands.GroupCog, group_name="nation"):
         self, interaction: discord.Interaction, nation: str, shard: Optional[str] = None
     ):
         self.logger.info(f"starting to fetch data with {nation = } and {shard = }")
-        await self.nation_controller.info(interaction, nation, shard)
+        try:
+            await self.nation_controller.info(interaction, nation, shard)
+        except Exception as e:
+            self.logger.error(e, exc_info=True)
         self.logger.info(f"fetched {shard} for {nation = }")
 
 
