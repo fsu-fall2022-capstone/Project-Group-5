@@ -25,8 +25,25 @@ class FormatNationInfo(Formatter):
         text = root[0].text
 
         if not shard:
+            if text is None:
+                await interaction.response.send_message(
+                    embed=discord.Embed(title=f"{nation} has no dispatch list.")
+                )
+            desc = ""
+            for id in root:
+                if id.tag == "FIRSTLOGIN" or id.tag== "LASTLOGIN":     
+                    temp = float(id.text)  
+                    ts = datetime.fromtimestamp(temp)  
+                    desc +=f"{id.tag}: {ts}\n"        
+                else:  
+                    desc +=f"{id.tag}: {id.text}\n"
+                for elem in id:
+                    if elem.tag == 'CAUSE':
+                        desc += f"-{elem.attrib}: {elem.text.strip()}\n"
+                    else:
+                        desc += f"-{elem.tag}: {elem.text.strip()}\n"
             await interaction.response.send_message(
-                embed=discord.Embed(title="Nation Info", description=data)
+                embed=discord.Embed(title=f"National information for {nation}", description=desc)
             )
 
         match shard:
