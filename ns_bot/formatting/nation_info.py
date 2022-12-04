@@ -288,7 +288,8 @@ async def format_nation_info(
                 )
             )
         case "industrydesc":
-            await interaction.response.send_message(embed=discord.Embed(title=text))
+            await interaction.response.send_message(
+                embed=discord.Embed(title=f"Industry description for {nation}", description=text))
         case "influence":
             await interaction.response.send_message(
                 embed=discord.Embed(
@@ -457,16 +458,16 @@ async def format_nation_info(
                 )
             )
         case "wabadges":
-            if text:
-                await interaction.response.send_message(
-                    embed=discord.Embed(
-                        title=f"{nation}'s has the following badges from the world assembly {text}."
-                    )
+            badges = ",".join([badges.text for badges in root[0]])
+            if badges == "":
+                return await interaction.response.send_message(
+                    embed=discord.Embed(title=f"{nation} has no world assembly bagdes.")
                 )
-            else:
-                await interaction.response.send_message(
-                    embed=discord.Embed(title=f"{nation}'s has no from the world assembly.")
-                )
+            embed=discord.Embed(
+                title=f"{nation} has been commended by the following Security Council Resolutions:",
+                description=badges
+            )
+            await interaction.response.send_message(embed=embed)
         case "wcensus":
             await interaction.response.send_message(
                 embed=discord.Embed(title=f"{nation}'s mining industry ranks {text} in the world.")
