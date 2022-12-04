@@ -198,8 +198,10 @@ async def format_nation_info(
                 )
             await interaction.response.send_message(embed=embed)
         case "firstlogin":
+            temp = float(text)
+            dt = datetime.fromtimestamp(temp)
             await interaction.response.send_message(
-                embed=discord.Embed(title=f"The nation of {nation} was first logged in on {text}.")
+                embed=discord.Embed(title=f"The nation of {nation} was first logged in on {dt}.")
             )
         case "flag":
             await interaction.response.send_message(
@@ -210,8 +212,10 @@ async def format_nation_info(
                 embed=discord.Embed(title=f"{nation} was founded {text}!")
             )
         case "foundedtime":
+            temp = float(text)
+            dt = datetime.fromtimestamp(temp)
             await interaction.response.send_message(
-                embed=discord.Embed(title=f"The nation of {nation} was founded at {text}.")
+                embed=discord.Embed(title=f"The nation of {nation} was founded at {dt}.")
             )
         case "freedom":
             await interaction.response.send_message(
@@ -296,8 +300,10 @@ async def format_nation_info(
                 embed=discord.Embed(title=f"{nation} had their most recent activity {text}.")
             )
         case "lastlogin":
+            temp = float(text)
+            dt = datetime.fromtimestamp(temp)
             await interaction.response.send_message(
-                embed=discord.Embed(title=f"{nation} was last logged in {text}.")
+                embed=discord.Embed(title=f"{nation} was last logged in {dt}.")
             )
         case "leader":
             await interaction.response.send_message(
