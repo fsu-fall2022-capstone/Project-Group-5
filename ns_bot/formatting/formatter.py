@@ -9,5 +9,6 @@ class Formatter:
 
     async_xml_parse = async_wrapper(ET.fromstring)
 
-    def clean_data(self, data: str):
+    @staticmethod
+    def clean_data(data: str):
         return data.replace("&quot;", '"').replace("@@", "")

@@ -22,4 +22,4 @@ class NationController(BaseNationstateController):
         data = await self.bot.nationstates_api.get_public_nation_data(
             nation, shards=[shard] if shard else None
         )
-        await FormatNationInfo(nation, shard, data, self.bot, interaction)
+        await FormatNationInfo.format(nation, shard, data, self.bot, interaction)
