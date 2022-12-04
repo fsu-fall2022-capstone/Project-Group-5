@@ -329,9 +329,17 @@ async def format_nation_info(
                 description=notables)
             )
         case "policies":
-            await interaction.response.send_message(
-                embed=discord.Embed(title="ERROR", description=data)
-            )
+            if text is None:
+                return await interaction.response.send_message(
+                    embed=discord.Embed(title=f"{nation} has no policies")
+                )
+            embed = discord.Embed(title=f"Policies for {nation}")
+            for id in root[0].findall("POLICY")[:25]:
+                embed.add_field(
+                    name="\u200b",
+                    value="\n".join(f"{element.tag}: {element.text.strip()}" for element in id),
+                )
+            await interaction.response.send_message(embed=embed)
         case "poorest":
             national_currency = bot.nation_dump.get(nation, {}).get("CURRENCY", "Dollar")
             await interaction.response.send_message(
@@ -455,5 +463,12 @@ async def format_nation_info(
             )
         case "zombie":
             await interaction.response.send_message(
-                embed=discord.Embed(title="ERROR", description=data)
+                embed=discord.Embed(
+                    title=f"Zombie information for {nation}",
+                    description=f"Z ACTION: {root[0].findtext('ZACTION')}\
+                    \nZ Action Intended: {root[0].findtext('ZACTIONINTENDED')}\
+                    \nIndustry: {root[0].findtext('SURVIVORS')}\
+                    \nZombies: {root[0].findtext('ZOMBIES')}\
+                    \nDead: {root[0].findtext('DEAD')}\n",
+                )
             )
