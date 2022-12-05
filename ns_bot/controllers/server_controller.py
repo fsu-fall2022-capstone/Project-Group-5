@@ -28,7 +28,6 @@ class ServerController(BaseNationstateController):
         self.nation_table = nation_table
         self.live_issues_table = live_issues_table
         self.issue_votes_table = issue_votes_table
-        self.nation_dump = {}
 
         self.async_xmltodict = async_wrapper(xmltodict.parse)
 
@@ -85,7 +84,7 @@ class ServerController(BaseNationstateController):
             await self.nation_table.get_vote_channel(nation=nation)
         )
         newspaper_image = await generate_issue_newspaper(
-            self.bot.web_client,
+            self.bot.nationstates_api,
             nation,
             currency,
             article_title,
@@ -130,7 +129,7 @@ class ServerController(BaseNationstateController):
     async def fetch_new_issues(self):
         for nation in await self.nation_table.get_all():
             nation_name: str = nation["nation"]
-            issues = await self.bot.nationstates_api.get_nation_issues(nation_name)
+            issues = await self.bot.nationstates_api.get_nation_issues(nation=nation_name)
             nation_issues = await self.live_issues_table.get_nation_issues(nation=nation_name)
             issues: dict = await self.async_xmltodict(issues)
             if not issues:
@@ -142,7 +141,7 @@ class ServerController(BaseNationstateController):
                     continue
 
                 options = [option["#text"] for option in issue["OPTION"]]
-                nation_dump = self.nation_dump.get(nation_name, {})
+                nation_dump = self.bot.nation_dump.get(nation_name, {})
                 flag = nation_dump.get(
                     "FLAG", "https://www.nationstates.net/images/flags/default.jpg"
                 )
@@ -196,7 +195,7 @@ class ServerController(BaseNationstateController):
         if respond_to_api:
             # TODO format the response from the API
             issue_response_result = await self.bot.nationstates_api.respond_to_issue(
-                nation, issue_id, option
+                nation=nation, issue_id=issue_id, option=option
             )
             await channel.send(
                 file=discord.File(StringIO(issue_response_result), filename="response.xml")
@@ -215,8 +214,5 @@ class ServerController(BaseNationstateController):
 
         data_dict = await self.async_xmltodict(dump_data)
         nations = data_dict["NATIONS"]["NATION"]
-        nation_table_data = await self.nation_table.get_all()
-        tracked_nations = {nation["nation"] for nation in nation_table_data}
         for nation in nations:
-            if nation["NAME"] in tracked_nations:
-                self.nation_dump[nation["NAME"]] = nation
+            self.bot.nation_dump[nation["NAME"]] = nation
