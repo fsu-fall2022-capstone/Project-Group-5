@@ -14,9 +14,8 @@ from ns_bot.utils import decrypt
 def ratelimit(function):
     async def runner(calling_object, *args, **kwargs):
         await calling_object._rate_limit()
-        calling_object.__concurrent_requests__ += 1
+        calling_object._concurrent_requests_ += 1
         output = await function(calling_object, *args, **kwargs)
-        calling_object.__concurrent_requests__ -= 1
         return output
 
     return runner
@@ -29,9 +28,9 @@ class NationStatesAPI:
 
     def __init__(self, web_client: ClientSession, db_pool: asyncpg.Pool) -> None:
         self.web_client = web_client
-        self.__rate_limit__ = 40
-        self.ratelimit_sleep_time = 4
-        self.__concurrent_requests__ = 0
+        self._rate_limit_ = 40
+        self.ratelimit_period = 30
+        self._concurrent_requests_ = 0
         self.__ratelimit_start_time = datetime.now()
 
         self.login_table = Login(db_pool)
@@ -124,7 +123,7 @@ class NationStatesAPI:
     @ratelimit
     async def get_image(self, url: str):
         async with self.web_client.get(url, headers={"User-Agent": self.USER_AGENT}) as response:
-            return response, Image.open(BytesIO(await response.content.read()))
+            return Image.open(BytesIO(await response.content.read()))
 
     async def get_banner(self, banner: str):
         return await self.get_image(url=self.BASE_IMAGE_URL + banner)
@@ -133,8 +132,12 @@ class NationStatesAPI:
         return [await self.get_banner(banner) for banner in banners]
 
     async def _rate_limit(self):
-        # await asyncio.sleep(0.1)
-        return
+        time_delta = datetime.now() - self.__ratelimit_start_time
+        if time_delta.seconds > self.ratelimit_period:
+            self.__ratelimit_start_time = datetime.now()
+            self._concurrent_requests_ = 0
+        elif self._concurrent_requests_ >= self._rate_limit_:
+            await asyncio.sleep(self.ratelimit_period - time_delta.seconds)
 
 
 # url = "https://www.nationstates.net/cgi-bin/api.cgi"
