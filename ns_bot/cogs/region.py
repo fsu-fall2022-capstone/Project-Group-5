@@ -31,7 +31,10 @@ class Region(commands.GroupCog, group_name="region"):
         self, interaction: discord.Interaction, region: str, shard: Optional[str] = None
     ):
         self.logger.info(f"starting to fetch data with {region = } and {shard = }")
-        await self.region_controller.info(interaction, region, shard)
+        try:
+            await self.region_controller.info(interaction, region, shard)
+        except Exception as e:
+            self.logger.error(e, exc_info=True)
         self.logger.info(f"fetched {shard} for {region = }")
 
 
