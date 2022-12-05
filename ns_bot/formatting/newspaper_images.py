@@ -4,6 +4,7 @@ from io import BytesIO
 from aiohttp import ClientSession
 from PIL import Image, ImageDraw, ImageFont, ImageOps
 from PIL.ImageFont import FreeTypeFont
+from cairosvg import svg2png
 
 BASE_IMAGE_URL = "https://www.nationstates.net/images/"
 LIGHT_BLACK = (68, 68, 68)
@@ -43,15 +44,26 @@ async def generate_issue_newspaper(
         )
 
     results = []
-    for url in [flag, f"newspaper/{banner_1}-1.jpg", f"newspaper/{banner_2}-2.jpg"]:
-        async with web_session.get(
-            BASE_IMAGE_URL + url, headers={"User-Agent": "NS Discord Bot"}
-        ) as response:
-            results.append(Image.open(BytesIO(await response.content.read())))
 
-    flag_image: Image.Image = results[0]
-    banner_1_image: Image.Image = results[1]
-    banner_2_image: Image.Image = results[2]
+    if flag.endswith(".svg"):
+        flag = Image.open(BytesIO(svg2png(url=BASE_IMAGE_URL + flag, write_to=None)))
+        for url in [f"newspaper/{banner_1}-1.jpg", f"newspaper/{banner_2}-2.jpg"]:
+            async with web_session.get(
+                BASE_IMAGE_URL + url, headers={"User-Agent": "NS Discord Bot"}
+            ) as response:
+                results.append(Image.open(BytesIO(await response.content.read())))
+        flag_image: Image.Image = flag
+        banner_1_image: Image.Image = results[0]
+        banner_2_image: Image.Image = results[1]
+    else:
+        for url in [flag, f"newspaper/{banner_1}-1.jpg", f"newspaper/{banner_2}-2.jpg"]:
+            async with web_session.get(
+                BASE_IMAGE_URL + url, headers={"User-Agent": "NS Discord Bot"}
+            ) as response:
+                results.append(Image.open(BytesIO(await response.content.read())))
+        flag_image: Image.Image = results[0]
+        banner_1_image: Image.Image = results[1]
+        banner_2_image: Image.Image = results[2]
 
     flag_image = ImageOps.contain(flag_image, (50, 30))
     header_paper.paste(flag_image, (38, 10))
