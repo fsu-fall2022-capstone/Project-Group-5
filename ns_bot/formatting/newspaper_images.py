@@ -5,12 +5,14 @@ from aiohttp import ClientSession
 from PIL import Image, ImageDraw, ImageFont, ImageOps
 from PIL.ImageFont import FreeTypeFont
 
+from ns_bot.DAOs.nationstates_api import NationStatesAPI
+
 BASE_IMAGE_URL = "https://www.nationstates.net/images/"
 LIGHT_BLACK = (68, 68, 68)
 
 
 async def generate_issue_newspaper(
-    web_session: ClientSession,
+    nationstates_api: NationStatesAPI,
     nation: str,
     currency: str,
     article_title: str,
@@ -42,12 +44,9 @@ async def generate_issue_newspaper(
             "ns_bot/data/newspaper-references/times new roman.ttf", title_font_size
         )
 
-    results = []
-    for url in [flag, f"newspaper/{banner_1}-1.jpg", f"newspaper/{banner_2}-2.jpg"]:
-        async with web_session.get(
-            BASE_IMAGE_URL + url, headers={"User-Agent": "NS Discord Bot"}
-        ) as response:
-            results.append(Image.open(BytesIO(await response.content.read())))
+    results = await nationstates_api.get_banners(
+        [flag, f"newspaper/{banner_1}-1.jpg", f"newspaper/{banner_2}-2.jpg"]
+    )
 
     flag_image: Image.Image = results[0]
     banner_1_image: Image.Image = results[1]

@@ -84,7 +84,7 @@ class ServerController(BaseNationstateController):
             await self.nation_table.get_vote_channel(nation=nation)
         )
         newspaper_image = await generate_issue_newspaper(
-            self.bot.web_client,
+            self.bot.nationstates_api,
             nation,
             currency,
             article_title,
