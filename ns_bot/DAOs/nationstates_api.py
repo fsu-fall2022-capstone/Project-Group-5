@@ -4,7 +4,7 @@ from io import BytesIO
 from typing import Optional
 
 import asyncpg
-from aiohttp import ClientSession
+from aiohttp import ClientResponse, ClientSession
 from PIL import Image
 
 from ns_bot.DAOs.postgresql import Login
@@ -36,6 +36,27 @@ class NationStatesAPI:
 
         self.login_table = Login(db_pool)
 
+    @staticmethod
+    def auto_authenticate(func):
+        @ratelimit
+        async def authenticator(cls, *args, **kwargs):
+            nation = kwargs.get("nation")
+
+            if login_info := await cls.login_table.get_nation_login(nation=nation):
+                password, pin = login_info
+                password = decrypt(password)
+                kwargs["password"] = password
+                kwargs["pin"] = pin or ""
+
+            response: ClientResponse
+            response, output = await func(cls, *args, **kwargs)
+
+            if pin := response.headers.get("X-Pin"):
+                await cls.login_table.update_nation_pin(nation=nation, pin=pin)
+            return output
+
+        return authenticator
+
     @ratelimit
     async def get_response(self, headers: dict, params: dict):
         output = None
@@ -64,45 +85,34 @@ class NationStatesAPI:
     async def get_wa_data(self, council: int, shards: Optional[list[str]] = None):
         return await self.get_x_data("wa", council, shards)
 
-    @ratelimit
-    async def validate_login_details(self, nation: str, password: str):
+    @auto_authenticate
+    async def validate_login_details(self, *, nation: str, password: str, **kwargs):
         async with self.web_client.get(
             self.BASE_URL,
             headers={"User-Agent": self.USER_AGENT, "X-password": password},
             params={"nation": nation, "q": "ping"},
         ) as response:
-            if pin := response.headers.get("X-Pin"):
-                await self.login_table.update_nation_pin(nation=nation, pin=pin)
+            return response, response.ok
 
-            return response.ok
-
-    @ratelimit
-    async def get_nation_issues(self, nation: str):
-        password, pin = await self.login_table.get_nation_login(nation=nation)
-        password = decrypt(password)
+    @auto_authenticate
+    async def get_nation_issues(self, *, nation: str, password="", pin=""):
         async with self.web_client.get(
             self.BASE_URL,
             headers={"User-Agent": self.USER_AGENT, "X-password": password, "X-Pin": pin},
             params={"nation": nation, "q": "issues"},
         ) as response:
-            if pin := response.headers.get("X-Pin"):
-                await self.login_table.update_nation_pin(nation=nation, pin=pin)
+            return response, await response.text()
 
-            return await response.text()
-
-    @ratelimit
-    async def respond_to_issue(self, nation: str, issue_id: int, option: int):
-        password, pin = await self.login_table.get_nation_login(nation=nation)
-        password = decrypt(password)
+    @auto_authenticate
+    async def respond_to_issue(
+        self, *, nation: str, issue_id: int, option: int, password="", pin=""
+    ):
         async with self.web_client.get(
             self.BASE_URL,
             headers={"User-Agent": self.USER_AGENT, "X-password": password, "X-Pin": pin},
             params={"nation": nation, "c": "issue", "issue": issue_id, "option": option},
         ) as response:
-            if pin := response.headers.get("X-Pin"):
-                await self.login_table.update_nation_pin(nation=nation, pin=pin)
-
-            return await response.text()
+            return response, await response.text()
 
     @ratelimit
     async def get_nation_dump(self):
@@ -114,10 +124,10 @@ class NationStatesAPI:
     @ratelimit
     async def get_image(self, url: str):
         async with self.web_client.get(url, headers={"User-Agent": self.USER_AGENT}) as response:
-            return Image.open(BytesIO(await response.content.read()))
+            return response, Image.open(BytesIO(await response.content.read()))
 
     async def get_banner(self, banner: str):
-        return await self.get_image(self.BASE_IMAGE_URL + banner)
+        return await self.get_image(url=self.BASE_IMAGE_URL + banner)
 
     async def get_banners(self, banners: list[str]):
         return [await self.get_banner(banner) for banner in banners]

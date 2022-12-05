@@ -35,7 +35,9 @@ class LoginDetails(discord.ui.Modal, title="Login"):
     async def on_submit(self, interaction: discord.Interaction):
         nation = self.username.value
 
-        if await self.nationstates_api.validate_login_details(nation, self.password.value):
+        if await self.nationstates_api.validate_login_details(
+            nation=nation, password=self.password.value
+        ):
             if await self.nation_table.nation_already_present(nation=nation):
                 return await interaction.response.send_message(
                     "This nation is already being used in a server. To use it here, please have it removed from the other server",
