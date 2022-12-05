@@ -126,7 +126,7 @@ async def generate_issue_newspaper(
         banner_2_image,
         (bottom_paper.width - 166, 3),
     )
-    # bottom_paper.paste(bottom_paper_template, (0, 0), bottom_paper_template)
+    bottom_paper.paste(bottom_paper_template, (0, 0), bottom_paper_template)
 
     newspaper = Image.new("RGBA", (bottom_paper.width, TOTAL_HEIGHT))
     newspaper.paste(top_paper, (0, 0))
