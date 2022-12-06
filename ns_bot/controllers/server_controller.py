@@ -84,7 +84,7 @@ class ServerController(BaseNationstateController):
             await self.nation_table.get_vote_channel(nation=nation)
         )
         newspaper_image = await generate_issue_newspaper(
-            self.bot.web_client,
+            self.bot.nationstates_api,
             nation,
             currency,
             article_title,
@@ -129,7 +129,7 @@ class ServerController(BaseNationstateController):
     async def fetch_new_issues(self):
         for nation in await self.nation_table.get_all():
             nation_name: str = nation["nation"]
-            issues = await self.bot.nationstates_api.get_nation_issues(nation_name)
+            issues = await self.bot.nationstates_api.get_nation_issues(nation=nation_name)
             nation_issues = await self.live_issues_table.get_nation_issues(nation=nation_name)
             issues: dict = await self.async_xmltodict(issues)
             if not issues:
@@ -195,7 +195,7 @@ class ServerController(BaseNationstateController):
         if respond_to_api:
             # TODO format the response from the API
             issue_response_result = await self.bot.nationstates_api.respond_to_issue(
-                nation, issue_id, option
+                nation=nation, issue_id=issue_id, option=option
             )
             await channel.send(
                 file=discord.File(StringIO(issue_response_result), filename="response.xml")
