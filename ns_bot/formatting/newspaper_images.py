@@ -7,6 +7,7 @@ from PIL import Image, ImageDraw, ImageFont, ImageOps
 from PIL.ImageFont import FreeTypeFont
 
 from ns_bot.DAOs.nationstates_api import NationStatesAPI
+from ns_bot.utils.wrappers import async_wrapper
 
 BASE_IMAGE_URL = "https://www.nationstates.net/images/"
 LIGHT_BLACK = (68, 68, 68)
@@ -45,19 +46,16 @@ async def generate_issue_newspaper(
             "ns_bot/data/newspaper-references/times new roman.ttf", title_font_size
         )
 
-    results = await nationstates_api.get_banners(
-        [flag, f"newspaper/{banner_1}-1.jpg", f"newspaper/{banner_2}-2.jpg"]
-    )
-    # if flag.endswith(".svg"):
-    #     flag = Image.open(BytesIO(svg2png(url=BASE_IMAGE_URL + flag, write_to=None)))
-    #     for url in [f"newspaper/{banner_1}-1.jpg", f"newspaper/{banner_2}-2.jpg"]:
-    #         async with web_session.get(
-    #             BASE_IMAGE_URL + url, headers={"User-Agent": "NS Discord Bot"}
-    #         ) as response:
-    #             results.append(Image.open(BytesIO(await response.content.read())))
-    #     flag_image: Image.Image = flag
-    #     banner_1_image: Image.Image = results[0]
-    #     banner_2_image: Image.Image = results[1]
+    banner_urls = [flag, f"newspaper/{banner_1}-1.jpg", f"newspaper/{banner_2}-2.jpg"]
+    results = []
+    if flag.lower().endswith("svg"):
+        async_svg2png = async_wrapper(svg2png)
+        results = [
+            Image.open(BytesIO(await async_svg2png(url=BASE_IMAGE_URL + flag, write_to=None)))
+        ]
+        banner_urls.pop(0)
+
+    results.extend(await nationstates_api.get_banners(banner_urls))
 
     flag_image: Image.Image = results[0]
     banner_1_image: Image.Image = results[1]
