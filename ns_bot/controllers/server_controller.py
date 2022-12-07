@@ -129,15 +129,19 @@ class ServerController(BaseNationstateController):
     async def fetch_new_issues(self):
         for nation in await self.nation_table.get_all():
             nation_name: str = nation["nation"]
-            issues = await self.bot.nationstates_api.get_nation_issues(nation=nation_name)
-            nation_issues = await self.live_issues_table.get_nation_issues(nation=nation_name)
-            issues: dict = await self.async_xmltodict(issues)
-            if not issues:
+            live_issues = await self.bot.nationstates_api.get_nation_issues(nation=nation_name)
+            stored_nation_issues = await self.live_issues_table.get_nation_issues(
+                nation=nation_name
+            )
+            stored_nation_issues_id = {issue["id"] for issue in stored_nation_issues}
+            live_issues: dict = await self.async_xmltodict(live_issues)
+            if not live_issues:
                 return
-            issues = issues.get("NATION", {}).get("ISSUES", {}).get("ISSUE", [])
-            for issue in issues if type(issues) == list else [issues]:
+            live_issues = live_issues.get("NATION", {}).get("ISSUES", {}).get("ISSUE", [])
+            live_issues = live_issues if type(live_issues) == list else [live_issues]
+            for issue in live_issues:
                 issue_id = int(issue["@id"])
-                if issue_id in nation_issues:
+                if issue_id in stored_nation_issues_id:
                     continue
 
                 options = [option["#text"] for option in issue["OPTION"]]
@@ -158,8 +162,10 @@ class ServerController(BaseNationstateController):
                     issue_summary=issue["TEXT"],
                     options=options,
                 )
+                stored_nation_issues_id.add(issue_id)
 
-            # TODO remove issues that are already answered
+            for old_issue_id in stored_nation_issues_id - set(live_issues):
+                await self.live_issues_table.remove_issue(nation=nation_name, issue_id=old_issue_id)
 
     async def update_live_issues(self):
         # TODO optimize the search
