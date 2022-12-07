@@ -4,7 +4,6 @@ from datetime import datetime
 
 import discord
 
-from nationstates_bot import NationStatesBot
 from ns_bot.formatting import Formatter
 
 
@@ -46,7 +45,7 @@ class FormatWAInfo(Formatter):
                 )
             case "happenings":
                 embed = discord.Embed(
-                    title=f"New things are always happening at the World Assembly!"
+                    title="New things are always happening at the World Assembly!"
                 )
                 for id in root[0].findall("EVENT"):
                     happenings_results = {}

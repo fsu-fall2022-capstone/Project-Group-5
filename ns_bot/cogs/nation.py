@@ -1,4 +1,4 @@
-from typing import Literal, Optional
+from typing import Optional
 
 import discord
 from discord import app_commands
