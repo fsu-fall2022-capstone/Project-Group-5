@@ -14,4 +14,4 @@ class Formatter:
     def clean_data(data: str):
         if not data:
             return data
-        return data.replace("&quot;", '"').replace("@@", "")
+        return data.replace("&quot;", '"').replace("@@", "").replace("%%", "")
