@@ -74,7 +74,7 @@ class FormatWAInfo(Formatter):
                     )
                 await interaction.response.send_message(embed=embed)
             case "proposals":
-                embed=discord.Embed(title=f"The {council} has recently discussed these proposals: ")
+                embed = discord.Embed(title=f"The {council} has recently discussed these proposals: ")
                 await interaction.response.send_message(embed=embed)
             case "resolution":
                 await interaction.response.send_message(embeds=cls.build_resolution_embeds(root))
@@ -85,8 +85,8 @@ class FormatWAInfo(Formatter):
                 embeds = cls.build_resolution_embeds(root)
                 await interaction.response.send_message(embeds=embeds) 
             case "dellog":
-                embeds=cls.build_resolution_embeds(root)
-                embed_c=embed = discord.Embed(title="The Delegate Log reads as follows:")
+                embeds = cls.build_resolution_embeds(root)
+                embed_c = discord.Embed(title="The Delegate Log reads as follows:")
                 i = 0
                 for id in root[0].find('DELLOG').findall('ENTRY'):
                     if i < 26:
@@ -117,27 +117,27 @@ class FormatWAInfo(Formatter):
 
     @classmethod
     def build_resolution_embeds(cls, root: ET.Element):
-        desc=root[0].find('DESC').text.replace("[list]","").replace("[/list]","").strip()  
-        embed_a=discord.Embed(
+        desc = root[0].find('DESC').text.replace("[list]","").replace("[/list]","").strip()  
+        embed_a = discord.Embed(
             title=f"{root[0].find('NAME').text}", 
             description=desc
             ) 
-        author=root[0].find('PROPOSED_BY').text
-        created=datetime.fromtimestamp(float(root[0].find('CREATED').text))
-        date=created.strftime("%b %d %Y")
-        time=created.strftime("%H:%M:%S")
-        nations_yes=int(root[0].find('TOTAL_NATIONS_FOR').text)
-        nations_no=int(root[0].find('TOTAL_NATIONS_AGAINST').text)
-        votes_yes=int(root[0].find('TOTAL_VOTES_FOR').text)
-        votes_no=int(root[0].find('TOTAL_VOTES_AGAINST').text)
-        promoted=datetime.fromtimestamp(float(root[0].find('PROMOTED').text))
-        pdate=promoted.strftime("%b %d %Y")
-        ptime=promoted.strftime("%H:%M:%S")
+        author = root[0].find('PROPOSED_BY').text
+        created = datetime.fromtimestamp(float(root[0].find('CREATED').text))
+        date = created.strftime("%b %d %Y")
+        time = created.strftime("%H:%M:%S")
+        nations_yes = int(root[0].find('TOTAL_NATIONS_FOR').text)
+        nations_no = int(root[0].find('TOTAL_NATIONS_AGAINST').text)
+        votes_yes = int(root[0].find('TOTAL_VOTES_FOR').text)
+        votes_no = int(root[0].find('TOTAL_VOTES_AGAINST').text)
+        promoted = datetime.fromtimestamp(float(root[0].find('PROMOTED').text))
+        pdate = promoted.strftime("%b %d %Y")
+        ptime = promoted.strftime("%H:%M:%S")
         if votes_yes > votes_no:
             result=f"is expected to pass"
         else:
             result=f"is not expected to pass"
-        embed_b=discord.Embed(
+        embed_b = discord.Embed(
             description=f"""This resolution was proposed by {author} on {date} at {time}.\n
             A total of {nations_yes + nations_no} nations have voted on this resolution.\n
             There are currently {nations_yes} nations in favor of the resolution.\n
