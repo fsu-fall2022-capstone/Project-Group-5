@@ -2,14 +2,12 @@ from datetime import date
 from io import BytesIO
 
 from aiohttp import ClientSession
-from cairosvg import svg2png
 from PIL import Image, ImageDraw, ImageFont, ImageOps
 from PIL.ImageFont import FreeTypeFont
+from wand import image
 
 from ns_bot.DAOs.nationstates_api import NationStatesAPI
-from ns_bot.utils.wrappers import async_wrapper
 
-BASE_IMAGE_URL = "https://www.nationstates.net/images/"
 LIGHT_BLACK = (68, 68, 68)
 
 
@@ -49,9 +47,10 @@ async def generate_issue_newspaper(
     banner_urls = [flag, f"newspaper/{banner_1}-1.jpg", f"newspaper/{banner_2}-2.jpg"]
     results = []
     if flag.lower().endswith("svg"):
-        async_svg2png = async_wrapper(svg2png)
         results = [
-            Image.open(BytesIO(await async_svg2png(url=BASE_IMAGE_URL + flag, write_to=None)))
+            await get_image_from_svg_url(
+                nationstates_api.web_client, nationstates_api.BASE_IMAGE_URL + flag
+            )
         ]
         banner_urls.pop(0)
 
@@ -148,3 +147,11 @@ async def generate_issue_newspaper(
 def get_left_corner_for_center(font: FreeTypeFont, string: str, total_width: int):
     total_width = total_width - 108
     return ((total_width - font.getlength(string)) / 2) + 45
+
+
+async def get_image_from_svg_url(web_client: ClientSession, url: str):
+    async with web_client.get(url) as response:
+        flag_bytes = await response.content.read()
+    with image.Image(blob=flag_bytes, format="svg") as svg:
+        flag_data = BytesIO(svg.make_blob("png"))
+    return Image.open(flag_data)
