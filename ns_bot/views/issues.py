@@ -17,7 +17,7 @@ class VotingDropdown(discord.ui.Select):
             min_values=1,
             max_values=1,
             options=options,
-            custom_id=f"issues_select:options",
+            custom_id="issues_select:options",
         )
         self.live_issues_table = live_issues_table
         self.issue_votes_table = issue_votes_table
@@ -28,7 +28,7 @@ class VotingDropdown(discord.ui.Select):
         )
         if not issue_id:
             return await interaction.response.send_message(
-                f"This issue has already been voted on", ephemeral=True
+                "This issue has already been voted on", ephemeral=True
             )
         await self.issue_votes_table.user_vote(
             issue_channel=interaction.channel_id,
@@ -38,7 +38,7 @@ class VotingDropdown(discord.ui.Select):
         clean_option = int(self.values[0]) + 1
         if not clean_option:
             return await interaction.response.send_message(
-                f"You voted to skip this issue", ephemeral=True
+                "You voted to skip this issue", ephemeral=True
             )
         await interaction.response.send_message(
             f"You voted for option {clean_option}", ephemeral=True

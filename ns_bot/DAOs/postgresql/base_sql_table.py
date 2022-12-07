@@ -1,7 +1,6 @@
 from types import NoneType
 from typing import Optional
 
-import asyncpg
 from asyncpg import Connection, Pool
 from asyncpg.connection import cursor
 

@@ -1,4 +1,8 @@
-from ns_bot.DAOs.postgresql.base_sql_table import *
+from typing import Optional
+
+from asyncpg import Connection, Pool
+
+from ns_bot.DAOs.postgresql.base_sql_table import BaseSQLTable, ensure_connection
 
 
 class LiveIssues(BaseSQLTable):
@@ -29,7 +33,7 @@ class LiveIssues(BaseSQLTable):
     async def get_nation_issues(self, *, nation: str, con: Optional[Connection] = None):
         return await con.fetch(
             f"""
-            SELECT * from {self.TABLE_NAME} 
+            SELECT * from {self.TABLE_NAME}
             WHERE nation = $1
             """,
             nation,
@@ -41,7 +45,7 @@ class LiveIssues(BaseSQLTable):
     ):
         return await con.fetchval(
             f"""
-            SELECT issue_id from {self.TABLE_NAME} 
+            SELECT issue_id from {self.TABLE_NAME}
             WHERE issue_channel = $1
             """,
             issue_channel,
@@ -53,7 +57,7 @@ class LiveIssues(BaseSQLTable):
     ):
         await con.execute(
             f"""
-            INSERT into {self.TABLE_NAME} 
+            INSERT into {self.TABLE_NAME}
             VALUES ($1, $2, $3)
             """,
             nation,

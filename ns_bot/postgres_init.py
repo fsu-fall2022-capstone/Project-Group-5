@@ -64,19 +64,6 @@ async def db_init():
             )
 
 
-async def quick_test():
-    async with asyncpg.create_pool(
-        database="nations", user=os.environ.get("USER"), command_timeout=60
-    ) as pool:
-        con: Connection
-        async with pool.acquire() as con:
-            pass
-
-
-async def populate_table(table: str):
-    pass
-
-
 async def main():
     await db_init()
     # await quick_test()
