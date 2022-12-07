@@ -3,6 +3,7 @@ from datetime import datetime
 
 import discord
 
+from nationstates_bot import NationStatesBot
 from ns_bot.formatting import Formatter
 
 
@@ -11,9 +12,10 @@ class FormatRegionInfo(Formatter):
     async def format(
         cls,
         region: str,
-        interaction: discord.Interaction,
         shard: str,
         data: str,
+        interaction: discord.Interaction,
+        bot: NationStatesBot,
     ) -> None:
 
         data = cls.clean_data(data)
@@ -39,9 +41,9 @@ class FormatRegionInfo(Formatter):
             case "bannerurl":
                 banner_url = cls.BASE_REGION_URL + text.split("/")[-1]
                 embed = discord.Embed(title="Banner URL", description=text, url=banner_url)
-                embed.set_image(url=banner_url)
-                # TODO handle svg banners
-                await interaction.response.send_message(embed=embed)
+                await cls.send_embed_with_flag_image(
+                    bot.nationstates_api, interaction, embed, banner_url
+                )
             case "census":
                 embed = discord.Embed(title=f"{region}'s __ standing")
                 embed.add_field(name="World Ranking", value=root[0][0][1].text, inline=False)
@@ -95,10 +97,8 @@ class FormatRegionInfo(Formatter):
             case "factbook":
                 pass
             case "flag":
-                # TODO place image on flag
-                await interaction.response.send_message(
-                    embed=discord.Embed(title=f"The flag of {region}", url=text)
-                )
+                embed = discord.Embed(title=f"{region}'s flag", url=text)
+                await cls.send_embed_with_flag_image(bot.nationstates_api, interaction, embed, text)
             case "founded":
                 await interaction.response.send_message(
                     embed=discord.Embed(title=f"{region} founded {text}")
