@@ -9,7 +9,7 @@ from PIL import Image
 from ns_bot.formatting import Formatter
 from ns_bot.utils.wrappers import async_wrapper
 
-# test push
+
 class FormatRegionInfo(Formatter):
     @classmethod
     async def format(
@@ -41,11 +41,11 @@ class FormatRegionInfo(Formatter):
                     embed=discord.Embed(title=f"{region}'s region banner was created by: {text}")
                 )
             case "bannerurl":
-                await interaction.response.send_message(
-                    embed=discord.Embed(
-                        title="Banner URL", description=text, url=cls.BASE_REGION_URL + text
-                    )
-                )
+                banner_url = cls.BASE_REGION_URL + text.split("/")[-1]
+                embed = discord.Embed(title="Banner URL", description=text, url=banner_url)
+                embed.set_image(url=banner_url)
+                # TODO handle svg banners
+                await interaction.response.send_message(embed=embed)
             case "census":
                 embed = discord.Embed(title=f"{region}'s __ standing")
                 embed.add_field(name="World Ranking", value=root[0][0][1].text, inline=False)
@@ -62,6 +62,16 @@ class FormatRegionInfo(Formatter):
                     embed=discord.Embed(title=f"Delegate {text}")
                 )
             case "delegateauth":
+                # TODO Convert text to:
+                """
+                X: Executive
+                W: World Assembly
+                A: Appearance
+                B: Border Control
+                C: Communications
+                E: Embassies
+                P: Polls
+                """
                 await interaction.response.send_message(
                     embed=discord.Embed(title=f"Delegate Auth {text}")
                 )
@@ -89,6 +99,7 @@ class FormatRegionInfo(Formatter):
             case "factbook":
                 pass
             case "flag":
+                # TODO place image on flag
                 await interaction.response.send_message(
                     embed=discord.Embed(title=f"The flag of {region}", url=text)
                 )
@@ -129,6 +140,7 @@ class FormatRegionInfo(Formatter):
             case "name":
                 await interaction.response.send_message(embed=discord.Embed(title=text))
             case "nations":
+                # TODO fix. title will end up way too long.
                 await interaction.response.send_message(
                     embed=discord.Embed(title=f"Nations in {region}: {text}")
                 )
