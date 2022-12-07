@@ -126,7 +126,20 @@ class FormatRegionInfo(Formatter):
                     )
                 )
             case "happenings":
-                pass
+                if text is None:
+                    await interaction.response.send_message(
+                        embed=discord.Embed(title=f"{region} has no happenings in their region.")
+                    )
+                embed = discord.Embed(title=f"Happenings for the region {region}")
+                for id in root[0].findall("EVENT"):
+                    happenings_results = {}
+                    for element in id:
+                        happenings_results[element.tag] = element.text.strip()
+                    time_stamp = happenings_results.get("TIMESTAMP")
+                    temp = float(time_stamp)
+                    dt = datetime.fromtimestamp(temp)
+                    embed.add_field(name=dt, value=happenings_results.get("TEXT"))
+                await interaction.response.send_message(embed=embed)
             case "history":
                 pass
             case "lastupdate":
