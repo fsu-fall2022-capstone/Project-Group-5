@@ -1,4 +1,8 @@
-from ns_bot.DAOs.postgresql.base_sql_table import *
+from typing import Optional
+
+from asyncpg import Connection, Pool
+
+from ns_bot.DAOs.postgresql.base_sql_table import BaseSQLTable, ensure_connection
 
 
 class IssueVotes(BaseSQLTable):
@@ -38,7 +42,7 @@ class IssueVotes(BaseSQLTable):
         if not await self.get_user_vote_on_issue(user_id=user_id, issue_channel=issue_channel):
             return await con.execute(
                 f"""
-                INSERT into {self.TABLE_NAME} 
+                INSERT into {self.TABLE_NAME}
                 VALUES ($1, $2, $3)
                 """,
                 issue_channel,
@@ -48,7 +52,7 @@ class IssueVotes(BaseSQLTable):
 
         return await con.execute(
             f"""
-            UPDATE {self.TABLE_NAME} SET 
+            UPDATE {self.TABLE_NAME} SET
             option = $1
             WHERE issue_channel = $2 and voter = $3
             """,

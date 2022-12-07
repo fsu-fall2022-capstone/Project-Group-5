@@ -1,4 +1,8 @@
-from ns_bot.DAOs.postgresql.base_sql_table import *
+from typing import Optional
+
+from asyncpg import Connection, Pool
+
+from ns_bot.DAOs.postgresql.base_sql_table import BaseSQLTable, ensure_connection
 
 
 class Login(BaseSQLTable):
@@ -36,7 +40,7 @@ class Login(BaseSQLTable):
     async def update_nation_pin(self, *, nation: str, pin: str, con: Optional[Connection] = None):
         await con.execute(
             f"""
-            UPDATE {self.TABLE_NAME} 
+            UPDATE {self.TABLE_NAME}
             SET pin = $1
             WHERE nation = $2
             """,
@@ -50,7 +54,7 @@ class Login(BaseSQLTable):
     ):
         await con.execute(
             f"""
-            UPDATE {self.TABLE_NAME} 
+            UPDATE {self.TABLE_NAME}
             SET password = $1
             WHERE nation = $2
             """,
