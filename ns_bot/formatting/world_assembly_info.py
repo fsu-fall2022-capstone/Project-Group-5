@@ -86,6 +86,28 @@ class FormatWAInfo(Formatter):
                 await interaction.response.send_message(embeds=embeds) 
             case "dellog":
                 embeds=cls.build_resolution_embeds(root)
+                embed_c=embed = discord.Embed(title="The Delegate Log reads as follows:")
+                i = 0
+                for id in root[0].find('DELLOG').findall('ENTRY'):
+                    if i < 26:
+                        entries = {}
+                        for element in id:
+                            entries[element.tag] = (
+                                element.text
+                            )
+                        time_stamp = entries.get("TIMESTAMP")
+                        dt = datetime.fromtimestamp(float(time_stamp))
+                        date = dt.strftime("%b %d %Y")
+                        time = dt.strftime("%H:%M:%S")
+                        embed_c.add_field(
+                            name=f"On {date} at {time}:",
+                            value=f"The nation of {entries.get('NATION')} voted {entries.get('ACTION')} with {entries.get('VOTES')} total votes.",
+                            inline=False
+                        )
+                        i += 1
+                    else:
+                        break
+                embeds.append(embed_c)
                 await interaction.response.send_message(embeds=embeds)
             case "delvotes":
                 embeds = cls.build_resolution_embeds(root)
