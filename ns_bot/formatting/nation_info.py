@@ -210,9 +210,10 @@ class FormatNationInfo(Formatter):
                     )
                 )
             case "flag":
-                await interaction.response.send_message(
-                    embed=discord.Embed(title=f"The flag of {nation}", url=text)
-                )
+                # TODO create function to handle image and thumbnail
+                embed = discord.Embed(title=f"{nation}'s flag", url=text)
+                embed.set_image(url=text)
+                await interaction.response.send_message(embed=embed)
             case "founded":
                 await interaction.response.send_message(
                     embed=discord.Embed(title=f"{nation} was founded {text}!")
