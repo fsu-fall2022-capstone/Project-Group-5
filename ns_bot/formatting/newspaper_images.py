@@ -1,10 +1,7 @@
 from datetime import date
-from io import BytesIO
 
-from aiohttp import ClientSession
 from PIL import Image, ImageDraw, ImageFont, ImageOps
 from PIL.ImageFont import FreeTypeFont
-from wand import image
 
 from ns_bot.DAOs.nationstates_api import NationStatesAPI
 
@@ -44,17 +41,9 @@ async def generate_issue_newspaper(
             "ns_bot/data/newspaper-references/times new roman.ttf", title_font_size
         )
 
-    banner_urls = [flag, f"newspaper/{banner_1}-1.jpg", f"newspaper/{banner_2}-2.jpg"]
-    results = []
-    if flag.lower().endswith("svg"):
-        results = [
-            await get_image_from_svg_url(
-                nationstates_api.web_client, nationstates_api.BASE_IMAGE_URL + flag
-            )
-        ]
-        banner_urls.pop(0)
-
-    results.extend(await nationstates_api.get_banners(banner_urls))
+    results = await nationstates_api.get_banners(
+        (flag, f"newspaper/{banner_1}-1.jpg", f"newspaper/{banner_2}-2.jpg")
+    )
 
     flag_image: Image.Image = results[0]
     banner_1_image: Image.Image = results[1]
@@ -147,11 +136,3 @@ async def generate_issue_newspaper(
 def get_left_corner_for_center(font: FreeTypeFont, string: str, total_width: int):
     total_width = total_width - 108
     return ((total_width - font.getlength(string)) / 2) + 45
-
-
-async def get_image_from_svg_url(web_client: ClientSession, url: str):
-    async with web_client.get(url) as response:
-        flag_bytes = await response.content.read()
-    with image.Image(blob=flag_bytes, format="svg") as svg:
-        flag_data = BytesIO(svg.make_blob("png"))
-    return Image.open(flag_data)
