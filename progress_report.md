@@ -25,9 +25,9 @@
 
 ## 4) **Challenges, changes in the plan and scope of the project and things that went wrong during this increment**
 
-> The biggest challenge that cropped up this increment was handling .SVG files for newpaper generation. Because some of the responses from the NationStates API have SVG encoded images, we needed to add additional dependencies to the project.
+> The biggest challenge that cropped up this increment was handling .SVG files for newspaper generation. Because some of the responses from the NationStates API have SVG encoded images, we needed to add additional dependencies to the project.
 > 
-> During this increment the only change in scope was the removal of responses from the World API. This change occured for two main reasons:
+> During this increment the only change in scope was the removal of responses from the World API. This change occurred for two main reasons:
 >> 1) We felt that our users would not find much use in the data that is returned from that endpoint.
 >> 2) Discord's interactions limited our ability to interface with the endpoint in a meaningful way.
 > 
@@ -39,7 +39,7 @@
 > 2) The software requirements and design document was written by Robert, this includes all sections/diagrams as well.
 > 3) The software IT document was written by Cameron, this includes all sections.
 > 4) Source code contributions:
->>> Joshua: Worked on upgrading the api of the bot (ratelimits and auto-authentication), formatting issues, bug fixes and other maintenance tasks.
+>>> Joshua: Worked on upgrading the api of the bot (ratelimit and auto-authentication), formatting issues, bug fixes and other maintenance tasks.
 >>> Robert: Worked on formatting API responses, with major contributions to responses from the Nation API and the Region API
 >>> Nicholas: Worked on formatting API responses, minor contributions to responses from the Nation API and major contributions to the responses from the World Assembly API
 >>> Tyler: Worked primarily with Robert on formatting responses from the Nation and Region APIs.
