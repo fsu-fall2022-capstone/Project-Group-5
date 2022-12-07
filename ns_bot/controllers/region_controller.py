@@ -21,4 +21,4 @@ class RegionController(BaseNationstateController):
         data = await self.bot.nationstates_api.get_region_data(
             region, shards=[shard] if shard else None
         )
-        await FormatRegionInfo.format(region, interaction, shard, data)
+        await FormatRegionInfo.format(region, shard, data, interaction, self.bot)

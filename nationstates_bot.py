@@ -57,7 +57,6 @@ async def main():
     async with ClientSession() as web_client, asyncpg.create_pool(
         database="nations", user=os.environ.get("USER"), command_timeout=30
     ) as pool:
-
         async with NationStatesBot(
             commands.when_mentioned,
             intents=discord.Intents.default(),

@@ -75,8 +75,9 @@ class FormatNationInfo(Formatter):
                 )
             case "banner":
                 embed = discord.Embed(title=f"Banner of {nation}.")
-                embed.set_image(url=cls.BASE_BANNER_URL + text)
-                await interaction.response.send_message(embed=embed)
+                await cls.send_embed_with_flag_image(
+                    bot.nationstates_api, interaction, embed, cls.BASE_BANNER_URL + text
+                )
             case "banners":
                 await cls.handle_banners(interaction, nation, root, bot)
             case "capital":
@@ -210,10 +211,8 @@ class FormatNationInfo(Formatter):
                     )
                 )
             case "flag":
-                # TODO create function to handle image and thumbnail
                 embed = discord.Embed(title=f"{nation}'s flag", url=text)
-                embed.set_image(url=text)
-                await interaction.response.send_message(embed=embed)
+                await cls.send_embed_with_flag_image(bot.nationstates_api, interaction, embed, text)
             case "founded":
                 await interaction.response.send_message(
                     embed=discord.Embed(title=f"{nation} was founded {text}!")
@@ -536,8 +535,8 @@ class FormatNationInfo(Formatter):
         image_file = BytesIO()
         compiled_banners_image.save(image_file, format="PNG")
         image_file.seek(0)
-        image_file = discord.File(image_file, filename="image.png")
+        image_file = discord.File(image_file, filename="banner_images.png")
 
         embed = discord.Embed(title=f"Banners for {nation}.")
-        embed.set_image(url="attachment://image.png")
+        embed.set_image(url="attachment://banner_images.png")
         await interaction.followup.send(embed=embed, file=image_file)
