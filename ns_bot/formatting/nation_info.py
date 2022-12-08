@@ -24,6 +24,12 @@ class FormatNationInfo(Formatter):
         root: ET.Element = await cls.async_xml_parse(data)
         text = root[0].text
 
+        if not data:
+            return await interaction.response.send_message(
+                f"There was no response from Nation States with the nation {nation}",
+                ephemeral=True,
+            )
+
         if not shard:
             if text is None:
                 await interaction.response.send_message(
