@@ -41,7 +41,10 @@ class WorldAssembly(commands.GroupCog, group_name="wa"):
         shard: Optional[str] = None,
     ):
         self.logger.info(f"starting to fetch data with {council.name = } and {shard = }")
-        await self.world_assembly_controller.info(interaction, council, shard)
+        try:
+            await self.world_assembly_controller.info(interaction, council, shard)
+        except Exception as e:
+            self.logger.error(e, exc_info=True)
         self.logger.info(f"fetched {shard} for {council.name = }")
 
 

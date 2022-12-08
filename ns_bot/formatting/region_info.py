@@ -1,8 +1,8 @@
+import re
 import xml.etree.ElementTree as ET
 from datetime import datetime
 
 import discord
-import re
 
 from nationstates_bot import NationStatesBot
 from ns_bot.formatting import Formatter
@@ -23,9 +23,14 @@ class FormatRegionInfo(Formatter):
         root: ET.Element = await cls.async_xml_parse(data)
         text = root[0].text
 
+        if not data:
+            return await interaction.response.send_message(
+                f"{region} is unknown. Please try again", ephemeral=True
+            )
+
         if not shard:
             if text is None:
-                await interaction.response.send_message(
+                return await interaction.response.send_message(
                     embed=discord.Embed(title=f"{region} has no dispatch list.")
                 )
 
@@ -140,7 +145,7 @@ class FormatRegionInfo(Formatter):
                         embed=discord.Embed(title=f"There is no factbook in {region}")
                     )
                 # replace text between brackets to clean up special characters
-                output = re.sub("\[.*?\]", " ", text)
+                output = re.sub(r"\[.*?\]", " ", text)
                 embed = discord.Embed(title=f"Factbook in {region}", description=output)
                 await interaction.response.send_message(embed=embed)
             case "flag":
