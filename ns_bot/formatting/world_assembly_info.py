@@ -71,6 +71,18 @@ class FormatWAInfo(Formatter):
                 await interaction.response.send_message(embeds=cls.build_resolution_embeds(root))
             case "voters":
                 embeds = cls.build_resolution_embeds(root)
+                nations_for = "\n".join([ nation.text for nation in random.sample(root[0].find("VOTES_FOR").findall('N'), k=25)])
+                nations_for_embed = discord.Embed(
+                    title="A random selection of nations who voted FOR the resolution:",
+                    description=nations_for
+                )
+                embeds.append(nations_for_embed)
+                nations_against = "\n".join([ nation.text for nation in random.sample(root[0].find("VOTES_AGAINST").findall('N'), k=25)])
+                nations_against_embed = discord.Embed(
+                    title="A random selection of nations who voted AGAINST the resolution:",
+                    description=nations_against
+                )
+                embeds.append(nations_against_embed)
                 await interaction.response.send_message(embeds=embeds)
             case "votetrack":
                 embeds = cls.build_resolution_embeds(root)
@@ -94,8 +106,8 @@ class FormatWAInfo(Formatter):
                 delvotes_for_embed = discord.Embed(
                     title="A random selection of delegates FOR the resolution:"
                 )
-                votes_for = random.sample(root[0].find("DELVOTES_FOR").findall("DELEGATE"), k=25)
-                for vote in votes_for:
+                votes_against = random.sample(root[0].find("DELVOTES_FOR").findall("DELEGATE"), k=25)
+                for vote in votes_against:
                     date_time = cls.timestamp_to_datetime_str(vote.find('TIMESTAMP').text)
                     delvotes_for_embed.add_field(
                         name=f"{date_time}",
