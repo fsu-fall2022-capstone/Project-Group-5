@@ -1,6 +1,8 @@
 import random
+import re
 import xml.etree.ElementTree as ET
 from datetime import datetime
+from itertools import islice
 
 import discord
 
@@ -63,10 +65,20 @@ class FormatWAInfo(Formatter):
                     embed.add_field(name=f"{date_time}", value=happening)
                 await interaction.response.send_message(embed=embed)
             case "proposals":
-                embed = discord.Embed(
-                    title=f"The {council} has recently discussed these proposals: "
+                embeds = []
+                proposal = root[0].find('PROPOSAL')
+                # TODO process lists in the string to have correct indentation
+                desc = re.sub(r"\[(.*?)\]", f"\n", proposal.findtext('DESC'))
+                proposal_embed = discord.Embed(title=f"{proposal.findtext('NAME')}", description=desc)
+                proposal_embed.add_field(
+                    name=f"\n{cls.timestamp_to_datetime_str(proposal.findtext('CREATED'))}",
+                    value=f"This proposal was drafted by {proposal.findtext('PROPOSED_BY')}.",
                 )
-                await interaction.response.send_message(embed=embed)
+                embeds.append(proposal_embed)
+                approving_nations = " \n".join([member for member in random.sample(proposal.findtext('APPROVALS').split(":"), k=25)])
+                approvals_embed = discord.Embed(title=f"A random selection of nations that approve of this proposal: ", description=approving_nations)
+                embeds.append(approvals_embed)
+                await interaction.response.send_message(embeds=embeds)
             case "resolution":
                 await interaction.response.send_message(embeds=cls.build_resolution_embeds(root))
             case "voters":
