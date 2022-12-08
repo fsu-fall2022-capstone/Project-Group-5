@@ -18,7 +18,9 @@ class Formatter:
     def clean_data(data: str):
         if not data:
             return data
-        return data.replace("&quot;", '"').replace("@@", "").replace("%%", "")
+        return (
+            data.replace("&quot;", '"').replace("@@", "").replace("%%", "").replace("&#146;", "'")
+        )
 
     @staticmethod
     async def send_embed_with_flag_image(
