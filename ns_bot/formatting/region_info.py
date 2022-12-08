@@ -2,6 +2,7 @@ import xml.etree.ElementTree as ET
 from datetime import datetime
 
 import discord
+import re
 
 from nationstates_bot import NationStatesBot
 from ns_bot.formatting import Formatter
@@ -50,7 +51,22 @@ class FormatRegionInfo(Formatter):
                 embed.add_field(name="Score", value=root[0][0][0].text, inline=False)
                 await interaction.response.send_message(embed=embed)
             case "censusranks":
-                pass
+                if text is None:
+                    await interaction.response.send_message(
+                        embed=discord.Embed(title=f"{region} has no census ranks.")
+                    )
+                    return
+                embed = discord.Embed(title=f"Census ranks in {region}")
+                for id in root[0].findall("NATIONS")[:25]:
+                    for element in id:
+                        embed.add_field(
+                            name="\u200b",
+                            value="\n".join(
+                                f"{element_text.tag}: {element_text.text.strip()}"
+                                for element_text in element
+                            ),
+                        )
+                await interaction.response.send_message(embed=embed)
             case "dbid":
                 await interaction.response.send_message(
                     embed=discord.Embed(title=f"The database ID for {region} is {text}")
@@ -78,7 +94,15 @@ class FormatRegionInfo(Formatter):
                     embed=discord.Embed(title=f"Delegate Votes {text}")
                 )
             case "dispatches":
-                pass
+                if text is None:
+                    await interaction.response.send_message(
+                        embed=discord.Embed(title=f"{region} has no dispatches.")
+                    )
+                    return
+                embed = discord.Embed(
+                    title=f"Dispatches in {region}", description=text.replace(",", "\n")
+                )
+                await interaction.response.send_message(embed=embed)
             case "embassies":
                 if text is None:
                     await interaction.response.send_message(
@@ -95,7 +119,14 @@ class FormatRegionInfo(Formatter):
             case "embassyrmb":
                 pass
             case "factbook":
-                pass
+                if text is None:
+                    await interaction.response.send_message(
+                        embed=discord.Embed(title=f"There is no factbook in {region}")
+                    )
+                # replace text between brackets to clean up special characters
+                output = re.sub("\[.*?\]", " ", text)
+                embed = discord.Embed(title=f"Factbook in {region}", description=output)
+                await interaction.response.send_message(embed=embed)
             case "flag":
                 embed = discord.Embed(title=f"{region}'s flag", url=text)
                 await cls.send_embed_with_flag_image(bot.nationstates_api, interaction, embed, text)
