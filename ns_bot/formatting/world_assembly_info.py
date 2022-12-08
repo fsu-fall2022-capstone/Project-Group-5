@@ -82,10 +82,10 @@ class FormatWAInfo(Formatter):
                 )
                 entries = random.sample(root[0].find("DELLOG").findall("ENTRY"), k=25)
                 for entry in entries:
-                    date_time = cls.timestamp_to_datetime_str(entry.get("TIMESTAMP"))
+                    date_time = cls.timestamp_to_datetime_str(entry.find('TIMESTAMP').text)
                     dellog_embed.add_field(
                         name=f"{date_time}",
-                        value=f"The nation of {entry.get('NATION')} voted {entry.get('ACTION')} with {entry.get('VOTES')} total votes.",
+                        value=f"The nation of {entry.find('NATION').text} voted {entry.find('ACTION').text} with {entry.find('VOTES').text} total votes.",
                     )
                 embeds.append(dellog_embed)
                 await interaction.response.send_message(embeds=embeds)
