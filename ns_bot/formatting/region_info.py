@@ -81,23 +81,23 @@ class FormatRegionInfo(Formatter):
                     embed=discord.Embed(title=f"Delegate {text}")
                 )
             case "delegateauth":
-                if text == "X":
-                    temp = "Executive"
-                elif text == "W":
-                    temp = "World Assembly"
-                elif text == "A":
-                    temp = "Appearance"
-                elif text == "B":
-                    temp = "Border Control"
-                elif text == "C":
-                    temp = "Communications"
-                elif text == "E":
-                    temp = "Embassies"
-                elif text == "P":
-                    temp = "Polls"
-                await interaction.response.send_message(
-                    embed=discord.Embed(title=f"Delegate Auth: {temp}")
-                )
+                embed = discord.Embed(title="Delegate Auth:")
+                for id in text:
+                    if id == "X":
+                        embed.add_field(name="\u200b", value="Execute", inline=False)
+                    elif id == "W":
+                        embed.add_field(name="\u200b", value="World Assembly", inline=False)
+                    elif id == "A":
+                        embed.add_field(name="\u200b", value="Appearance", inline=False)
+                    elif id == "B":
+                        embed.add_field(name="\u200b", value="Border Control", inline=False)
+                    elif id == "C":
+                        embed.add_field(name="\u200b", value="Communications", inline=False)
+                    elif id == "E":
+                        embed.add_field(name="\u200b", value="Embassies", inline=False)
+                    elif id == "P":
+                        embed.add_field(name="\u200b", value="Polls", inline=False)
+                await interaction.response.send_message(embed=embed)
             case "delegatevotes":
                 await interaction.response.send_message(
                     embed=discord.Embed(title=f"Delegate Votes {text}")
@@ -127,17 +127,19 @@ class FormatRegionInfo(Formatter):
                 await interaction.response.send_message(embed=embed)
             case "embassyrmb":
                 if text == "0":
-                    temp = "no-one"
+                    embassy_response = "no-one"
                 elif text == "con":
-                    temp = "delegates & Founders of embassy regions"
+                    embassy_response = "delegates & Founders of embassy regions"
                 elif text == "off":
-                    temp = "officers of embassy regions"
+                    embassy_response = "officers of embassy regions"
                 elif text == "com":
-                    temp = "officers of embassy regions with Communications authority"
+                    embassy_response = "officers of embassy regions with Communications authority"
                 elif text == "all":
-                    temp = "all residents of embassy regions"
+                    embassy_response = "all residents of embassy regions"
                 await interaction.response.send_message(
-                    embed=discord.Embed(title=f"Embassy posting privileges are extended to {temp}")
+                    embed=discord.Embed(
+                        title=f"Embassy posting privileges are extended to {embassy_response}"
+                    )
                 )
             case "factbook":
                 if text is None:
@@ -156,8 +158,8 @@ class FormatRegionInfo(Formatter):
                     embed=discord.Embed(title=f"{region} founded {text}")
                 )
             case "foundedtime":
-                temp = float(text)
-                dt = datetime.fromtimestamp(temp)
+                time = float(text)
+                dt = datetime.fromtimestamp(time)
                 await interaction.response.send_message(
                     embed=discord.Embed(title=f"The region of {region} was founded at {dt}.")
                 )
@@ -166,7 +168,23 @@ class FormatRegionInfo(Formatter):
                     embed=discord.Embed(title=f"{region} founded by {text}")
                 )
             case "founderauth":
-                pass
+                embed = discord.Embed(title="Founder Auth:")
+                for id in text:
+                    if id == "X":
+                        embed.add_field(name="\u200b", value="Execute", inline=False)
+                    elif id == "W":
+                        embed.add_field(name="\u200b", value="World Assembly", inline=False)
+                    elif id == "A":
+                        embed.add_field(name="\u200b", value="Appearance", inline=False)
+                    elif id == "B":
+                        embed.add_field(name="\u200b", value="Border Control", inline=False)
+                    elif id == "C":
+                        embed.add_field(name="\u200b", value="Communications", inline=False)
+                    elif id == "E":
+                        embed.add_field(name="\u200b", value="Embassies", inline=False)
+                    elif id == "P":
+                        embed.add_field(name="\u200b", value="Polls", inline=False)
+                await interaction.response.send_message(embed=embed)
             case "gavote":
                 await interaction.response.send_message(
                     embed=discord.Embed(
@@ -184,8 +202,8 @@ class FormatRegionInfo(Formatter):
                     for element in id:
                         happenings_results[element.tag] = element.text.strip()
                     time_stamp = happenings_results.get("TIMESTAMP")
-                    temp = float(time_stamp)
-                    dt = datetime.fromtimestamp(temp)
+                    time = float(time_stamp)
+                    dt = datetime.fromtimestamp(time)
                     embed.add_field(name=dt, value=happenings_results.get("TEXT"))
                 await interaction.response.send_message(embed=embed)
             case "history":
@@ -200,13 +218,13 @@ class FormatRegionInfo(Formatter):
                     for element in id:
                         history_results[element.tag] = element.text.strip()
                     time_stamp = history_results.get("TIMESTAMP")
-                    temp = float(time_stamp)
-                    dt = datetime.fromtimestamp(temp)
+                    time = float(time_stamp)
+                    dt = datetime.fromtimestamp(time)
                     embed.add_field(name=dt, value=history_results.get("TEXT"))
                 await interaction.response.send_message(embed=embed)
             case "lastupdate":
-                temp = float(text)
-                dt = datetime.fromtimestamp(temp)
+                time = float(text)
+                dt = datetime.fromtimestamp(time)
                 await interaction.response.send_message(
                     embed=discord.Embed(title=f"The region of {region} was last updated at {dt}.")
                 )
