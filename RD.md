@@ -56,7 +56,7 @@ Sequence Diagram:
 
   
 Class Diagram:  
-![inc2classdiagram](https://user-images.githubusercontent.com/72528884/203927568-9a5e07f1-b05a-49db-a8ef-b97f2efca40e.jpg)
+![class diagram (1)](https://user-images.githubusercontent.com/72528884/206370099-811354f0-da47-4567-a320-499129936c8e.png)
 
 ## Operating Environment 
 The bot instance will be run by python and the user will interact with the bot through discord.
