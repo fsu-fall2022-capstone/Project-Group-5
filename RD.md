@@ -36,9 +36,13 @@ The database system being used is PostgresSQL. The user will interact with the s
 
 (11) Vote on issues (Priority: High) - Allows the users to vote on issue options to decide what the nation will choose. 
 
+(12) Get daily dump information (Priority: Low) - Gets information of nations and stores it in memory.
+
+(13) Ratelimit (Priority: Low) - Limits the use from sending too many requests and being locked out of calls from NationStates API.
+
 ## Non-functional Requirements
 Nationstates API has call limits - The requirement is placed by nationstates. Exceeding 50 requests per 30 seconds limit will temporarily lock the system.
-Not yet enforced/implemented.
+It is enforced by the discord bot to avoid being locked out of getting information from NationStates.
 
 Encryption and Decryption of nations passwords - This requirement is needed for the user to access their nation/region and prevent others from accessing nations
 they are not a part of. Currently being worked on, not fully implemented yet.
