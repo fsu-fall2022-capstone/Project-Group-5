@@ -5,6 +5,7 @@ from datetime import datetime
 import discord
 
 from ns_bot.formatting import Formatter
+from ns_bot.utils.logger import Logger
 
 
 class FormatWAInfo(Formatter):
@@ -16,6 +17,12 @@ class FormatWAInfo(Formatter):
         data = cls.clean_data(data)
         root: ET.Element = await cls.async_xml_parse(data)
         text = root[0].text
+
+        if not data:
+            return await interaction.response.send_message(
+                "There was no response from Nation States", ephemeral=True
+            )
+
         match shard:
             case "numnations":
                 await interaction.response.send_message(
@@ -49,22 +56,12 @@ class FormatWAInfo(Formatter):
                 embed = discord.Embed(
                     title="New things are always happening at the World Assembly!"
                 )
-                for id in root[0].findall("EVENT"):
-                    happenings_results = {}
-                    # TODO format "%%...%%" like a nation title.
-                    # TODO format "@@...@@" like a proper noun.
-                    for element in id:
-                        happenings_results[element.tag] = (
-                            element.text.replace("@@", "").replace("%%", "").strip()
-                        )
-                    time_stamp = happenings_results.get("TIMESTAMP")
-                    temp = float(time_stamp)
-                    dt = datetime.fromtimestamp(temp)
-                    date = dt.strftime("%b %d %Y")
-                    time = dt.strftime("%H:%M:%S")
-                    embed.add_field(
-                        name=f"On {date} at {time}", value=happenings_results.get("TEXT")
+                for event in root[0].findall("EVENT"):
+                    happening = (
+                        event.findtext("TEXT").replace("@@", "**").replace("%%", "*").strip()
                     )
+                    date_time = cls.timestamp_to_datetime_str(event.findtext("TIMESTAMP"))
+                    embed.add_field(name=f"{date_time}", value=happening)
                 await interaction.response.send_message(embed=embed)
             case "proposals":
                 embed = discord.Embed(
@@ -81,26 +78,17 @@ class FormatWAInfo(Formatter):
                 await interaction.response.send_message(embeds=embeds)
             case "dellog":
                 embeds = cls.build_resolution_embeds(root)
-                embed_c = discord.Embed(title="The Delegate Log reads as follows:")
-                i = 0
-                for id in root[0].find("DELLOG").findall("ENTRY"):
-                    if i < 26:
-                        entries = {}
-                        for element in id:
-                            entries[element.tag] = element.text
-                        time_stamp = entries.get("TIMESTAMP")
-                        dt = datetime.fromtimestamp(float(time_stamp))
-                        date = dt.strftime("%b %d %Y")
-                        time = dt.strftime("%H:%M:%S")
-                        embed_c.add_field(
-                            name=f"On {date} at {time}:",
-                            value=f"The nation of {entries.get('NATION')} voted {entries.get('ACTION')} with {entries.get('VOTES')} total votes.",
-                            inline=False,
-                        )
-                        i += 1
-                    else:
-                        break
-                embeds.append(embed_c)
+                dellog_embed = discord.Embed(
+                    title="A random part of The Delegate Log reads as follows:"
+                )
+                entries = random.sample(root[0].find("DELLOG").findall("ENTRY"), k=25)
+                for entry in entries:
+                    date_time = cls.timestamp_to_datetime_str(entry.get("TIMESTAMP"))
+                    dellog_embed.add_field(
+                        name=f"{date_time}",
+                        value=f"The nation of {entry.get('NATION')} voted {entry.get('ACTION')} with {entry.get('VOTES')} total votes.",
+                    )
+                embeds.append(dellog_embed)
                 await interaction.response.send_message(embeds=embeds)
             case "delvotes":
                 embeds = cls.build_resolution_embeds(root)
