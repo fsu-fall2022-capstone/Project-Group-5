@@ -11,6 +11,7 @@ from dotenv import load_dotenv
 import ns_bot.postgres_init as p_init
 from ns_bot.DAOs.nationstates_api import NationStatesAPI
 from ns_bot.utils import Logger
+from ns_bot.utils.logger import setup_discord_loggers
 
 load_dotenv()
 
@@ -27,6 +28,7 @@ class NationStatesBot(commands.Bot):
         super().__init__(*args, **kwargs)
 
         self.base_logger = Logger("bot")
+        setup_discord_loggers()
 
         self.db_pool = db_pool
         self.web_client = web_client

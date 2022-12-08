@@ -1,6 +1,8 @@
 import random
+import re
 import xml.etree.ElementTree as ET
 from datetime import datetime
+from itertools import islice
 
 import discord
 
@@ -16,6 +18,12 @@ class FormatWAInfo(Formatter):
         data = cls.clean_data(data)
         root: ET.Element = await cls.async_xml_parse(data)
         text = root[0].text
+
+        if not data:
+            return await interaction.response.send_message(
+                "There was no response from Nation States", ephemeral=True
+            )
+
         match shard:
             case "numnations":
                 await interaction.response.send_message(
@@ -49,64 +57,90 @@ class FormatWAInfo(Formatter):
                 embed = discord.Embed(
                     title="New things are always happening at the World Assembly!"
                 )
-                for id in root[0].findall("EVENT"):
-                    happenings_results = {}
-                    # TODO format "%%...%%" like a nation title.
-                    # TODO format "@@...@@" like a proper noun.
-                    for element in id:
-                        happenings_results[element.tag] = (
-                            element.text.replace("@@", "").replace("%%", "").strip()
-                        )
-                    time_stamp = happenings_results.get("TIMESTAMP")
-                    temp = float(time_stamp)
-                    dt = datetime.fromtimestamp(temp)
-                    date = dt.strftime("%b %d %Y")
-                    time = dt.strftime("%H:%M:%S")
-                    embed.add_field(
-                        name=f"On {date} at {time}", value=happenings_results.get("TEXT")
+                for event in root[0].findall("EVENT"):
+                    happening = (
+                        event.findtext("TEXT").replace("@@", "**").replace("%%", "*").strip()
                     )
+                    date_time = cls.timestamp_to_datetime_str(event.findtext("TIMESTAMP"))
+                    embed.add_field(name=f"{date_time}", value=happening)
                 await interaction.response.send_message(embed=embed)
             case "proposals":
-                embed = discord.Embed(
-                    title=f"The {council} has recently discussed these proposals: "
+                embeds = []
+                proposal = root[0].find('PROPOSAL')
+                # TODO process lists in the string to have correct indentation
+                desc = re.sub(r"\[(.*?)\]", f"\n", proposal.findtext('DESC'))
+                proposal_embed = discord.Embed(title=f"{proposal.findtext('NAME')}", description=desc)
+                proposal_embed.add_field(
+                    name=f"\n{cls.timestamp_to_datetime_str(proposal.findtext('CREATED'))}",
+                    value=f"This proposal was drafted by {proposal.findtext('PROPOSED_BY')}.",
                 )
-                await interaction.response.send_message(embed=embed)
+                embeds.append(proposal_embed)
+                approving_nations = " \n".join([member for member in random.sample(proposal.findtext('APPROVALS').split(":"), k=25)])
+                approvals_embed = discord.Embed(title=f"A random selection of nations that approve of this proposal: ", description=approving_nations)
+                embeds.append(approvals_embed)
+                await interaction.response.send_message(embeds=embeds)
             case "resolution":
                 await interaction.response.send_message(embeds=cls.build_resolution_embeds(root))
             case "voters":
                 embeds = cls.build_resolution_embeds(root)
+                nations_for = "\n".join([ nation.text for nation in random.sample(root[0].find("VOTES_FOR").findall('N'), k=25)])
+                nations_for_embed = discord.Embed(
+                    title="A random selection of nations who voted FOR the resolution:",
+                    description=nations_for
+                )
+                embeds.append(nations_for_embed)
+                nations_against = "\n".join([ nation.text for nation in random.sample(root[0].find("VOTES_AGAINST").findall('N'), k=25)])
+                nations_against_embed = discord.Embed(
+                    title="A random selection of nations who voted AGAINST the resolution:",
+                    description=nations_against
+                )
+                embeds.append(nations_against_embed)
                 await interaction.response.send_message(embeds=embeds)
             case "votetrack":
                 embeds = cls.build_resolution_embeds(root)
                 await interaction.response.send_message(embeds=embeds)
             case "dellog":
                 embeds = cls.build_resolution_embeds(root)
-                embed_c = discord.Embed(title="The Delegate Log reads as follows:")
-                i = 0
-                for id in root[0].find("DELLOG").findall("ENTRY"):
-                    if i < 26:
-                        entries = {}
-                        for element in id:
-                            entries[element.tag] = element.text
-                        time_stamp = entries.get("TIMESTAMP")
-                        dt = datetime.fromtimestamp(float(time_stamp))
-                        date = dt.strftime("%b %d %Y")
-                        time = dt.strftime("%H:%M:%S")
-                        embed_c.add_field(
-                            name=f"On {date} at {time}:",
-                            value=f"The nation of {entries.get('NATION')} voted {entries.get('ACTION')} with {entries.get('VOTES')} total votes.",
-                            inline=False,
-                        )
-                        i += 1
-                    else:
-                        break
-                embeds.append(embed_c)
+                dellog_embed = discord.Embed(
+                    title="A random part of The Delegate Log reads as follows:"
+                )
+                entries = random.sample(root[0].find("DELLOG").findall("ENTRY"), k=25)
+                for entry in entries:
+                    date_time = cls.timestamp_to_datetime_str(entry.find('TIMESTAMP').text)
+                    dellog_embed.add_field(
+                        name=f"{date_time}",
+                        value=f"The nation of {entry.find('NATION').text} voted {entry.find('ACTION').text} with {entry.find('VOTES').text} total votes.",
+                    )
+                embeds.append(dellog_embed)
                 await interaction.response.send_message(embeds=embeds)
             case "delvotes":
                 embeds = cls.build_resolution_embeds(root)
+                delvotes_for_embed = discord.Embed(
+                    title="A random selection of delegates FOR the resolution:"
+                )
+                votes_against = random.sample(root[0].find("DELVOTES_FOR").findall("DELEGATE"), k=25)
+                for vote in votes_against:
+                    date_time = cls.timestamp_to_datetime_str(vote.find('TIMESTAMP').text)
+                    delvotes_for_embed.add_field(
+                        name=f"{date_time}",
+                        value=f"{vote.find('NATION').text} cast {vote.find('VOTES').text} votes."
+                    )
+                embeds.append(delvotes_for_embed)
+                delvotes_against_embed = discord.Embed(
+                    title="A random selection of delegates AGAINST the resolution:"
+                )
+                votes_for = random.sample(root[0].find("DELVOTES_AGAINST").findall("DELEGATE"), k=25)
+                for vote in votes_for:
+                    date_time = cls.timestamp_to_datetime_str(vote.find('TIMESTAMP').text)
+                    delvotes_against_embed.add_field(
+                        name=f"{date_time}",
+                        value=f"{vote.find('NATION').text} cast {vote.find('VOTES').text} votes."
+                    )
+                embeds.append(delvotes_against_embed)
                 await interaction.response.send_message(embeds=embeds)
             case "lastresolution":
-                await interaction.response.send_message(embed=discord.Embed(title=f"{text}"))
+                text = re.sub(r"\<(.*?)\>","",text)
+                await interaction.response.send_message(embed=discord.Embed(title=text))
 
     @classmethod
     def build_resolution_embeds(cls, root: ET.Element):
