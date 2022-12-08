@@ -129,7 +129,7 @@ class FormatRegionInfo(Formatter):
                         embed=discord.Embed(title=f"There is no factbook in {region}")
                     )
                 # replace text between brackets to clean up special characters
-                output = re.sub("\[.*?\]", " ", text)
+                output = re.sub(r"\[.*?\]", " ", text)
                 embed = discord.Embed(title=f"Factbook in {region}", description=output)
                 await interaction.response.send_message(embed=embed)
             case "flag":

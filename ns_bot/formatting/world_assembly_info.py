@@ -5,7 +5,6 @@ from datetime import datetime
 import discord
 
 from ns_bot.formatting import Formatter
-from ns_bot.utils.logger import Logger
 
 
 class FormatWAInfo(Formatter):
