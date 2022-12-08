@@ -139,7 +139,8 @@ class FormatWAInfo(Formatter):
                 embeds.append(delvotes_against_embed)
                 await interaction.response.send_message(embeds=embeds)
             case "lastresolution":
-                await interaction.response.send_message(embed=discord.Embed(title=f"{text}"))
+                text = re.sub(r"\<(.*?)\>","",text)
+                await interaction.response.send_message(embed=discord.Embed(title=text))
 
     @classmethod
     def build_resolution_embeds(cls, root: ET.Element):
