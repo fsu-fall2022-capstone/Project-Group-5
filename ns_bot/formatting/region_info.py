@@ -76,18 +76,22 @@ class FormatRegionInfo(Formatter):
                     embed=discord.Embed(title=f"Delegate {text}")
                 )
             case "delegateauth":
-                # TODO Convert text to:
-                """
-                X: Executive
-                W: World Assembly
-                A: Appearance
-                B: Border Control
-                C: Communications
-                E: Embassies
-                P: Polls
-                """
+                if text == "X":
+                    temp = "Executive"
+                elif text == "W":
+                    temp = "World Assembly"
+                elif text == "A":
+                    temp = "Appearance"
+                elif text == "B":
+                    temp = "Border Control"
+                elif text == "C":
+                    temp = "Communications"
+                elif text == "E":
+                    temp = "Embassies"
+                elif text == "P":
+                    temp = "Polls"
                 await interaction.response.send_message(
-                    embed=discord.Embed(title=f"Delegate Auth {text}")
+                    embed=discord.Embed(title=f"Delegate Auth: {temp}")
                 )
             case "delegatevotes":
                 await interaction.response.send_message(
@@ -117,7 +121,19 @@ class FormatRegionInfo(Formatter):
                     )
                 await interaction.response.send_message(embed=embed)
             case "embassyrmb":
-                pass
+                if text == "0":
+                    temp = "no-one"
+                elif text == "con":
+                    temp = "delegates & Founders of embassy regions"
+                elif text == "off":
+                    temp = "officers of embassy regions"
+                elif text == "com":
+                    temp = "officers of embassy regions with Communications authority"
+                elif text == "all":
+                    temp = "all residents of embassy regions"
+                await interaction.response.send_message(
+                    embed=discord.Embed(title=f"Embassy posting privileges are extended to {temp}")
+                )
             case "factbook":
                 if text is None:
                     await interaction.response.send_message(
@@ -142,7 +158,7 @@ class FormatRegionInfo(Formatter):
                 )
             case "founder":
                 await interaction.response.send_message(
-                    embed=discord.Embed(title=f"Founder of {region}: {text}")
+                    embed=discord.Embed(title=f"{region} founded by {text}")
                 )
             case "founderauth":
                 pass
@@ -168,7 +184,21 @@ class FormatRegionInfo(Formatter):
                     embed.add_field(name=dt, value=happenings_results.get("TEXT"))
                 await interaction.response.send_message(embed=embed)
             case "history":
-                pass
+                if text is None:
+                    await interaction.response.send_message(
+                        embed=discord.Embed(title=f"{region} has no history.")
+                    )
+                    return
+                embed = discord.Embed(title=f"History of {region}")
+                for id in root[0].findall("EVENT"):
+                    history_results = {}
+                    for element in id:
+                        history_results[element.tag] = element.text.strip()
+                    time_stamp = history_results.get("TIMESTAMP")
+                    temp = float(time_stamp)
+                    dt = datetime.fromtimestamp(temp)
+                    embed.add_field(name=dt, value=history_results.get("TEXT"))
+                await interaction.response.send_message(embed=embed)
             case "lastupdate":
                 temp = float(text)
                 dt = datetime.fromtimestamp(temp)
@@ -176,7 +206,18 @@ class FormatRegionInfo(Formatter):
                     embed=discord.Embed(title=f"The region of {region} was last updated at {dt}.")
                 )
             case "messages":
-                pass
+                if text is None:
+                    await interaction.response.send_message(
+                        embed=discord.Embed(title=f"{region} has no messages")
+                    )
+                    return
+                embed = discord.Embed(title=f"Messages in {region}")
+                for id in root[0].findall("POST")[:25]:
+                    embed.add_field(
+                        name="\u200b",
+                        value="\n".join(f"{element.tag}: {element.text.strip()}" for element in id),
+                    )
+                await interaction.response.send_message(embed=embed)
             case "name":
                 await interaction.response.send_message(embed=discord.Embed(title=text))
             case "nations":
@@ -189,7 +230,25 @@ class FormatRegionInfo(Formatter):
                     embed=discord.Embed(title=f"Number of nations in {region}: {text}")
                 )
             case "officers":
-                pass
+                # X: Executive
+                # W: World Assembly
+                # A: Appearance
+                # B: Border Control
+                # C: Communications
+                # E: Embassies
+                # P: Polls
+                if text is None:
+                    await interaction.response.send_message(
+                        embed=discord.Embed(title=f"{region} has no officers")
+                    )
+                    return
+                embed = discord.Embed(title=f"Officers in {region}")
+                for id in root[0].findall("OFFICER")[:25]:
+                    embed.add_field(
+                        name="\u200b",
+                        value="\n".join(f"{element.tag}: {element.text.strip()}" for element in id),
+                    )
+                await interaction.response.send_message(embed=embed)
             case "poll":
                 pass
             case "power":
@@ -210,7 +269,12 @@ class FormatRegionInfo(Formatter):
                         )
                     )
             case "tags":
-                pass
+                embed = discord.Embed(title=f"Tags for {region}")
+                root[0].find("TAGS")
+                tags_results = {}
+                for element in root[0]:
+                    embed.add_field(name="\u200b", value=element.text.strip(), inline=False)
+                await interaction.response.send_message(embed=embed)
             case "wabadges":
                 pass
             case "zombie":
