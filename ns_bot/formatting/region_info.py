@@ -168,22 +168,8 @@ class FormatRegionInfo(Formatter):
                     embed=discord.Embed(title=f"{region} founded by {text}")
                 )
             case "founderauth":
-                embed = discord.Embed(title="Founder Auth:")
-                for id in text:
-                    if id == "X":
-                        embed.add_field(name="\u200b", value="Execute", inline=False)
-                    elif id == "W":
-                        embed.add_field(name="\u200b", value="World Assembly", inline=False)
-                    elif id == "A":
-                        embed.add_field(name="\u200b", value="Appearance", inline=False)
-                    elif id == "B":
-                        embed.add_field(name="\u200b", value="Border Control", inline=False)
-                    elif id == "C":
-                        embed.add_field(name="\u200b", value="Communications", inline=False)
-                    elif id == "E":
-                        embed.add_field(name="\u200b", value="Embassies", inline=False)
-                    elif id == "P":
-                        embed.add_field(name="\u200b", value="Polls", inline=False)
+                text = cls.authority_code_to_string(text)
+                embed = discord.Embed(title="Founder Auth:", description=text)
                 await interaction.response.send_message(embed=embed)
             case "gavote":
                 await interaction.response.send_message(
@@ -253,23 +239,27 @@ class FormatRegionInfo(Formatter):
                     embed=discord.Embed(title=f"Number of nations in {region}: {text}")
                 )
             case "officers":
-                # X: Executive
-                # W: World Assembly
-                # A: Appearance
-                # B: Border Control
-                # C: Communications
-                # E: Embassies
-                # P: Polls
                 if text is None:
                     await interaction.response.send_message(
                         embed=discord.Embed(title=f"{region} has no officers")
                     )
                     return
                 embed = discord.Embed(title=f"Officers in {region}")
-                for id in root[0].findall("OFFICER")[:25]:
+                for officer in root[0].findall("OFFICER")[:25]:
+                    nation_name = officer.findtext("NATION")
+                    office = officer.findtext("OFFICE")
+                    authority = officer.findtext("AUTHORITY")
+                    authority = cls.authority_code_to_string(authority)
+                    time = cls.timestamp_to_datetime_str(officer.findtext("TIME"))
+                    by = officer.findtext("BY")
+                    order = officer.findtext("ORDER")
                     embed.add_field(
-                        name="\u200b",
-                        value="\n".join(f"{element.tag}: {element.text.strip()}" for element in id),
+                        name=nation_name,
+                        value=f"Office: {office}\
+                            \nWas added {time}\
+                            \nBy {by}\
+                            \nAt position {order}\
+                            \nHolding the authority of :\n{authority}",
                     )
                 await interaction.response.send_message(embed=embed)
             case "poll":
@@ -316,3 +306,14 @@ class FormatRegionInfo(Formatter):
                 description=data,
             )
         )
+
+    @staticmethod
+    def authority_code_to_string(codes: str):
+        codes = codes.replace("E", "Embassies\n")
+        codes = codes.replace("A", "Appearance\n")
+        codes = codes.replace("C", "Communications\n")
+        codes = codes.replace("P", "Poll\n")
+        codes = codes.replace("X", "Execute\n")
+        codes = codes.replace("B", "Border Control\n")
+        codes = codes.replace("W", "World Assembly\n")
+        return codes
