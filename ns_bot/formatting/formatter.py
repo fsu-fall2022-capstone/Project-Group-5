@@ -16,7 +16,7 @@ class Formatter:
     async_xml_parse = async_wrapper(ET.fromstring)
 
     @staticmethod
-    def timestamp_to_datetime_str(timestamp):
+    def timestamp_to_datetime_str(timestamp: str):
         return datetime.fromtimestamp(float(timestamp)).strftime("%b %d %Y %H:%M:%S")
 
     @staticmethod
