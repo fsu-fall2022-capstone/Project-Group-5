@@ -46,7 +46,11 @@ class FormatRegionInfo(Formatter):
                 )
             case "bannerurl":
                 banner_url = cls.BASE_REGION_URL + text.split("/")[-1]
-                embed = discord.Embed(title="Banner URL", description=text, url=banner_url)
+                embed = discord.Embed(
+                    title="Banner URL",
+                    description=banner_url,
+                    url=banner_url,
+                )
                 await cls.send_embed_with_flag_image(
                     bot.nationstates_api, interaction, embed, banner_url
                 )
@@ -81,23 +85,28 @@ class FormatRegionInfo(Formatter):
                     embed=discord.Embed(title=f"Delegate {text}")
                 )
             case "delegateauth":
-                embed = discord.Embed(title="Delegate Auth:")
+                results = []
                 for id in text:
                     if id == "X":
-                        embed.add_field(name="\u200b", value="Execute", inline=False)
+                        results.append("Execute")
                     elif id == "W":
-                        embed.add_field(name="\u200b", value="World Assembly", inline=False)
+                        results.append("World Assembly")
                     elif id == "A":
-                        embed.add_field(name="\u200b", value="Appearance", inline=False)
+                        results.append("Appearance")
                     elif id == "B":
-                        embed.add_field(name="\u200b", value="Border Control", inline=False)
+                        results.append("Border Control")
                     elif id == "C":
-                        embed.add_field(name="\u200b", value="Communications", inline=False)
+                        results.append("Communications")
                     elif id == "E":
-                        embed.add_field(name="\u200b", value="Embassies", inline=False)
+                        results.append("Embassies")
                     elif id == "P":
-                        embed.add_field(name="\u200b", value="Polls", inline=False)
-                await interaction.response.send_message(embed=embed)
+                        results.append("Execute")
+                await interaction.response.send_message(
+                    embed=discord.Embed(
+                        title="Delegate Authorized for:",
+                        description="\n".join(results),
+                    )
+                )
             case "delegatevotes":
                 await interaction.response.send_message(
                     embed=discord.Embed(title=f"Delegate Votes {text}")
@@ -113,18 +122,20 @@ class FormatRegionInfo(Formatter):
                 )
                 await interaction.response.send_message(embed=embed)
             case "embassies":
+                print(text)
                 if text is None:
                     await interaction.response.send_message(
                         embed=discord.Embed(title=f"There are no embassies in {region}")
                     )
-                embed = discord.Embed(title=f"Embassies in {region}")
+                results = []
                 for embassy in root[0].iterfind("EMBASSY"):
-                    embed.add_field(
-                        name=f"{embassy.attrib['type']}:",
-                        value=f"{embassy.text}",
-                        inline=False,
+                    results.append(embassy.text)
+                await interaction.response.send_message(
+                    embed=discord.Embed(
+                        title=f"Embassies in {region}",
+                        description="\n".join(results),
                     )
-                await interaction.response.send_message(embed=embed)
+                )
             case "embassyrmb":
                 if text == "0":
                     embassy_response = "no-one"
@@ -151,6 +162,10 @@ class FormatRegionInfo(Formatter):
                 embed = discord.Embed(title=f"Factbook in {region}", description=output)
                 await interaction.response.send_message(embed=embed)
             case "flag":
+                if text is None:
+                    await interaction.response.send_message(
+                        embed=discord.Embed(title=f"{region} has no flag")
+                    )
                 embed = discord.Embed(title=f"{region}'s flag", url=text)
                 await cls.send_embed_with_flag_image(bot.nationstates_api, interaction, embed, text)
             case "founded":
@@ -159,9 +174,11 @@ class FormatRegionInfo(Formatter):
                 )
             case "foundedtime":
                 time = float(text)
-                dt = datetime.fromtimestamp(time)
+                datetimeVar = datetime.fromtimestamp(time)
                 await interaction.response.send_message(
-                    embed=discord.Embed(title=f"The region of {region} was founded at {dt}.")
+                    embed=discord.Embed(
+                        title=f"The region of {region} was founded at {datetimeVar}."
+                    )
                 )
             case "founder":
                 await interaction.response.send_message(
@@ -230,9 +247,11 @@ class FormatRegionInfo(Formatter):
             case "name":
                 await interaction.response.send_message(embed=discord.Embed(title=text))
             case "nations":
-                # TODO fix. title will end up way too long.
                 await interaction.response.send_message(
-                    embed=discord.Embed(title=f"Nations in {region}: {text}")
+                    embed=discord.Embed(
+                        title=f"Nations in {region}:",
+                        description=text.replace(":", "\n"),
+                    )
                 )
             case "numnations":
                 await interaction.response.send_message(
@@ -244,7 +263,7 @@ class FormatRegionInfo(Formatter):
                         embed=discord.Embed(title=f"{region} has no officers")
                     )
                     return
-                embed = discord.Embed(title=f"Officers in {region}")
+                embed = discord.Embed(title=f"Officers in {region}: ")
                 for officer in root[0].findall("OFFICER")[:25]:
                     nation_name = officer.findtext("NATION")
                     office = officer.findtext("OFFICE")
@@ -256,9 +275,9 @@ class FormatRegionInfo(Formatter):
                     embed.add_field(
                         name=nation_name,
                         value=f"Office: {office}\
-                            \nWas added {time}\
-                            \nBy {by}\
-                            \nAt position {order}\
+                            \nWas added on: {time}\
+                            \nBy: {by}\
+                            \nAt position: {order}\
                             \nHolding the authority of :\n{authority}",
                     )
                 await interaction.response.send_message(embed=embed)
@@ -270,11 +289,14 @@ class FormatRegionInfo(Formatter):
                 )
             case "scvote":
                 if text:
-                    await interaction.response.send_message(
-                        embed=discord.Embed(
-                            title=f"{region}'s status on the Security Council is currently {text}."
-                        )
+                    results = []
+                    for id in root[0]:
+                        results.append(f"{id.tag}: {id.text}")
+                    embed = discord.Embed(
+                        title=f"{region}'s status on the Security Council is currently:",
+                        description="\n".join(results),
                     )
+                    await interaction.response.send_message(embed=embed)
                 else:
                     await interaction.response.send_message(
                         embed=discord.Embed(
