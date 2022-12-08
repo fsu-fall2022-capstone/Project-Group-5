@@ -91,6 +91,28 @@ class FormatWAInfo(Formatter):
                 await interaction.response.send_message(embeds=embeds)
             case "delvotes":
                 embeds = cls.build_resolution_embeds(root)
+                delvotes_for_embed = discord.Embed(
+                    title="A random selection of delegates FOR the resolution:"
+                )
+                votes_for = random.sample(root[0].find("DELVOTES_FOR").findall("DELEGATE"), k=25)
+                for vote in votes_for:
+                    date_time = cls.timestamp_to_datetime_str(vote.find('TIMESTAMP').text)
+                    delvotes_for_embed.add_field(
+                        name=f"{date_time}",
+                        value=f"{vote.find('NATION').text} cast {vote.find('VOTES').text} votes."
+                    )
+                embeds.append(delvotes_for_embed)
+                delvotes_against_embed = discord.Embed(
+                    title="A random selection of delegates AGAINST the resolution:"
+                )
+                votes_for = random.sample(root[0].find("DELVOTES_AGAINST").findall("DELEGATE"), k=25)
+                for vote in votes_for:
+                    date_time = cls.timestamp_to_datetime_str(vote.find('TIMESTAMP').text)
+                    delvotes_against_embed.add_field(
+                        name=f"{date_time}",
+                        value=f"{vote.find('NATION').text} cast {vote.find('VOTES').text} votes."
+                    )
+                embeds.append(delvotes_against_embed)
                 await interaction.response.send_message(embeds=embeds)
             case "lastresolution":
                 await interaction.response.send_message(embed=discord.Embed(title=f"{text}"))
