@@ -1,4 +1,5 @@
 import xml.etree.ElementTree as ET
+from datetime import datetime
 from io import BytesIO
 
 from discord import Embed, File, Interaction
@@ -13,6 +14,10 @@ class Formatter:
     IMAGE_LIMIT = 10
 
     async_xml_parse = async_wrapper(ET.fromstring)
+
+    @staticmethod
+    def timestamp_to_datetime_str(timestamp):
+        return datetime.fromtimestamp(float(timestamp)).strftime("%b %d %Y %H:%M:%S")
 
     @staticmethod
     def clean_data(data: str):
