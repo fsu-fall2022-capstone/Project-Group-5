@@ -13,37 +13,35 @@ class FormatIssueResponse(Formatter):
     async def format(
         cls, nationstates_api: NationStatesAPI, channel: discord.TextChannel, response: str
     ) -> None:
-
         root: ET.Element = await cls.async_xml_parse(response)
         issue_root = root[0]
 
-        if not issue_root.find("OK"):
-            return await channel.send(
-                f"There was some error when trying to respond to this issue.\
-                \nThe winning option was {issue_root.attrib.get('choice')}"
-            )
-
-        base_embed = discord.Embed(title=issue_root.findtext("DESC"))
+        result_embed = discord.Embed(title=issue_root.findtext("DESC"))
 
         if reclassifications := issue_root.find("RECLASSIFICATIONS"):
-            base_embed.add_field(
+            result_embed.add_field(
                 name="Nation has been reclassified.",
-                value="\n".join([reclassification.text for reclassification in reclassifications]),
+                value=ET.tostring(reclassifications),
             )
 
         headlines = "\n".join(
             [headline.text for headline in root[0].find("HEADLINES").findall("HEADLINE")]
         )
-        base_embed.add_field(name="Headlines", value=headlines)
+        result_embed.add_field(name="Headlines", value=headlines or "Nothing interesting")
+        result_embed.add_field(
+            name="Picked option", value=f"Option {int(issue_root.attrib.get('choice')) + 1} won"
+        )
 
-        embeds = [base_embed]
-        files = [cls.add_rankings(base_embed)]
+        await channel.send(
+            embed=result_embed, file=cls.add_rankings(result_embed, issue_root.find("RANKINGS"))
+        )
+
         if unlocks := issue_root.find("UNLOCKS"):
             banners = [banner.text for banner in unlocks.findall("BANNER")]
-            files.append(await cls.get_banner_images(banners, nationstates_api))
+            file = await cls.get_banner_images(banners, nationstates_api)
             unlock_embed = discord.Embed(title="Unlocks")
             unlock_embed.set_image(url="attachment://banner_images.png")
-            embeds.append(unlock_embed)
+            await channel.send(embed=unlock_embed, file=file)
 
         if new_policies := issue_root.find("NEW_POLICIES"):
             for policy in new_policies.findall("POLICY"):
@@ -51,10 +49,10 @@ class FormatIssueResponse(Formatter):
                     title=f"New Policy : {policy.findtext('NAME')}",
                     color=discord.Color.brand_green(),
                 )
-                policy_embed.set_image(cls.BASE_BANNER_URL + policy.findtext("PIC"))
+                policy_embed.set_image(url=cls.BASE_BANNER_URL + policy.findtext("PIC"))
                 policy_embed.add_field(name="Category", value=policy.findtext("CAT"))
                 policy_embed.add_field(name="Description", value=policy.findtext("DESC"))
-                embeds.append(policy_embed)
+                await channel.send(embed=policy_embed)
 
         if removed_policies := issue_root.find("REMOVED_POLICIES"):
             for policy in removed_policies.findall("POLICY"):
@@ -62,12 +60,10 @@ class FormatIssueResponse(Formatter):
                     title=f"Removed Policy : {policy.findtext('NAME')}",
                     color=discord.Color.brand_red(),
                 )
-                policy_embed.set_image(cls.BASE_BANNER_URL + policy.findtext("PIC"))
+                policy_embed.set_image(url=cls.BASE_BANNER_URL + policy.findtext("PIC"))
                 policy_embed.add_field(name="Category", value=policy.findtext("CAT"))
                 policy_embed.add_field(name="Description", value=policy.findtext("DESC"))
-                embeds.append(policy_embed)
-
-        await channel.send(embeds=embeds, files=files)
+                await channel.send(embed=policy_embed)
 
     @classmethod
     def add_rankings(cls, embed: discord.Embed, rankings: ET.Element):
