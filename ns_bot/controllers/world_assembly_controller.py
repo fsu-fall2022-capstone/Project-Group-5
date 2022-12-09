@@ -28,6 +28,4 @@ class WorldAssemblyController(BaseNationstateController):
         if shard.lower() in SPECIAL_WORLD_ASSEMBLY_SHARDS:
             shards.append("resolution")
         data = await self.bot.nationstates_api.get_wa_data(council.value, shards=shards)
-        # TODO make stats about the returned info. Because the data will be too large otherwise
-        # TODO explore and fix issue with large response just not showing anything
         await FormatWAInfo.format(council.name, shard, data, interaction)
