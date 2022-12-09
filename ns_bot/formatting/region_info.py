@@ -1,14 +1,14 @@
-from io import BytesIO
 import re
 import xml.etree.ElementTree as ET
 from datetime import datetime
+from io import BytesIO
 
 import discord
+import matplotlib.pyplot as plt
+import numpy as np
 
 from nationstates_bot import NationStatesBot
 from ns_bot.formatting import Formatter
-import matplotlib.pyplot as plt
-import numpy as np
 
 
 class FormatRegionInfo(Formatter):
@@ -301,12 +301,7 @@ class FormatRegionInfo(Formatter):
                         votes = history_results.get("VOTES")
                     if votes is not None:
                         labels.append(history_results.get("OPTIONTEXT"))
-                        ax.barh(
-                            y_location,
-                            int(votes),
-                            align="center",
-                            height=1,
-                        )
+                        ax.barh(y_location, int(votes), align="center", height=1)
                         y_location += 1
 
                 ax.set_title(root[0][1].text)
