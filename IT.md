@@ -26,7 +26,8 @@ tested this way. We have since included the `/add_nation` command in order to br
 removal of guild commands. `/configure` allows you to configure your nation in the context of receiving issues and sending them to specific channels within the 
 discord server. The user is able to determine when they want their issue vote to be received by their nation, between 1 and 24 hours. These issues that are sent 
 to the user are sent hourly, with an image of the newspaper issue that is being addressed shown to the user when sent, along with a thread that allows the user 
-to pick their option for the issue.
+to pick their option for the issue. The `/region info` command and `/wa info` command allow you to access their respective shards that are provided by the Nation States 
+website in order to play the game. The shards for nation and world assembly from the website have also been implemented for the user to access through Nation States.
 
 ## Execution-based Non-Functional Testing:
 The NationStates API has its own rate limits: 50 calls/30s. Password security was manually checked and reviewed for proper encryption. A gzip file taken 
@@ -37,4 +38,5 @@ More tables will be made in the future. Images for the issues provided to the us
 issues yet.
 
 ## Non-Execution-based Testing:
-Large sweeping changes require an all-hands walkthrough. Nothing (besides text related changes) is allowed to be directly pushed to main. All pull-requests have to be reviewed by the manager before merging. At least 1 other person should have a look at the code before a pull-request is made.
+Large sweeping changes require an all-hands walkthrough. Nothing (besides text related changes) is allowed to be directly pushed to main. All pull-requests have to be reviewed 
+by the manager before merging. At least 1 other person should have a look at the code before a pull-request is made.
