@@ -39,11 +39,11 @@
 > 2) The software requirements and design document was written by Robert, this includes all sections/diagrams as well.
 > 3) The software IT document was written by Cameron, this includes all sections.
 > 4) Source code contributions:
->>> Joshua: Worked on upgrading the api of the bot (ratelimit and auto-authentication), formatting issues, bug fixes and other maintenance tasks.
->>> Robert: Worked on formatting API responses, with major contributions to responses from the Nation API and the Region API
->>> Nicholas: Worked on formatting API responses, minor contributions to responses from the Nation API and major contributions to the responses from the World Assembly API
->>> Tyler: Worked primarily with Robert on formatting responses from the Nation and Region APIs.
->>> Cameron: Worked mainly on tidying up and improving the abilities of the nation
+>>> Joshua: Worked on upgrading the api of the bot (ratelimit and auto-authentication), formatting issues, bug fixes and other maintenance tasks.  
+>>> Robert: Worked on formatting API responses, with major contributions to responses from the Nation API and the Region API  
+>>> Nicholas: Worked on formatting API responses, minor contributions to responses from the Nation API and major contributions to the responses from the World Assembly API  
+>>> Tyler: Worked primarily with Robert on formatting responses from the Nation and Region APIs.  
+>>> Cameron: Worked mainly on tidying up and improving the abilities of the nation  
 > 5) Everyone contributed to the video.
 
 
