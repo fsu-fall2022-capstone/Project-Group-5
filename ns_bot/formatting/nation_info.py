@@ -96,13 +96,18 @@ class FormatNationInfo(Formatter):
                 )
             case "census":
                 # TODO get the rank map of todays census
-                embed = discord.Embed(title=f"{nation}'s __ standing")
-                embed.add_field(name="World Ranking", value=root[0][0][1].text, inline=False)
-                embed.add_field(
-                    name="Rank within the Region", value=root[0][0][2].text, inline=False
-                )
-                embed.add_field(name="Score", value=root[0][0][0].text, inline=False)
-                await interaction.response.send_message(embed=embed)
+                embed = discord.Embed(title=f"{nation}'s standing")
+                embed.add_field(name="World Ranking", value=root[0][0][1].text)
+                embed.add_field(name="Rank within the Region", value=root[0][0][2].text)
+                embed.add_field(name="Score", value=root[0][0][0].text)
+                id = root[0][0].attrib.get("id")
+                rank_image = Image.open(f"ns_bot/data/ranks/{id}.png")
+                image_file = BytesIO()
+                rank_image.save(image_file, format="PNG")
+                image_file.seek(0)
+                embed.set_thumbnail(url="attachment://rank.png")
+                file = discord.File(image_file, filename="rank.png")
+                await interaction.response.send_message(embed=embed, file=file)
             case "crime":
                 await interaction.response.send_message(
                     embed=discord.Embed(title=f"{nation}'s crime", description=text)
@@ -397,6 +402,7 @@ class FormatNationInfo(Formatter):
                     )
                 )
             case "rcensus":
+                # TODO FIX
                 await interaction.response.send_message(
                     embed=discord.Embed(
                         title=f"{nation}'s mining industry is ranked {text} within its region."
@@ -496,6 +502,7 @@ class FormatNationInfo(Formatter):
                 )
                 await interaction.response.send_message(embed=embed)
             case "wcensus":
+                # TODO FIX
                 await interaction.response.send_message(
                     embed=discord.Embed(
                         title=f"{nation}'s mining industry ranks {text} in the world."
