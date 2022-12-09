@@ -1,3 +1,4 @@
+from io import BytesIO
 import re
 import xml.etree.ElementTree as ET
 from datetime import datetime
@@ -6,6 +7,8 @@ import discord
 
 from nationstates_bot import NationStatesBot
 from ns_bot.formatting import Formatter
+import matplotlib.pyplot as plt
+import numpy as np
 
 
 class FormatRegionInfo(Formatter):
@@ -282,7 +285,41 @@ class FormatRegionInfo(Formatter):
                     )
                 await interaction.response.send_message(embed=embed)
             case "poll":
-                pass
+                await interaction.response.defer(thinking=True)
+                labels = []
+                y_location = 0
+                graph_embed = discord.Embed()
+                graph_stream = BytesIO()
+                plt.rcParams["figure.figsize"] = [12, 6]
+                plt.rcParams["figure.autolayout"] = True
+                fig, ax = plt.subplots()
+
+                for id in root[0][6].findall("OPTION"):
+                    history_results = {}
+                    for element in id:
+                        history_results[element.tag] = element.text.strip()
+                        votes = history_results.get("VOTES")
+                    if votes is not None:
+                        labels.append(history_results.get("OPTIONTEXT"))
+                        ax.barh(
+                            y_location,
+                            int(votes),
+                            align="center",
+                            height=1,
+                        )
+                        y_location += 1
+
+                ax.set_title(root[0][1].text)
+                ax.set_xlabel("Number of votes")
+                y_location = np.arange(len(labels))
+                ax.set_yticks(y_location, labels=labels)
+
+                fig.savefig(graph_stream, format="PNG", dpi=80)
+                graph_stream.seek(0)
+                graph_file = discord.File(graph_stream, "graph.png")
+                graph_embed.set_image(url="attachment://graph.png")
+
+                await interaction.followup.send(file=graph_file)
             case "power":
                 await interaction.response.send_message(
                     embed=discord.Embed(title=f"{region}'s power is {text}")
