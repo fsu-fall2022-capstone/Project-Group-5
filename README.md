@@ -23,5 +23,6 @@
 ```cmd
 $ pip3 install -r requirements.txt
 ```
+[Install wand](https://docs.wand-py.org/en/0.6.10/guide/install.html#install-imagemagick)
 
 Next, create a `.env` file and fill it with the secretes

@@ -6,6 +6,7 @@ from typing import Optional
 import asyncpg
 from aiohttp import ClientResponse, ClientSession
 from PIL import Image
+from wand import image
 
 from ns_bot.DAOs.postgresql import Login
 from ns_bot.utils import decrypt
@@ -123,6 +124,9 @@ class NationStatesAPI:
     @ratelimit
     async def get_image(self, url: str):
         async with self.web_client.get(url, headers={"User-Agent": self.USER_AGENT}) as response:
+            if url.lower().endswith("svg"):
+                with image.Image(blob=await response.content.read(), format="svg") as svg:
+                    return Image.open(BytesIO(svg.make_blob("png")))
             return Image.open(BytesIO(await response.content.read()))
 
     async def get_banner(self, banner: str):

@@ -1,13 +1,10 @@
 from datetime import date
-from io import BytesIO
 
-from aiohttp import ClientSession
 from PIL import Image, ImageDraw, ImageFont, ImageOps
 from PIL.ImageFont import FreeTypeFont
 
 from ns_bot.DAOs.nationstates_api import NationStatesAPI
 
-BASE_IMAGE_URL = "https://www.nationstates.net/images/"
 LIGHT_BLACK = (68, 68, 68)
 
 
@@ -45,7 +42,7 @@ async def generate_issue_newspaper(
         )
 
     results = await nationstates_api.get_banners(
-        [flag, f"newspaper/{banner_1}-1.jpg", f"newspaper/{banner_2}-2.jpg"]
+        (flag, f"newspaper/{banner_1}-1.jpg", f"newspaper/{banner_2}-2.jpg")
     )
 
     flag_image: Image.Image = results[0]

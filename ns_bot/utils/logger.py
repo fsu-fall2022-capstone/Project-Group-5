@@ -29,3 +29,13 @@ class Logger:
 
     def critical(self, *args, **kwargs):
         self.logger.critical(*args, **kwargs)
+
+
+def setup_discord_loggers():
+    discord_http_logger = logging.getLogger("discord.http")
+    discord_http_logger.setLevel(logging.INFO)
+    discord_http_logger.addHandler(Logger.handler)
+
+    dpy_logger = logging.getLogger("discord")
+    dpy_logger.setLevel(logging.INFO)
+    dpy_logger.addHandler(Logger.handler)

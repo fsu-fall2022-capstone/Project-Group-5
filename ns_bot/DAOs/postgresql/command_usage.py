@@ -1,4 +1,8 @@
-from ns_bot.DAOs.postgresql.base_sql_table import *
+from typing import Optional
+
+from asyncpg import Connection, Pool
+
+from ns_bot.DAOs.postgresql.base_sql_table import BaseSQLTable, ensure_connection
 
 
 class CommandUsage(BaseSQLTable):
@@ -25,7 +29,7 @@ class CommandUsage(BaseSQLTable):
     async def command_usage_count(self, *, command: str, con: Optional[Connection] = None) -> int:
         return await con.fetchval(
             f"""
-            SELECT usage_count from {self.TABLE_NAME} 
+            SELECT usage_count from {self.TABLE_NAME}
             WHERE command = $1
             """,
             command,

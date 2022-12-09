@@ -5,3 +5,5 @@ aiohttp>=3.8.1
 cryptography
 Pillow>=9.2.0
 xmltodict==0.13.0
+Wand==0.6.10
+matplotlib>=3.6.2

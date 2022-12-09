@@ -44,9 +44,9 @@ class Config(commands.Cog):
     @app_commands.autocomplete(cog=cog_autocomplete)
     @ConfigController.is_owner()
     async def reload(self, interaction: discord.Interaction, cog: Optional[str] = None):
-        self.logger.info(f"Reloading cogs ... ")
+        self.logger.info("Reloading cogs ... ")
         await self.config_controller.reload(interaction, cog)
-        self.logger.info(f"Reloaded cogs")
+        self.logger.info("Reloaded cogs")
 
     @commands.command()
     @commands.guild_only()

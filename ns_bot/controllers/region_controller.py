@@ -1,9 +1,7 @@
-import traceback
-from typing import Literal, Optional
+from typing import Optional
 
 import discord
 from discord import app_commands
-from discord.ext import commands
 
 from ns_bot.controllers.base_nationstate_controller import BaseNationstateController
 from ns_bot.data.shards import VALID_REGION_SHARDS
@@ -23,4 +21,4 @@ class RegionController(BaseNationstateController):
         data = await self.bot.nationstates_api.get_region_data(
             region, shards=[shard] if shard else None
         )
-        await FormatRegionInfo.format(region, interaction, shard, data)
+        await FormatRegionInfo.format(region, shard, data, interaction, self.bot)
