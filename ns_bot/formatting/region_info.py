@@ -354,13 +354,6 @@ class FormatRegionInfo(Formatter):
                     )
                 )
 
-        await interaction.response.send_message(
-            embed=discord.Embed(
-                title="Region Info",
-                description=data,
-            )
-        )
-
     @staticmethod
     def authority_code_to_string(codes: str):
         codes = codes.replace("E", "Embassies\n")

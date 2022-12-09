@@ -134,11 +134,12 @@ class ServerController(BaseNationstateController):
             stored_nation_issues = await self.live_issues_table.get_nation_issues(
                 nation=nation_name
             )
-            stored_nation_issues_id = {issue["id"] for issue in stored_nation_issues}
+            stored_nation_issues_id = {issue["issue_id"] for issue in stored_nation_issues}
             live_issues: dict = await self.async_xmltodict(live_issues)
             if not live_issues:
                 return
-            live_issues = live_issues.get("NATION", {}).get("ISSUES", {}).get("ISSUE", [])
+            live_issues = live_issues.get("NATION", {}).get("ISSUES", {}) or {}
+            live_issues = live_issues.get("ISSUE", [])
             live_issues = live_issues if type(live_issues) == list else [live_issues]
             for issue in live_issues:
                 issue_id = int(issue["@id"])
@@ -165,7 +166,8 @@ class ServerController(BaseNationstateController):
                 )
                 stored_nation_issues_id.add(issue_id)
 
-            for old_issue_id in stored_nation_issues_id - set(live_issues):
+            old_issues = stored_nation_issues_id - set([int(issue["@id"]) for issue in live_issues])
+            for old_issue_id in old_issues:
                 await self.live_issues_table.remove_issue(nation=nation_name, issue_id=old_issue_id)
 
     async def update_live_issues(self):
@@ -174,9 +176,10 @@ class ServerController(BaseNationstateController):
         # but this can be simplified by ordering/grouping by nation (same time for each issue for each nation)
         data = await self.live_issues_table.get_all()
         for issue in data:
-            time_difference: datetime.timedelta = issue[
-                "start_time"
-            ] - datetime.datetime.utcnow().replace(tzinfo=datetime.timezone.utc)
+            time_difference: datetime.timedelta = (
+                datetime.datetime.utcnow().replace(tzinfo=datetime.timezone.utc)
+                - issue["start_time"]
+            )
             vote_time = await self.nation_table.get_vote_time(nation=issue["nation"])
             if vote_time == -1:
                 if time_difference > datetime.timedelta(seconds=(3600 * 24) - 600):
@@ -203,9 +206,17 @@ class ServerController(BaseNationstateController):
             issue_response_result = await self.bot.nationstates_api.respond_to_issue(
                 nation=nation, issue_id=issue_id, option=option
             )
-            await FormatIssueResponse.format(
-                self.bot.nationstates_api, channel, issue_response_result
-            )
+            try:
+                await FormatIssueResponse.format(
+                    self.bot.nationstates_api, channel, issue_response_result
+                )
+            except Exception as e:
+                await channel.send(
+                    f"There was some error when trying to respond to this issue.\
+                \nThe winning option was {option + 1}"
+                )
+                self.logger.error(issue_response_result)
+                self.logger.error(e, exc_info=True)
         else:
             await channel.send(issue_response_result)
 
