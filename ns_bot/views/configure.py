@@ -1,5 +1,3 @@
-import traceback
-
 import discord
 
 from ns_bot.DAOs.nationstates_api import NationStatesAPI
@@ -100,7 +98,7 @@ class TimeSelect(discord.ui.Select):
             discord.SelectOption(
                 label="Do not auto answer",
                 value=-1,
-                description=f"Display the most voted after 24 hours",
+                description="Display the most voted after 24 hours",
             ),
         )
         super().__init__(

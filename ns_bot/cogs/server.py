@@ -4,7 +4,6 @@ from discord.ext import commands, tasks
 
 from nationstates_bot import NationStatesBot
 from ns_bot.controllers.server_controller import ServerController
-from ns_bot.DAOs.nationstates_api import NationStatesAPI
 from ns_bot.DAOs.postgresql import IssueVotes, LiveIssues, Login, Nation
 from ns_bot.utils import Logger
 from ns_bot.views.issues import IssueView

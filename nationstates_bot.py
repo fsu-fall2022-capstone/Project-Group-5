@@ -11,6 +11,7 @@ from dotenv import load_dotenv
 import ns_bot.postgres_init as p_init
 from ns_bot.DAOs.nationstates_api import NationStatesAPI
 from ns_bot.utils import Logger
+from ns_bot.utils.logger import setup_discord_loggers
 
 load_dotenv()
 
@@ -27,11 +28,12 @@ class NationStatesBot(commands.Bot):
         super().__init__(*args, **kwargs)
 
         self.base_logger = Logger("bot")
+        setup_discord_loggers()
 
         self.db_pool = db_pool
         self.web_client = web_client
 
-        self.nationstates_api = NationStatesAPI(self.web_client, self.db_pool)
+        self.nationstates_api: NationStatesAPI = NationStatesAPI(self.web_client, self.db_pool)
         self.nation_dump = {}
 
         self.initial_extensions = initial_extensions
@@ -57,7 +59,6 @@ async def main():
     async with ClientSession() as web_client, asyncpg.create_pool(
         database="nations", user=os.environ.get("USER"), command_timeout=30
     ) as pool:
-
         async with NationStatesBot(
             commands.when_mentioned,
             intents=discord.Intents.default(),

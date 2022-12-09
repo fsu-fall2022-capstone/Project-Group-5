@@ -8,6 +8,7 @@ import xmltodict
 from nationstates_bot import NationStatesBot
 from ns_bot.controllers.base_nationstate_controller import BaseNationstateController
 from ns_bot.DAOs.postgresql import IssueVotes, LiveIssues, Login, Nation
+from ns_bot.formatting.issue import FormatIssueResponse
 from ns_bot.formatting.newspaper_images import generate_issue_newspaper
 from ns_bot.utils import Logger, async_wrapper
 from ns_bot.views.configure import ConfigureNation, NewNation
@@ -129,15 +130,20 @@ class ServerController(BaseNationstateController):
     async def fetch_new_issues(self):
         for nation in await self.nation_table.get_all():
             nation_name: str = nation["nation"]
-            issues = await self.bot.nationstates_api.get_nation_issues(nation=nation_name)
-            nation_issues = await self.live_issues_table.get_nation_issues(nation=nation_name)
-            issues: dict = await self.async_xmltodict(issues)
-            if not issues:
+            live_issues = await self.bot.nationstates_api.get_nation_issues(nation=nation_name)
+            stored_nation_issues = await self.live_issues_table.get_nation_issues(
+                nation=nation_name
+            )
+            stored_nation_issues_id = {issue["issue_id"] for issue in stored_nation_issues}
+            live_issues: dict = await self.async_xmltodict(live_issues)
+            if not live_issues:
                 return
-            issues = issues.get("NATION", {}).get("ISSUES", {}).get("ISSUE", [])
-            for issue in issues if type(issues) == list else [issues]:
+            live_issues = live_issues.get("NATION", {}).get("ISSUES", {}) or {}
+            live_issues = live_issues.get("ISSUE", [])
+            live_issues = live_issues if type(live_issues) == list else [live_issues]
+            for issue in live_issues:
                 issue_id = int(issue["@id"])
-                if issue_id in nation_issues:
+                if issue_id in stored_nation_issues_id:
                     continue
 
                 options = [option["#text"] for option in issue["OPTION"]]
@@ -158,8 +164,11 @@ class ServerController(BaseNationstateController):
                     issue_summary=issue["TEXT"],
                     options=options,
                 )
+                stored_nation_issues_id.add(issue_id)
 
-            # TODO remove issues that are already answered
+            old_issues = stored_nation_issues_id - set([int(issue["@id"]) for issue in live_issues])
+            for old_issue_id in old_issues:
+                await self.live_issues_table.remove_issue(nation=nation_name, issue_id=old_issue_id)
 
     async def update_live_issues(self):
         # TODO optimize the search
@@ -167,9 +176,10 @@ class ServerController(BaseNationstateController):
         # but this can be simplified by ordering/grouping by nation (same time for each issue for each nation)
         data = await self.live_issues_table.get_all()
         for issue in data:
-            time_difference: datetime.timedelta = issue[
-                "start_time"
-            ] - datetime.datetime.utcnow().replace(tzinfo=datetime.timezone.utc)
+            time_difference: datetime.timedelta = (
+                datetime.datetime.utcnow().replace(tzinfo=datetime.timezone.utc)
+                - issue["start_time"]
+            )
             vote_time = await self.nation_table.get_vote_time(nation=issue["nation"])
             if vote_time == -1:
                 if time_difference > datetime.timedelta(seconds=(3600 * 24) - 600):
@@ -193,13 +203,20 @@ class ServerController(BaseNationstateController):
             issue_response_result = f"The server voted for option {option + 1}\n"
 
         if respond_to_api:
-            # TODO format the response from the API
             issue_response_result = await self.bot.nationstates_api.respond_to_issue(
                 nation=nation, issue_id=issue_id, option=option
             )
-            await channel.send(
-                file=discord.File(StringIO(issue_response_result), filename="response.xml")
-            )
+            try:
+                await FormatIssueResponse.format(
+                    self.bot.nationstates_api, channel, issue_response_result
+                )
+            except Exception as e:
+                await channel.send(
+                    f"There was some error when trying to respond to this issue.\
+                \nThe winning option was {option + 1}"
+                )
+                self.logger.error(issue_response_result)
+                self.logger.error(e, exc_info=True)
         else:
             await channel.send(issue_response_result)
 

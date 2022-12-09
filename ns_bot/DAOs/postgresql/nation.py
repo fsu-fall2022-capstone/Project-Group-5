@@ -1,4 +1,8 @@
-from ns_bot.DAOs.postgresql.base_sql_table import *
+from typing import Optional
+
+from asyncpg import Connection, Pool
+
+from ns_bot.DAOs.postgresql.base_sql_table import BaseSQLTable, ensure_connection
 
 
 class Nation(BaseSQLTable):
@@ -35,7 +39,7 @@ class Nation(BaseSQLTable):
         if self.nation_already_present(nation=nation, con=con):
             return await con.execute(
                 f"""
-                UPDATE {self.TABLE_NAME} 
+                UPDATE {self.TABLE_NAME}
                 SET guild_id = $1
                 WHERE nation = $2
                 """,
@@ -57,7 +61,7 @@ class Nation(BaseSQLTable):
     ) -> bool:
         check = await con.fetchval(
             f"""
-            SELECT * from {self.TABLE_NAME} 
+            SELECT * from {self.TABLE_NAME}
             WHERE nation = $1
             """,
             nation,
@@ -68,7 +72,7 @@ class Nation(BaseSQLTable):
     async def get_guild_id(self, *, nation: str, con: Optional[Connection] = None):
         return await con.fetchval(
             f"""
-            SELECT guild_id from {self.TABLE_NAME} 
+            SELECT guild_id from {self.TABLE_NAME}
             WHERE nation = $1
             """,
             nation,
@@ -78,7 +82,7 @@ class Nation(BaseSQLTable):
     async def get_vote_time(self, *, nation: str, con: Optional[Connection] = None):
         return await con.fetchval(
             f"""
-            SELECT vote_time from {self.TABLE_NAME} 
+            SELECT vote_time from {self.TABLE_NAME}
             WHERE nation = $1
             """,
             nation,
@@ -88,7 +92,7 @@ class Nation(BaseSQLTable):
     async def get_vote_channel(self, *, nation: str, con: Optional[Connection] = None):
         return await con.fetchval(
             f"""
-            SELECT vote_channel from {self.TABLE_NAME} 
+            SELECT vote_channel from {self.TABLE_NAME}
             WHERE nation = $1
             """,
             nation,
@@ -100,7 +104,7 @@ class Nation(BaseSQLTable):
     ):
         await con.execute(
             f"""
-            UPDATE {self.TABLE_NAME} 
+            UPDATE {self.TABLE_NAME}
             SET vote_time = $1
             WHERE nation = $2
             """,
@@ -114,7 +118,7 @@ class Nation(BaseSQLTable):
     ):
         await con.execute(
             f"""
-            UPDATE {self.TABLE_NAME} 
+            UPDATE {self.TABLE_NAME}
             SET vote_channel = $1
             WHERE nation = $2
             """,
