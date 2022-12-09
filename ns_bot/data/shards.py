@@ -64,7 +64,7 @@ VALID_PUBLIC_NATION_SHARDS = (
     "tgcancampaign",
     "type",
     "wa",
-    "wabadges",
+    # "wabadges",
     "wcensus",
     "zombie",
 )
@@ -101,7 +101,7 @@ VALID_REGION_SHARDS = (
     "power",
     "scvote",
     "tags",
-    "wabadges",
+    # "wabadges",
     "zombie",
 )
 
