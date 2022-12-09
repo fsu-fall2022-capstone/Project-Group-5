@@ -95,19 +95,11 @@ class FormatNationInfo(Formatter):
                     embed=discord.Embed(title=f"{nation} is a {text}.")
                 )
             case "census":
-                # TODO get the rank map of todays census
-                embed = discord.Embed(title=f"{nation}'s standing")
+                embed = discord.Embed(title=f"{nation}'s standings")
                 embed.add_field(name="World Ranking", value=root[0][0][1].text)
                 embed.add_field(name="Rank within the Region", value=root[0][0][2].text)
                 embed.add_field(name="Score", value=root[0][0][0].text)
-                id = root[0][0].attrib.get("id")
-                rank_image = Image.open(f"ns_bot/data/ranks/{id}.png")
-                image_file = BytesIO()
-                rank_image.save(image_file, format="PNG")
-                image_file.seek(0)
-                embed.set_thumbnail(url="attachment://rank.png")
-                file = discord.File(image_file, filename="rank.png")
-                await interaction.response.send_message(embed=embed, file=file)
+                await cls.handle_census(root, embed, interaction)
             case "crime":
                 await interaction.response.send_message(
                     embed=discord.Embed(title=f"{nation}'s crime", description=text)
@@ -402,12 +394,9 @@ class FormatNationInfo(Formatter):
                     )
                 )
             case "rcensus":
-                # TODO FIX
-                await interaction.response.send_message(
-                    embed=discord.Embed(
-                        title=f"{nation}'s mining industry is ranked {text} within its region."
-                    )
-                )
+                embed = discord.Embed(title=f"{nation}'s Region standing.")
+                embed.add_field(name="Rank", value=text)
+                await cls.handle_census(root, embed, interaction)
             case "region":
                 await interaction.response.send_message(
                     embed=discord.Embed(title=f"{nation} can be found in the {text} region.")
@@ -502,12 +491,9 @@ class FormatNationInfo(Formatter):
                 )
                 await interaction.response.send_message(embed=embed)
             case "wcensus":
-                # TODO FIX
-                await interaction.response.send_message(
-                    embed=discord.Embed(
-                        title=f"{nation}'s mining industry ranks {text} in the world."
-                    )
-                )
+                embed = discord.Embed(title=f"{nation}'s World standing.")
+                embed.add_field(name="Rank", value=text)
+                await cls.handle_census(root, embed, interaction)
             case "zombie":
                 await interaction.response.send_message(
                     embed=discord.Embed(
@@ -519,6 +505,19 @@ class FormatNationInfo(Formatter):
                         \nDead: {root[0].findtext('DEAD')}\n",
                     )
                 )
+
+    @staticmethod
+    async def handle_census(
+        root: ET.Element, embed: discord.Embed, interaction: discord.Interaction
+    ):
+        id = root[0][0].attrib.get("id")
+        rank_image = Image.open(f"ns_bot/data/ranks/{id}.png")
+        image_file = BytesIO()
+        rank_image.save(image_file, format="PNG")
+        image_file.seek(0)
+        embed.set_thumbnail(url="attachment://rank.png")
+        file = discord.File(image_file, filename="rank.png")
+        await interaction.response.send_message(embed=embed, file=file)
 
     @classmethod
     async def handle_banners(
