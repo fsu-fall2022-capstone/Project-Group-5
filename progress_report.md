@@ -21,7 +21,7 @@
 
 ## 3) **Accomplishments and overall project status during this increment** 
 
-> This increment we worked primarily on formatting responses from the various endpoints of the API as well as improving our own bot. Overall the project has reached...
+> This increment we worked primarily on formatting responses from the various endpoints of the API as well as improving our own bot. Overall the project has reached completion. 
 
 ## 4) **Challenges, changes in the plan and scope of the project and things that went wrong during this increment**
 
@@ -49,4 +49,4 @@
 
 ## 6) **Link to video**
 
-> [Increment 3](https://music.youtube.com/watch?v=vraZrWRjmZQ&feature=share)
+> [Increment 3](https://www.youtube.com/watch?v=445e-uin-0k)
