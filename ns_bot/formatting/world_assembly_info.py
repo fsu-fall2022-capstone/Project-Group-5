@@ -16,14 +16,14 @@ class FormatWAInfo(Formatter):
         cls, council: str, shard: str, data: str, interaction: discord.Interaction
     ) -> None:
 
-        data = cls.clean_data(data)
-        root: ET.Element = await cls.async_xml_parse(data)
-        text = root[0].text
-
         if not data:
             return await interaction.response.send_message(
                 "There was no response from Nation States", ephemeral=True
             )
+
+        data = cls.clean_data(data)
+        root: ET.Element = await cls.async_xml_parse(data)
+        text = root[0].text
 
         match shard:
             case "numnations":

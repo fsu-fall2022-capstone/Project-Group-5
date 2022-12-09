@@ -22,14 +22,13 @@ class FormatRegionInfo(Formatter):
         bot: NationStatesBot,
     ) -> None:
 
-        data = cls.clean_data(data)
-        root: ET.Element = await cls.async_xml_parse(data)
-        text = root[0].text
-
         if not data:
             return await interaction.response.send_message(
                 f"{region} is unknown. Please try again", ephemeral=True
             )
+        data = cls.clean_data(data)
+        root: ET.Element = await cls.async_xml_parse(data)
+        text = root[0].text
 
         if not shard:
             if text is None:
