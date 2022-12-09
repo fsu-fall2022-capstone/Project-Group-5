@@ -8,6 +8,7 @@ import xmltodict
 from nationstates_bot import NationStatesBot
 from ns_bot.controllers.base_nationstate_controller import BaseNationstateController
 from ns_bot.DAOs.postgresql import IssueVotes, LiveIssues, Login, Nation
+from ns_bot.formatting.issue import FormatIssueResponse
 from ns_bot.formatting.newspaper_images import generate_issue_newspaper
 from ns_bot.utils import Logger, async_wrapper
 from ns_bot.views.configure import ConfigureNation, NewNation
@@ -199,12 +200,11 @@ class ServerController(BaseNationstateController):
             issue_response_result = f"The server voted for option {option + 1}\n"
 
         if respond_to_api:
-            # TODO format the response from the API
             issue_response_result = await self.bot.nationstates_api.respond_to_issue(
                 nation=nation, issue_id=issue_id, option=option
             )
-            await channel.send(
-                file=discord.File(StringIO(issue_response_result), filename="response.xml")
+            await FormatIssueResponse.format(
+                self.bot.nationstates_api, channel, issue_response_result
             )
         else:
             await channel.send(issue_response_result)
