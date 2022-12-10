@@ -3,6 +3,8 @@ import logging.handlers
 
 
 class Logger:
+    __slots__ = ("logger",)
+
     handler = logging.handlers.RotatingFileHandler(
         filename="discord.log",
         encoding="utf-8",

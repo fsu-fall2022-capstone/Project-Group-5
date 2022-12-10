@@ -69,7 +69,7 @@ class FormatWAInfo(Formatter):
                 embeds = []
                 proposal = root[0].find("PROPOSAL")
                 # TODO process lists in the string to have correct indentation
-                desc = re.sub(r"\[(.*?)\]", f"\n", proposal.findtext("DESC"))
+                desc = re.sub(r"\[(.*?)\]", "\n", proposal.findtext("DESC"))
                 proposal_embed = discord.Embed(
                     title=f"{proposal.findtext('NAME')}", description=desc
                 )
@@ -85,7 +85,7 @@ class FormatWAInfo(Formatter):
                     ]
                 )
                 approvals_embed = discord.Embed(
-                    title=f"A random selection of nations that approve of this proposal: ",
+                    title="A random selection of nations that approve of this proposal: ",
                     description=approving_nations,
                 )
                 embeds.append(approvals_embed)

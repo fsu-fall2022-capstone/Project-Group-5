@@ -12,6 +12,8 @@ from ns_bot.utils import Logger
 class Nation(commands.GroupCog, group_name="nation"):
     """Handle nation requests"""
 
+    __slots__ = ("bot", "nation_controller", "logger")
+
     def __init__(self, bot: NationStatesBot):
         self.bot = bot
         super().__init__()

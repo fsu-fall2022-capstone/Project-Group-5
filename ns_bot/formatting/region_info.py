@@ -335,11 +335,9 @@ class FormatRegionInfo(Formatter):
                         )
                     )
             case "tags":
-                embed = discord.Embed(title=f"Tags for {region}")
-                root[0].find("TAGS")
-                tags_results = {}
-                for element in root[0]:
-                    embed.add_field(name="\u200b", value=element.text.strip(), inline=False)
+                embed = discord.Embed(
+                    title=f"Tags for {region}", description="\n".join([tag.text for tag in root[0]])
+                )
                 await interaction.response.send_message(embed=embed)
             case "wabadges":
                 pass

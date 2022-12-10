@@ -4,6 +4,11 @@ from ns_bot.DAOs.postgresql import IssueVotes, LiveIssues
 
 
 class VotingDropdown(discord.ui.Select):
+    __slots__ = discord.ui.Select.__slots__ + (
+        "live_issues_table",
+        "issue_votes_table",
+    )
+
     def __init__(
         self, option_amount: int, live_issues_table: LiveIssues, issue_votes_table: IssueVotes
     ):

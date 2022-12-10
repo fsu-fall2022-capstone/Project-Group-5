@@ -13,6 +13,18 @@ from ns_bot.views.issues import IssueView
 class Server(commands.Cog):
     """Handle server based nation"""
 
+    __slots__ = (
+        "bot",
+        "login_table",
+        "nation_table",
+        "issues_votes_table",
+        "live_issues_table",
+        "server_controller",
+        "check_for_issues_loop",
+        "ns_data_dump_loop",
+        "logger",
+    )
+
     def __init__(self, bot: NationStatesBot):
         self.bot = bot
 

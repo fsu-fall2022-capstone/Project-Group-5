@@ -1,6 +1,6 @@
 import datetime
 import gzip
-from io import BytesIO, StringIO
+from io import BytesIO
 
 import discord
 import xmltodict
@@ -16,6 +16,15 @@ from ns_bot.views.issues import IssueView
 
 
 class ServerController(BaseNationstateController):
+    __slots__ = BaseNationstateController.__slots__ + (
+        "login_table",
+        "nation_table",
+        "live_issues_table",
+        "issue_votes_table",
+        "async_xmltodict",
+        "logger",
+    )
+
     def __init__(
         self,
         bot: NationStatesBot,
