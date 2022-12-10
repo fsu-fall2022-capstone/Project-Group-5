@@ -23,6 +23,15 @@ def ratelimit(function):
 
 
 class NationStatesAPI:
+    __slots__ = (
+        "web_client",
+        "_rate_limit_",
+        "ratelimit_period",
+        "_concurrent_requests_",
+        "__ratelimit_start_time",
+        "login_table",
+    )
+
     USER_AGENT = "NS Discord Bot"
     BASE_URL = "https://www.nationstates.net/cgi-bin/api.cgi"
     BASE_IMAGE_URL = "https://www.nationstates.net/images/"
@@ -142,9 +151,3 @@ class NationStatesAPI:
             self._concurrent_requests_ = 0
         elif self._concurrent_requests_ >= self._rate_limit_:
             await asyncio.sleep(self.ratelimit_period - time_delta.seconds)
-
-
-# url = "https://www.nationstates.net/cgi-bin/api.cgi"
-# p = {"nation" : "Computer Chip", "q":"policies"}
-# h = {'User-Agent': 'Testing for now'}
-# a = requests.get(url, headers=h, params=p)

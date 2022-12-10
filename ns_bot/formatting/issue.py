@@ -16,6 +16,15 @@ class FormatIssueResponse(Formatter):
         root: ET.Element = await cls.async_xml_parse(response)
         issue_root = root[0]
 
+        headlines = "\n".join(
+            [headline.text for headline in root[0].find("HEADLINES").findall("HEADLINE")]
+        )
+
+        if issue_root.attrib.get("choice") == "-1":
+            return await channel.send(
+                embed=discord.Embed(title="Issue has been ignored", description=headlines)
+            )
+
         result_embed = discord.Embed(title=issue_root.findtext("DESC"))
 
         if reclassifications := issue_root.find("RECLASSIFICATIONS"):
@@ -24,9 +33,6 @@ class FormatIssueResponse(Formatter):
                 value=ET.tostring(reclassifications),
             )
 
-        headlines = "\n".join(
-            [headline.text for headline in root[0].find("HEADLINES").findall("HEADLINE")]
-        )
         result_embed.add_field(name="Headlines", value=headlines or "Nothing interesting")
         result_embed.add_field(
             name="Picked option", value=f"Option {int(issue_root.attrib.get('choice')) + 1} won"

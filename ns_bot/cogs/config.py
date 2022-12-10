@@ -10,6 +10,8 @@ from ns_bot.utils import Logger
 
 
 class Config(commands.Cog):
+    __slots__ = ("bot", "config_controller", "logger")
+
     def __init__(self, bot: NationStatesBot):
         self.bot = bot
         self.config_controller = ConfigController(bot)

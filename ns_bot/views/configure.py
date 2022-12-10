@@ -6,6 +6,8 @@ from ns_bot.utils import Logger, encrypt
 
 
 class LoginDetails(discord.ui.Modal, title="Login"):
+    __slots__ = ("nationstates_api", "login_table", "nation_table")
+
     username = discord.ui.TextInput(
         label="Nation name",
         placeholder="Nation...",
