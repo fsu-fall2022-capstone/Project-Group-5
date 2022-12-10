@@ -13,6 +13,8 @@ from ns_bot.utils import Logger
 class WorldAssembly(commands.GroupCog, group_name="wa"):
     """Handle World Assembly requests"""
 
+    __slots__ = ("bot", "world_assembly_controller", "logger")
+
     def __init__(self, bot: NationStatesBot):
         self.bot = bot
         super().__init__()

@@ -9,6 +9,8 @@ from ns_bot.utils.wrappers import async_wrapper
 
 
 class Formatter:
+    __slots__ = ()
+
     BASE_BANNER_URL = "https://www.nationstates.net/images/banners/"
     BASE_REGION_URL = "https://www.nationstates.net//images/rbanners/uploads/"
     IMAGE_LIMIT = 10

@@ -7,6 +7,8 @@ from nationstates_bot import NationStatesBot
 
 
 class BaseController:
+    __slots__ = ("bot",)
+
     def __init__(self, bot: NationStatesBot) -> None:
         self.bot = bot
 
