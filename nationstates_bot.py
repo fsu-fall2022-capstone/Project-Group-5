@@ -17,6 +17,15 @@ load_dotenv()
 
 
 class NationStatesBot(commands.Bot):
+    __slots__ = (
+        "base_logger",
+        "db_pool",
+        "web_client",
+        "nationstates_api",
+        "nation_dump",
+        "initial_extensions",
+    )
+
     def __init__(
         self,
         *args,

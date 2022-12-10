@@ -19,6 +19,8 @@ def ensure_connection(function):
 
 
 class BaseSQLTable:
+    __slots__ = ("TABLE_NAME", "db_pool")
+
     def __init__(self, table_name: str, db_pool: Pool) -> None:
         self.TABLE_NAME = table_name
         self.db_pool = db_pool
